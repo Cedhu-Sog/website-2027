@@ -1,0 +1,21 @@
+.mobile-more-sheet { position: fixed; inset: auto 0 var(--mobile-dock-height); width: min(100%, 32rem); max-width: 100%; max-height: min(75dvh, calc(100dvh - var(--mobile-dock-height) - var(--space-sm))); margin: 0 auto; padding: 0; border: 0; border-radius: var(--radius-mobile-navigation) var(--radius-mobile-navigation) 0 0; background: var(--color-surface); color: var(--color-text); box-shadow: var(--shadow-menu); overflow-y: auto; overscroll-behavior: contain; }
+.mobile-more-sheet[open] { animation: mobile-sheet-enter var(--duration-fast) var(--ease-standard) both; }
+.mobile-more-sheet::backdrop { background: linear-gradient(to top, transparent var(--mobile-dock-height), var(--color-mobile-backdrop) var(--mobile-dock-height)); animation: mobile-backdrop-enter var(--duration-fast) var(--ease-standard) both; }
+.mobile-more-sheet[data-closing] { animation-name: mobile-sheet-exit; }
+.mobile-more-sheet[data-closing]::backdrop { animation-name: mobile-backdrop-exit; }
+.mobile-more-sheet__content { padding: 0 var(--space-md) var(--space-md); }
+.mobile-more-sheet__handle { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 2.75rem; padding: 0; border: 0; background: transparent; }
+.mobile-more-sheet__handle span { width: 2.5rem; height: .25rem; border-radius: var(--radius-pill); background: var(--color-line); }
+.mobile-more-sheet__heading { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); margin-bottom: var(--space-xs); }
+.mobile-more-sheet__heading h2 { font-size: var(--text-h3); }
+.mobile-more-sheet__close { display: grid; place-items: center; min-width: 2.75rem; min-height: 2.75rem; padding: var(--space-xs); border: 0; border-radius: var(--radius-sm); background: transparent; }
+.mobile-more-sheet__close:hover { background: var(--color-tint); }
+.mobile-more-sheet :focus-visible { outline-offset: -3px; }
+.mobile-more-fallback { padding-block: var(--space-md); }
+html[data-mobile-sheet-open], html[data-mobile-sheet-open] body { overflow: hidden; overscroll-behavior: none; }
+@keyframes mobile-sheet-enter { from { opacity: 0; transform: translateY(2rem); } to { opacity: 1; transform: translateY(0); } }
+@keyframes mobile-sheet-exit { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(2rem); } }
+@keyframes mobile-backdrop-enter { from { opacity: 0; } to { opacity: 1; } }
+@keyframes mobile-backdrop-exit { from { opacity: 1; } to { opacity: 0; } }
+@media (min-width: 48rem) { .mobile-more-sheet, .mobile-more-fallback { display: none; } }
+@media print { .mobile-more-sheet, .mobile-more-fallback { display: none !important; } }

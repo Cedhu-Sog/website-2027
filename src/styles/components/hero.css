@@ -1,0 +1,53 @@
+.hero { display: grid; grid-template-columns: minmax(0, 1fr); padding-top: var(--space-lg); padding-bottom: var(--space-md); gap: var(--space-lg); }
+@media (width < 48rem) { .hero { padding-top: var(--space-sm); } }
+.hero__copy .eyebrow { display: flex; align-items: center; gap: .6rem; font-size: .75rem; }
+.hero__point { display: inline-block; width: .55rem; height: .55rem; border-radius: 50%; background: var(--color-primary); flex-shrink: 0; }
+.hero h1 { font-size: clamp(3.75rem, 7vw, 6.3rem); font-weight: 550; line-height: .98; letter-spacing: -.065em; }
+.hero h1 > span { color: var(--color-primary); }
+.hero__description { margin-top: var(--space-md); font-size: var(--text-intro); line-height: 1.55; }
+.hero__context { max-width: 29rem; margin-top: var(--space-sm); color: var(--color-text-muted); font-size: .95rem; line-height: 1.6; }
+.hero__copy .actions { margin-top: var(--space-lg); gap: .8rem 1.5rem; }
+.hero__copy .button { font-size: .85rem; }
+.hero__visual { position: relative; padding-top: 4rem; min-width: 0; }
+.hero__caption-top { display: flex; justify-content: space-between; align-items: center; max-width: 55%; padding: 0 0 .6rem; font-size: .75rem; font-weight: 600; letter-spacing: .12em; }
+.hero__caption-top > span:last-child { font-size: 1.75rem; line-height: 1; }
+.hero__photo > img { width: 100%; aspect-ratio: 1.65; object-fit: cover; object-position: 50% 55%; border-radius: var(--radius-editorial) var(--radius-sm) 0 0; }
+.hero__photo figcaption { display: flex; align-items: center; justify-content: space-between; padding: .75rem 1rem; background: var(--color-accent); font-size: .9rem; line-height: 1.45; }
+.hero__photo figcaption strong { font-weight: 600; }
+.hero__photo-arrow { font-size: 2.75rem; font-weight: 300; line-height: 1; }
+.hero__moments { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-sm); margin-top: var(--space-sm); }
+.hero__moments img { width: 100%; aspect-ratio: 1.65; object-fit: cover; border-radius: var(--radius-sm); }
+.hero__campus img { aspect-ratio: 16 / 9; }
+.hero__play img { border-bottom-right-radius: var(--radius-editorial); }
+.hero__moments figcaption { margin-top: var(--space-xs); color: var(--color-text-muted); font-size: var(--text-small); line-height: 1.4; }
+.hero__inset { display: block; position: absolute; top: 0; right: .25rem; width: 8rem; padding: .45rem; background: var(--color-surface); transform: rotate(5deg); text-decoration: none; box-shadow: var(--shadow-menu); transition: transform var(--duration-fast); }
+.hero__inset:hover, .hero__inset:focus-visible { transform: rotate(0); }
+.hero__inset img { width: 100%; aspect-ratio: 1.2; object-fit: cover; }
+.hero__inset > span { display: flex; gap: .5rem; justify-content: space-between; margin-top: .5rem; font-size: .75rem; line-height: 1.5; }
+.hero__foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-sm); border-top: 1px solid var(--color-line); padding-top: var(--space-md); font-size: .75rem; }
+.hero__foot p { display: none; color: var(--color-text-muted); }
+.hero__foot a { display: inline-flex; align-items: center; gap: var(--space-md); min-height: 2.75rem; text-decoration: none; }
+.hero__foot > span { font-size: .75rem; letter-spacing: .08em; }
+@media (min-width: 48rem) {
+  .hero { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); column-gap: 3rem; align-items: center; padding-top: 3rem; }
+  .hero h1 { font-size: clamp(3.7rem, 7vw, 6.3rem); }
+  .hero__foot { grid-column: 1 / -1; }
+  .hero__foot p { display: block; }
+  .hero__foot > span { font-size: .75rem; }
+}
+@media (min-width: 75rem) {
+  .hero { min-height: min(49rem, calc(100svh - 7.6rem)); padding-top: 2.7rem; row-gap: 2.5rem; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+  .hero__visual { padding: 4rem 1rem 0 0; }
+  .hero__inset { right: -.5rem; width: 10.5rem; }
+}
+@media (min-width: 62rem) and (max-height: 50rem) {
+  .hero { min-height: auto; padding-top: 1.75rem; gap: 1.5rem 3rem; }
+  .hero h1 { font-size: clamp(3.5rem, 5.8vw, 4.8rem); }
+  .hero__copy .eyebrow { margin-bottom: 1rem; }
+  .hero__description { margin-top: 1.2rem; }
+  .hero__context { margin-top: .75rem; }
+  .hero__copy .actions { margin-top: 1.5rem; }
+  .hero__photo > img { aspect-ratio: 1.85; }
+  .hero__photo figcaption { padding-block: .8rem; }
+  .hero__foot { padding-top: .8rem; }
+}

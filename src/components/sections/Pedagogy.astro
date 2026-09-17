@@ -1,0 +1,11 @@
+---
+import { getPageSection, type PageSection } from '../../lib/content';
+import Photo from '../common/Photo.astro';
+import '../../styles/components/editorial.css';
+const content = Astro.props.content ?? await getPageSection('pedagogia-de-la-felicidad', 'pedagogy');
+const ideas = content.ideas;
+interface Props { content?: PageSection<'pedagogy'>; }
+---
+<section class="section container editorial-split"><div class="quote-panel"><blockquote>{content.quote}</blockquote><p>{content.quoteAttribution}</p></div><div class="prose"><h2>{content.title}</h2><p>{content.introduction}</p><p>{content.communicationDescription}</p></div></section>
+<section class="section section--white"><div class="container"><p class="eyebrow">{content.valuesEyebrow}</p><h2>{content.valuesTitle}</h2><div class="value-grid">{ideas.map((item,i) => <article><span>0{i+1}</span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div></div></section>
+<section class="section container editorial-split"><Photo name={content.image} /><div class="prose"><p class="eyebrow">{content.supportEyebrow}</p><h2>{content.supportTitle}</h2><p>{content.supportDescription}</p><p>{content.familyDescription}</p><a class="text-link" href={content.contactHref}>{content.contactLabel} <span aria-hidden="true">↗</span></a></div></section>

@@ -1,0 +1,30 @@
+---
+import { getPageSection, type PageData } from '../../lib/content';
+import Photo from '../common/Photo.astro';
+import Icon from '../common/Icon.astro';
+import '../../styles/components/hero.css';
+const { page } = Astro.props;
+const content = page.hero ?? await getPageSection('inicio', 'hero');
+const titleLines = page.heroTitle.split('\n');
+const descriptionLines = page.heroDescription.split('\n');
+interface Props { page: PageData; }
+---
+<section class="hero container" aria-labelledby="hero-title">
+  <div class="hero__copy">
+    <p class="eyebrow"><span class="hero__point" aria-hidden="true"></span> {page.heroEyebrow}</p>
+    <h1 id="hero-title">{titleLines.map((line, i) => i === titleLines.length - 1 ? <span>{line}</span> : <Fragment>{line}<br /></Fragment>)}</h1>
+    <p class="hero__description">{descriptionLines.map((line, i) => <Fragment>{i > 0 && <Fragment><br class="hero__desktop-break" /> </Fragment>}{line}</Fragment>)}</p>
+    <p class="hero__context">{content.context}</p>
+    <div class="actions"><a class="button" href="/admisiones/">{content.admissionsLabel} <Icon /></a><a class="text-link" href="/oferta-educativa/">{content.educationLabel} <span aria-hidden="true">↗</span></a></div>
+  </div>
+  <div class="hero__visual">
+    <div class="hero__caption-top"><span>{content.collageLabel}</span><span aria-hidden="true">↙</span></div>
+    <figure class="hero__photo"><Photo name={page.heroImage!} priority sizes="(min-width: 1440px) 560px, (min-width: 768px) 42vw, 90vw" /><figcaption><span>{content.photoCaption}<br /><strong>{content.photoCaptionEmphasis}</strong></span><span class="hero__photo-arrow" aria-hidden="true">↗</span></figcaption></figure>
+    <div class="hero__moments">
+      <figure class="hero__campus"><Photo name={content.campusImage} sizes="(min-width: 1440px) 280px, (min-width: 768px) 21vw, 44vw" widths={[240, 400, 640, 800]} /><figcaption>{content.campusCaption}</figcaption></figure>
+      <figure class="hero__play"><Photo name={content.playImage} sizes="(min-width: 1440px) 280px, (min-width: 768px) 21vw, 44vw" widths={[240, 400, 640, 800]} /><figcaption>{content.playCaption}</figcaption></figure>
+    </div>
+    <a class="hero__inset" href="/oferta-educativa/inicial/"><Photo name={content.insetImage} sizes="(min-width: 1200px) 160px, 120px" widths={[160, 240, 400]} /><span>{content.insetLabel} <span aria-hidden="true">↗</span></span></a>
+  </div>
+  <div class="hero__foot"><p>{content.footerDescription}</p><a href="#descubre">{content.discoverLabel} <span aria-hidden="true">↓</span></a><span>{content.levelsLabel}</span></div>
+</section>

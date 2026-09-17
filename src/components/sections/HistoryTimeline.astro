@@ -1,0 +1,7 @@
+---
+import { getPageSection, type PageSection } from '../../lib/content';
+import '../../styles/components/editorial.css';
+const content = Astro.props.content ?? await getPageSection('historia', 'historyTimeline');
+interface Props { content?: PageSection<'historyTimeline'>; }
+---
+<section class="section container" aria-label="Historia del CEDHU"><ol class="timeline">{content.items.map(item => <li><span class="timeline__year">{item.year}</span><div><h2>{item.title}</h2><p>{item.text}</p></div></li>)}</ol></section>

@@ -1,0 +1,26 @@
+---
+import { getCollection } from 'astro:content';
+import type { PageData } from '../../lib/content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/common/Breadcrumb.astro';
+import PageHero from '../../components/sections/PageHero.astro';
+import InstitutionIdentity from '../../components/sections/InstitutionIdentity.astro';
+import Pedagogy from '../../components/sections/Pedagogy.astro';
+import SchoolSpaces from '../../components/sections/SchoolSpaces.astro';
+import InstitutionTeam from '../../components/sections/InstitutionTeam.astro';
+import AdmissionsCTA from '../../components/sections/AdmissionsCTA.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('paginas', ({ data }) => data.route.startsWith('/nosotros/') && data.route !== '/nosotros/');
+  return entries.map(entry => ({ params: { slug: entry.data.route.split('/')[2] }, props: { page: entry.data, id: entry.id } }));
+}
+interface Props { page: PageData; id: string; }
+const { page, id } = Astro.props;
+---
+<BaseLayout title={page.title} description={page.description}><Breadcrumb label={page.title} parent={{label:'CEDHU',href:'/nosotros/'}} /><PageHero image={page.heroImage} eyebrow={page.heroEyebrow} title={page.heroTitle} intro={page.heroDescription} theme={id === 'pedagogia-de-la-felicidad' ? 'warm' : 'green'} />
+  {id === 'identidad' && <InstitutionIdentity content={page.institutionIdentity} />}
+  {id === 'pedagogia-de-la-felicidad' && <Pedagogy content={page.pedagogy} />}
+  {id === 'espacios' && <SchoolSpaces content={page.schoolSpaces} />}
+  {id === 'equipo' && <InstitutionTeam content={page.institutionTeam} />}
+  <AdmissionsCTA />
+</BaseLayout>

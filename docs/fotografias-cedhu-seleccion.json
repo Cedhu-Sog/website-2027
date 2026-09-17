@@ -1,0 +1,86 @@
+[
+  {
+    "name": "aprendizaje-en-el-aula",
+    "key": "aulaCedhu",
+    "use": "Collage de inicio y hero de Educación y Bachillerato",
+    "original": "EDUCANDO ESTUDIANDO/IMG_8033.JPG",
+    "output": "src/assets/fotos-cedhu/aprendizaje-en-el-aula.webp",
+    "width": 1600,
+    "height": 1200,
+    "originalBytes": 2499853,
+    "bytes": 282414,
+    "originalSha256": "56e967680ebf5960759e09977ad30396b3299cb4952a00c932ec3bcea6ed83b3"
+  },
+  {
+    "name": "lectura-en-primaria",
+    "key": "lecturaCedhu",
+    "use": "Hero de Primaria",
+    "original": "EDUCANDO ESTUDIANDO/IMG_8037.JPEG",
+    "output": "src/assets/fotos-cedhu/lectura-en-primaria.webp",
+    "width": 1600,
+    "height": 1200,
+    "originalBytes": 2293007,
+    "bytes": 149194,
+    "originalSha256": "cd1cc87bc1557d13d6a07e1bd9ce9ed9c4ccfc143c46bf94ed2d62a5cfac0988"
+  },
+  {
+    "name": "instalaciones-vista-aerea",
+    "key": "instalacionesCedhu",
+    "use": "Collage de inicio; heros de Nosotros, Espacios, Historia y Contacto",
+    "original": "INSTALACIONES CEDHU/DJI_0018.JPG",
+    "output": "src/assets/fotos-cedhu/instalaciones-vista-aerea.webp",
+    "width": 1600,
+    "height": 900,
+    "originalBytes": 4329399,
+    "bytes": 311224,
+    "originalSha256": "5fdaed03cc3ce7edfd265cd5f1e9bd398d532ae9ee1cf4af3061881d7e3b615d"
+  },
+  {
+    "name": "encuentro-musical-comunidad",
+    "key": "comunidadCedhu",
+    "use": "Hero de Actualidad y Formación integral",
+    "original": "Izada 7 Agosto prim y bach/IMG_4488.jpg",
+    "output": "src/assets/fotos-cedhu/encuentro-musical-comunidad.webp",
+    "width": 1600,
+    "height": 1200,
+    "originalBytes": 2659882,
+    "bytes": 212458,
+    "originalSha256": "b5c18dc3073a660ae71d2026bcabebcc943247fe6f6dda07d1368b76ca537783"
+  },
+  {
+    "name": "reconocimiento-institucional",
+    "key": "encuentroCedhu",
+    "use": "Hero de Equipo institucional",
+    "original": "Izada 7 Agosto prim y bach/IMG_4539.JPG",
+    "output": "src/assets/fotos-cedhu/reconocimiento-institucional.webp",
+    "width": 1600,
+    "height": 1200,
+    "originalBytes": 3544371,
+    "bytes": 407404,
+    "originalSha256": "9eb191228855003a43670227927d3bbfd66776013e8febe00157f14483c15546"
+  },
+  {
+    "name": "convivencia-juego-respeto",
+    "key": "convivenciaCedhu",
+    "use": "Collage de inicio; heros de Lúdicas, Identidad y Pedagogía de la Felicidad",
+    "original": "PROYECTOS TRANSVERSALES/1 EDUCACION SALUD SEXUAL Y CIUDADANIA, ESTILOS DE VIDA SALUDABLE Y TIEMPO LIBRE/Convivencia 7/WhatsApp Image 2026-03-13 at 12.32.01 PM.jpeg",
+    "output": "src/assets/fotos-cedhu/convivencia-juego-respeto.webp",
+    "width": 1280,
+    "height": 960,
+    "originalBytes": 155947,
+    "bytes": 144246,
+    "originalSha256": "1641e8d10e8be0af8243de3c52c9300eb93d8cfdad3c2ab35739b27fb7876b0a"
+  },
+  {
+    "name": "feria-cientifica-experimentacion",
+    "key": "cienciaCedhu",
+    "use": "Hero de Investigación y Ciencia y tecnología",
+    "original": "PROYECTOS TRANSVERSALES/1 EDUCACION SALUD SEXUAL Y CIUDADANIA, ESTILOS DE VIDA SALUDABLE Y TIEMPO LIBRE/Feria Científica/WhatsApp Image 2026-06-25 at 9.51.32 AM (4).jpeg",
+    "output": "src/assets/fotos-cedhu/feria-cientifica-experimentacion.webp",
+    "width": 1600,
+    "height": 1200,
+    "originalBytes": 299026,
+    "bytes": 299466,
+    "originalSha256": "e7b85e26f9c9f60e727211cb3924b6fa2500bd9ea9f24e0b2c4a795bd7794560"
+  }
+]

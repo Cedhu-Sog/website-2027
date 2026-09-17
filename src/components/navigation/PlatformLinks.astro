@@ -1,0 +1,20 @@
+---
+import { Image } from 'astro:assets';
+import unoiLogo from '../../assets/images/unoi.png';
+import q10Logo from '../../assets/images/q10.png';
+import { site } from '../../data/site';
+import '../../styles/components/platform-links.css';
+interface Props { showNames?: boolean; }
+const { showNames = false } = Astro.props;
+const platforms = [
+  { name: 'UNOi', href: site.unoi, logo: unoiLogo },
+  { name: 'Q10', href: site.q10, logo: q10Logo },
+];
+---
+<div class="platform-links">
+  {platforms.map(platform => <a href={platform.href} target="_blank" rel="noopener noreferrer">
+    <Image src={platform.logo} alt={platform.name} width={120} loading="eager" />
+    {showNames && <span aria-hidden="true">{platform.name}</span>}
+    <span class="sr-only"> (abre en otra pestaña)</span>
+  </a>)}
+</div>

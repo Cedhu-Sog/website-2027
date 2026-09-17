@@ -1,0 +1,36 @@
+---
+import { Image } from 'astro:assets';
+import { media } from '../../data/media';
+import { navigation, site } from '../../data/site';
+import Icon from '../common/Icon.astro';
+import MenuLinks from './MenuLinks.astro';
+import PlatformLinks from './PlatformLinks.astro';
+import '../../styles/components/header.css';
+const current = Astro.url.pathname;
+---
+<header class="site-header">
+  <div class="site-header__utility container">
+    <span>{site.fullName} <span aria-hidden="true">·</span> {site.city}</span>
+    <div class="site-header__community"><span>Comunidad CEDHU</span><PlatformLinks /></div>
+  </div>
+  <div class="site-header__main container">
+    <a class="site-header__brand" href="/" aria-label="CEDHU, ir al inicio"><Image {...media.logo} width={135} height={61} loading="eager" /></a>
+    <nav class="desktop-nav" aria-label="Navegación principal">
+      <ul>{navigation.map(item => <li>
+        {item.children ? <details class="nav-dropdown" data-nav-dropdown>
+          <summary class:list={[current.startsWith(item.href) && 'is-active']}>{item.label}<Icon name="chevron" /></summary>
+          <ul class="nav-dropdown__panel">{item.children.map(child => <li><a href={child.href} aria-current={current === child.href ? 'page' : undefined}>{child.label}</a></li>)}</ul>
+        </details> : <a href={item.href} aria-current={current.startsWith(item.href) ? 'page' : undefined}>{item.label}</a>}
+      </li>)}</ul>
+    </nav>
+    <div class="site-header__platforms"><PlatformLinks /></div>
+    <a class="button header-admissions" href="/admisiones/">Admisiones <Icon name="arrow" /></a>
+    <details class="mobile-menu" id="mobile-menu">
+      <summary aria-label="Abrir menú de navegación"><Icon name="menu" /><span>Menú</span></summary>
+      <nav class="mobile-menu__panel" aria-label="Menú móvil">
+        <MenuLinks />
+      </nav>
+    </details>
+  </div>
+</header>
+<script>import '../../scripts/interactions/navigation';</script>

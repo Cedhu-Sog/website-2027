@@ -1,0 +1,46 @@
+---
+import Header from '../components/navigation/Header.astro';
+import BottomNav from '../components/navigation/BottomNav.astro';
+import Footer from '../components/common/Footer.astro';
+import { site } from '../data/site';
+import '../styles/tokens.css';
+import '../styles/reset.css';
+import '../styles/global.css';
+import '../styles/components/ui.css';
+interface Props { title: string; description: string; noindex?: boolean; type?: 'website' | 'article'; }
+const { title, description, noindex = false, type = 'website' } = Astro.props;
+const canonical = new URL(Astro.url.pathname, site.url);
+const fullTitle = `${title} | CEDHU · Sogamoso`;
+const schema = { '@context': 'https://schema.org', '@type': 'School', name: site.fullName + ' — ' + site.name, url: site.url, telephone: site.phones[0].href.replace('tel:+57608', '+57-608-'), email: site.email, address: { '@type': 'PostalAddress', streetAddress: site.address.replace('–', '-'), addressLocality: site.city.split(', ')[0], addressRegion: site.city.split(', ')[1], addressCountry: 'CO' }, sameAs: site.socials.map(link => link.href) };
+---
+<!doctype html>
+<html lang="es-CO">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#146b49" />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <meta property="og:type" content={type} />
+    <meta property="og:locale" content="es_CO" />
+    <meta property="og:site_name" content="CEDHU" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(schema).replace(/</g, '\u003c')} />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+    <Header />
+    <main id="contenido" tabindex="-1"><slot /></main>
+    <Footer />
+    <BottomNav />
+  </body>
+</html>

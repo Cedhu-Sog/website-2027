@@ -1,0 +1,19 @@
+.page-hero { padding-block: var(--space-page-hero); }
+@media (width < 48rem) { .page-hero { padding-top: var(--space-sm); } }
+.page-hero__inner { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-lg); }
+.page-hero h1 { max-width: 18ch; }
+.page-hero__intro { max-width: var(--measure-page-intro); margin-top: var(--space-md); font-size: var(--text-page-intro); line-height: var(--leading-page-intro); color: var(--color-text-muted); }
+.page-hero .actions { margin-top: var(--space-lg); }
+.page-hero--image h1 { max-width: 16ch; }
+.page-hero__image { min-width: 0; }
+.page-hero__image img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius-editorial) var(--radius-sm) var(--radius-sm) var(--radius-sm); }
+.page-hero__image--instalacionesCedhu img { aspect-ratio: 16 / 9; }
+.page-hero__image figcaption { margin-top: var(--space-xs); color: var(--color-text-muted); font-size: var(--text-small); }
+.page-hero--warm { background: var(--color-warm); }
+.page-hero--dark { background: var(--color-primary-dark); color: var(--color-on-dark); }
+.page-hero--dark .eyebrow { color: var(--color-accent); }
+.page-hero--dark .page-hero__intro { color: color-mix(in srgb, var(--color-on-dark) 80%, transparent); }
+.page-hero--dark .page-hero__image figcaption { color: var(--color-on-dark); }
+.page-hero--dark .button { background: var(--color-accent); color: var(--color-text); }
+.page-hero--dark :focus-visible { outline-color: var(--color-accent); }
+@media (min-width: 48rem) { .page-hero--image .page-hero__inner { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); align-items: center; gap: var(--space-xl); } }

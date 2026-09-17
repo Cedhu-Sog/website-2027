@@ -1,11 +1,17 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import { getPage } from '../lib/content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/sections/Hero.astro';
+import QuickAccess from '../components/sections/QuickAccess.astro';
+import IdentityIntro from '../components/sections/IdentityIntro.astro';
+import EducationalLevels from '../components/sections/EducationalLevels.astro';
+import Technology from '../components/sections/Technology.astro';
+import HumanFormation from '../components/sections/HumanFormation.astro';
+import NewsSection from '../components/sections/NewsSection.astro';
+import FAQ from '../components/sections/FAQ.astro';
+import AdmissionsCTA from '../components/sections/AdmissionsCTA.astro';
+const page = await getPage('inicio');
 ---
-
-<Layout>
-	<Welcome />
-</Layout>
+<BaseLayout title={page.title} description={page.description}>
+  <Hero page={page} /><QuickAccess /><IdentityIntro /><EducationalLevels /><Technology /><HumanFormation /><NewsSection /><FAQ compact /><AdmissionsCTA />
+</BaseLayout>

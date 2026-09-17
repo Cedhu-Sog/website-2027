@@ -1,0 +1,13 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { media, type MediaKey } from '../../data/media';
+type Props = ({ name: MediaKey; image?: never; alt?: never } | { name?: never; image: ImageMetadata; alt: string }) & {
+  class?: string; priority?: boolean; sizes?: string; widths?: number[];
+};
+const { class: className, priority = false, sizes = '(min-width: 900px) 50vw, 100vw' } = Astro.props;
+const item = Astro.props.name ? media[Astro.props.name] : { src: Astro.props.image!, alt: Astro.props.alt! };
+const maxWidth = Math.min(item.src.width, 1600);
+const widths = [...new Set((Astro.props.widths ?? [240, 400, 640, 800, 1200, maxWidth]).map(w => Math.min(w, maxWidth)))].sort((a,b) => a-b);
+---
+<Image src={item.src} alt={item.alt} class={className} width={widths[widths.length - 1]} widths={widths} sizes={sizes} format="webp" quality={82} loading={priority ? 'eager' : 'lazy'} fetchpriority={priority ? 'high' : 'auto'} decoding="async" />

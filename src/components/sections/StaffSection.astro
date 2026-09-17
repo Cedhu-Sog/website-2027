@@ -1,0 +1,13 @@
+---
+import type { StaffSectionData } from '../../lib/personal';
+import StaffCard from '../common/StaffCard.astro';
+interface Props { section: StaffSectionData; }
+const { section } = Astro.props;
+---
+<section class="staff-section" id={`personal-${section.id}`} aria-labelledby={`personal-${section.id}-title`}>
+  <header class="staff-section__header"><h2 id={`personal-${section.id}-title`}>{section.title}</h2></header>
+  {section.groups.length ? section.groups.map(group => <section class="staff-group" aria-labelledby={`personal-${group.id}-title`}>
+    <h3 class="staff-group__title" id={`personal-${group.id}-title`}>{group.title}</h3>
+    <div class="staff-grid">{group.members.map(member => <StaffCard member={member} heading="h4" />)}</div>
+  </section>) : <div class="staff-grid">{section.members.map(member => <StaffCard member={member} />)}</div>}
+</section>

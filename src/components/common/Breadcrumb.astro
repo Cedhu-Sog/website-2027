@@ -1,0 +1,9 @@
+---
+interface Props { label: string; parent?: {label: string; href: string}; }
+const {label, parent} = Astro.props;
+---
+<nav class="breadcrumb container" aria-label="Ruta de navegación">
+  <a href="/">Inicio</a><span aria-hidden="true">/</span>
+  {parent && <><a href={parent.href}>{parent.label}</a><span aria-hidden="true">/</span></>}
+  <span aria-current="page">{label}</span>
+</nav>

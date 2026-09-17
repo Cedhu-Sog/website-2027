@@ -1,0 +1,37 @@
+---
+import type { ResearchProject } from '../../data/research';
+import Photo from './Photo.astro';
+import '../../styles/components/research.css';
+interface Props { project: ResearchProject; }
+const { project } = Astro.props;
+const dateLabel = project.date && new Intl.DateTimeFormat('es-CO', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${project.date}T00:00:00Z`));
+const projectId = `proyecto-${project.slug}`;
+---
+<article class:list={['research-project', project.featured && 'research-project--featured']} id={projectId} aria-labelledby={`${projectId}-title`}>
+  <div class:list={['research-project__lead', project.coverImage && 'research-project__lead--image']}>
+    {project.coverImage && <figure class="research-project__cover">
+      <Photo image={project.coverImage.src} alt={project.coverImage.alt} sizes="(min-width: 1440px) 480px, (min-width: 768px) 36vw, 90vw" />
+      {project.coverImage.caption && <figcaption>{project.coverImage.caption}</figcaption>}
+    </figure>}
+    <div class="research-project__copy">
+      {project.featured && <p class="eyebrow">Proyecto destacado</p>}
+      <h3 id={`${projectId}-title`}><a href={`#${projectId}`}>{project.title}</a></h3>
+      <p class="research-project__summary">{project.summary}</p>
+      {(project.area || project.date || project.authors?.length || project.details?.length) && <dl class="research-project__facts">
+        {project.area && <div><dt>Área</dt><dd>{project.area}</dd></div>}
+        {project.date && <div><dt>Publicación</dt><dd><time datetime={project.date}>{dateLabel}</time></dd></div>}
+        {!!project.authors?.length && <div><dt>Autores y responsables</dt><dd>{project.authors.join(', ')}</dd></div>}
+        {project.details?.map(detail => <div><dt>{detail.label}</dt><dd>{detail.value}</dd></div>)}
+      </dl>}
+      {!!project.tags?.length && <ul class="research-project__tags" aria-label="Temas del proyecto">{project.tags.map(tag => <li>{tag}</li>)}</ul>}
+    </div>
+  </div>
+  {!!project.description?.length && <div class="prose research-project__description">{project.description.map(paragraph => <p>{paragraph}</p>)}</div>}
+  {!!project.gallery?.length && <div class="research-project__gallery" role="group" aria-label={`Fotografías de ${project.title}`}>
+    {project.gallery.map(photo => <figure><Photo image={photo.src} alt={photo.alt} sizes="(min-width: 1440px) 400px, (min-width: 768px) 28vw, 90vw" />{photo.caption && <figcaption>{photo.caption}</figcaption>}</figure>)}
+  </div>}
+  {!!project.pdfs?.length && <section class="research-project__documents" aria-labelledby={`${projectId}-documents`}>
+    <h4 id={`${projectId}-documents`}>Documentos del proyecto</h4>
+    <ul>{project.pdfs.map(pdf => <li><span>{pdf.title} <span class="research-project__format">PDF</span></span><div class="research-project__document-actions"><a class="text-link" href={pdf.href} type="application/pdf">Ver documento<span class="sr-only">: {pdf.title}</span><span aria-hidden="true">↗</span></a><a class="text-link" href={pdf.href} download>Descargar PDF<span class="sr-only">: {pdf.title}</span><span aria-hidden="true">↓</span></a></div></li>)}</ul>
+  </section>}
+</article>

@@ -1,0 +1,16 @@
+---
+import Photo from '../common/Photo.astro';
+import type { MediaKey } from '../../data/media';
+import '../../styles/components/page-hero.css';
+interface Props { eyebrow: string; title: string; intro?: string; image?: MediaKey; imageCaption?: string; theme?: 'warm' | 'green' | 'dark'; }
+const { eyebrow, title, intro, image, imageCaption, theme = 'green' } = Astro.props;
+---
+<section class:list={['page-hero', `page-hero--${theme}`, image && 'page-hero--image']}>
+  <div class="container page-hero__inner">
+    <div><p class="eyebrow">{eyebrow}</p><h1>{title}</h1>{intro && <p class="page-hero__intro">{intro}</p>}<slot /></div>
+    {image && <figure class:list={['page-hero__image', `page-hero__image--${image}`]}>
+      <Photo name={image} priority sizes="(min-width: 1440px) 520px, (min-width: 768px) 38vw, 90vw" />
+      {imageCaption && <figcaption>{imageCaption}</figcaption>}
+    </figure>}
+  </div>
+</section>

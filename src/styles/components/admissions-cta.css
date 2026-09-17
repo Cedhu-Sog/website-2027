@@ -1,0 +1,6 @@
+.admissions-cta { padding-block: var(--space-xl); background: var(--color-accent); }
+.admissions-cta__inner { display: grid; gap: var(--space-lg); align-items: center; }
+.admissions-cta .eyebrow { color: var(--color-primary-dark); }
+.admissions-cta h2 { max-width: 23ch; }
+.admissions-cta__inner > div:last-child p { max-width: 29rem; margin-bottom: var(--space-md); }
+@media (min-width: 48rem) { .admissions-cta__inner { grid-template-columns: 1.5fr 1fr; gap: var(--space-xl); } }

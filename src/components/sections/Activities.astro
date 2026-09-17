@@ -1,0 +1,11 @@
+---
+import { getPageSection, type PageSection } from '../../lib/content';
+import '../../styles/components/resources.css';
+import '../../styles/components/editorial.css';
+const content = Astro.props.content ?? await getPageSection('ludicas', 'activities');
+const groups = content.groups;
+const forms = content.forms;
+interface Props { content?: PageSection<'activities'>; }
+---
+<section class="section container"><p class="eyebrow">{content.eyebrow}</p><h2>{content.title}</h2><div class="activity-groups">{groups.map(group => <article><h3>{group.title}</h3><ul>{group.items.map(item => <li>{item}</li>)}</ul></article>)}</div></section>
+<section class="section section--tint"><div class="container editorial-split"><div><p class="eyebrow">{content.registrationEyebrow}</p><h2>{content.registrationTitle}</h2><p>{content.registrationDescription}</p></div><div class="related-links">{forms.map(form => <a href={`https://docs.google.com/forms/d/e/${form.id}/viewform?usp=header`} target="_blank" rel="noopener noreferrer"><span>{form.label}<span class="sr-only"> (formulario externo de 2026, abre en otra pestaña)</span></span><span aria-hidden="true">↗</span></a>)}</div></div></section>

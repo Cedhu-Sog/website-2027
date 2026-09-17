@@ -1,0 +1,15 @@
+---
+import { getPage } from '../../lib/content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/common/Breadcrumb.astro';
+import PageHero from '../../components/sections/PageHero.astro';
+import ResearchProjects from '../../components/sections/ResearchProjects.astro';
+const page = await getPage('investigacion');
+---
+<BaseLayout title={page.title} description={page.description}>
+  <Breadcrumb label="Investigación" parent={{ label: 'Educación', href: '/oferta-educativa/' }} />
+  <PageHero eyebrow={page.heroEyebrow} title={page.heroTitle} intro={page.heroDescription} image={page.heroImage} imageCaption={page.heroImageCaption} theme="warm">
+    <div class="actions"><a class="text-link" href="#proyectos">{page.primaryActionLabel} <span aria-hidden="true">↓</span></a></div>
+  </PageHero>
+  <ResearchProjects />
+</BaseLayout>

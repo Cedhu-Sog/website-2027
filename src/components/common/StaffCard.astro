@@ -1,0 +1,53 @@
+---
+import type { StaffMember } from '../../lib/personal';
+import Photo from './Photo.astro';
+import Icon from './Icon.astro';
+
+interface Props { member: StaffMember; heading?: 'h3' | 'h4'; }
+const { member: { id, data: person }, heading: Heading = 'h3' } = Astro.props;
+const hasDetails = Boolean(person.description || person.officeHours || person.assignments?.length || person.groupLeadership || person.research || person.responsibilities?.length);
+const detailId = `personal-info-${id}`;
+---
+<article class="staff-card" data-staff-card data-person={person.personId} aria-labelledby={`personal-name-${id}`}>
+  <div class:list={['staff-card__portrait', person.photoUnavailable && 'staff-card__portrait--placeholder']}>
+    <Photo
+      image={person.photo}
+      alt={person.photoUnavailable ? `Emblema del CEDHU. Fotografía de ${person.name} pendiente.` : `Retrato de ${person.name}, ${person.role} del CEDHU.`}
+      widths={[280, 400, 640]}
+      sizes="(min-width: 1440px) 231px, (min-width: 1300px) 18vw, (min-width: 1036px) 23vw, (min-width: 775px) 30vw, (min-width: 600px) 45vw, 91vw"
+    />
+  </div>
+  <div class="staff-card__identity">
+    <Heading id={`personal-name-${id}`}>{person.name}</Heading>
+    <p class="staff-card__role">{person.role}</p>
+  </div>
+  {hasDetails && <>
+    <button class="text-link staff-card__profile staff-card__trigger" type="button" data-staff-open hidden aria-haspopup="dialog" aria-controls={detailId} aria-expanded="false">
+      Ver perfil<span class="sr-only"> de {person.name}</span><Icon name="arrow" />
+    </button>
+    <details class="staff-card__fallback" data-staff-fallback>
+      <summary class="text-link staff-card__profile">Ver perfil<span class="sr-only"> de {person.name}</span><Icon name="arrow" /></summary>
+      <div class="staff-details" data-staff-details>
+        {person.description && <p>{person.description}</p>}
+        {person.officeHours && <div class="staff-details__hours"><h3>Horario de atención</h3><p>{person.officeHours}</p></div>}
+        {person.assignments?.length && <div><h3>Asignaturas y grados</h3><dl class="staff-details__assignments">
+          {person.assignments.map(assignment => <div><dt>{assignment.subject}</dt><dd>{assignment.grades}</dd></div>)}
+        </dl></div>}
+        {(person.groupLeadership || person.research) && <dl class="staff-details__responsibilities">
+          {person.groupLeadership && <div><dt>Dirección de grupo</dt><dd>{person.groupLeadership}</dd></div>}
+          {person.research && <div><dt>Investigación</dt><dd>{person.research}</dd></div>}
+        </dl>}
+        {person.responsibilities?.length && <div><h3>Otras responsabilidades</h3><ul>{person.responsibilities.map(responsibility => <li>{responsibility}</li>)}</ul></div>}
+      </div>
+    </details>
+    <dialog class="staff-dialog" id={detailId} aria-labelledby={`${detailId}-title`}>
+      <div class="staff-dialog__surface">
+        <header class="staff-dialog__header">
+          <div><h2 id={`${detailId}-title`} tabindex="-1" data-staff-title>{person.name}</h2><p>{person.role}</p></div>
+          <button class="staff-dialog__close" type="button" data-staff-close aria-label="Cerrar información"><Icon name="close" /></button>
+        </header>
+        <div data-staff-dialog-content></div>
+      </div>
+    </dialog>
+  </>}
+</article>

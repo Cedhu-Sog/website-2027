@@ -1,0 +1,21 @@
+---
+import Icon from '../common/Icon.astro';
+import { navigation } from '../../data/site';
+import MobileMoreSheet from './MobileMoreSheet.astro';
+import '../../styles/components/bottom-nav.css';
+const items = [
+  {label: 'Inicio', href: '/', icon: 'home' as const},
+  {label: 'Educación', href: '/oferta-educativa/', icon: 'book' as const},
+  {label: 'Admisiones', href: '/admisiones/', icon: 'arrow' as const},
+  {label: 'Contacto', href: '/contacto/', icon: 'phone' as const},
+];
+const current = Astro.url.pathname;
+const educationRoutes = navigation.find(item => item.href === '/oferta-educativa/')?.children ?? [];
+const isCurrentSection = (href: string) => href !== '/' && (current.startsWith(href) || (href === '/oferta-educativa/' && educationRoutes.some(item => item.href === current)));
+---
+<nav class="mobile-dock" aria-label="Accesos principales en móvil">
+  {items.map(item => <a href={item.href} aria-current={current === item.href ? 'page' : isCurrentSection(item.href) ? 'true' : undefined}><Icon name={item.icon}/><span>{item.label}</span></a>)}
+  <a class="mobile-dock__more" data-more-fallback href="#mobile-more-fallback"><Icon name="menu" /><span>Más</span></a>
+  <button class="mobile-dock__more" type="button" data-more-trigger aria-haspopup="dialog" aria-controls="mobile-more-sheet" aria-expanded="false" hidden><Icon name="menu" /><span>Más</span></button>
+</nav>
+<MobileMoreSheet />

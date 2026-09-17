@@ -1,0 +1,16 @@
+---
+import '../../styles/components/accessibility.css';
+---
+<details class="accessibility">
+  <summary>Preferencias de accesibilidad <span aria-hidden="true">＋</span></summary>
+  <div class="accessibility__options">
+    <label><input type="checkbox" data-preference="textSize" /> Texto más grande</label>
+    <label><input type="checkbox" data-preference="contrast" /> Mayor contraste</label>
+    <label><input type="checkbox" data-preference="links" /> Subrayar enlaces</label>
+    <label><input type="checkbox" data-preference="motion" /> Reducir movimiento</label>
+    <button type="button" data-reset-preferences>Restablecer</button>
+    <p>Estos ajustes se guardan únicamente en este dispositivo.</p>
+    <span class="sr-only" role="status" data-preference-status></span>
+  </div>
+</details>
+<script>import '../../scripts/interactions/accessibility';</script>

@@ -1,0 +1,11 @@
+---
+import { getPageSection, type PageSection } from '../../lib/content';
+import { getNews } from '../../lib/content';
+import NewsCard from '../common/NewsCard.astro';
+import SectionHeader from '../common/SectionHeader.astro';
+import '../../styles/components/news.css';
+const content = Astro.props.content ?? await getPageSection('inicio', 'newsSection');
+const news = await getNews();
+interface Props { content?: PageSection<'newsSection'>; }
+---
+<section class="news-section section section--white"><div class="container"><SectionHeader eyebrow={content.eyebrow} title={content.title} href={content.linkHref} linkLabel={content.linkLabel} /><div class="news-grid">{news.filter(item => item.featured).sort((a, b) => a.featuredOrder - b.featuredOrder).slice(0, 3).map(item => <NewsCard item={item} />)}</div></div></section>

@@ -1,0 +1,14 @@
+.site-footer { padding-block: var(--space-xl) var(--space-md); background: var(--color-tint); }
+.site-footer__main { display: grid; gap: var(--space-lg); padding-bottom: var(--space-lg); }
+.site-footer__wordmark { font-size: 3.5rem; line-height: 1.1; font-weight: 650; letter-spacing: -.08em; text-decoration: none; }
+.site-footer__wordmark span { color: var(--color-primary); }
+.site-footer__identity > p { font-size: .85rem; }
+.site-footer__identity .site-footer__motto { margin-block: .8rem 1.5rem; font-family: var(--font-editorial); font-size: 1.15rem; }
+.site-footer nav, .site-footer__contact { display: flex; flex-direction: column; align-items: flex-start; gap: .3rem; }
+.site-footer h2 { font-size: .85rem; font-weight: 650; letter-spacing: 0; margin-bottom: .65rem; }
+.site-footer nav a, .site-footer__contact > a { display: inline-flex; align-items: center; min-height: 2.3rem; font-size: .85rem; text-decoration: none; }
+.site-footer a:hover { text-decoration: underline; }
+.site-footer__socials { display: flex; flex-wrap: wrap; gap: 1rem; padding-top: var(--space-md); font-size: .8rem; }
+.site-footer__legal { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .75rem; padding-top: var(--space-md); border-top: 1px solid var(--color-line); color: var(--color-text-muted); font-size: .75rem; }
+@media (min-width: 38rem) { .site-footer__main { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 68rem) { .site-footer__main { grid-template-columns: 1.35fr 1fr 1fr 1.1fr; } }

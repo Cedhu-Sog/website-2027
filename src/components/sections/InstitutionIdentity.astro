@@ -1,0 +1,11 @@
+---
+import { getPageSection, type PageSection } from '../../lib/content';
+import Photo from '../common/Photo.astro';
+import '../../styles/components/editorial.css';
+const content = Astro.props.content ?? await getPageSection('identidad', 'institutionIdentity');
+interface Props { content?: PageSection<'institutionIdentity'>; }
+---
+<section class="section container"><p class="eyebrow">{content.principlesEyebrow}</p><h2>{content.principlesTitle}</h2><div class="value-grid">{content.principles.map((item,i) => <article><span>0{i+1}</span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div></section>
+<section class="section section--tint"><div class="container"><p class="eyebrow">{content.valuesEyebrow}</p><h2>{content.valuesTitle}</h2><div class="value-grid value-grid--compact">{content.values.map((item,i) => <article><span>0{i+1}</span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div></div></section>
+<section class="section container editorial-split"><div><p class="eyebrow">{content.mottoEyebrow}</p><h2>{content.mottoStart}<br />{content.mottoEnd}</h2></div><div class="prose"><p>{content.mottoDescription}</p><h3>{content.communicationTitle}</h3><p>{content.communicationDescription}</p><p>{content.integrityDescription}</p></div></section>
+<section class="section section--white"><div class="container"><p class="eyebrow">{content.symbolsEyebrow}</p><div class="symbol-grid"><figure><Photo name={content.image} /><figcaption><h3>{content.flagTitle}</h3><p>{content.flagDescription}</p></figcaption></figure><div class="prose"><h2>{content.emblemTitle}</h2><p>{content.emblemDescription}</p><p>{content.uniformDescription}</p><a class="text-link" href={content.documentsLinkHref}>{content.documentsLinkLabel} <span aria-hidden="true">↗</span></a></div></div></div></section>

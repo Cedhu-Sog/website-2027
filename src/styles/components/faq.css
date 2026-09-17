@@ -1,0 +1,9 @@
+.faq { display: grid; gap: var(--space-lg); }
+.faq > div:first-child > p:not(.eyebrow) { margin-block: var(--space-md); color: var(--color-text-muted); max-width: 24rem; }
+.faq__items { border-top: 1px solid var(--color-line); }
+.faq__items details { border-bottom: 1px solid var(--color-line); }
+.faq__items summary { display: flex; justify-content: space-between; gap: var(--space-md); align-items: center; min-height: 5rem; padding-block: 1.25rem; list-style: none; font-size: 1rem; line-height: 1.45; }
+.faq__items summary > span { flex-shrink: 0; color: var(--color-primary); font-size: 1.35rem; transition: transform var(--duration-fast); }
+.faq__items details[open] summary > span { transform: rotate(45deg); }
+.faq__items details > div { padding: 0 2rem 1.5rem 0; color: var(--color-text-muted); font-size: .95rem; }
+@media (min-width: 48rem) { .faq { grid-template-columns: 1fr 1.6fr; gap: var(--space-xl); } }

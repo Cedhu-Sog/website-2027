@@ -1,5 +1,3 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-
-// https://astro.build/config
-export default defineConfig({});
+export default defineConfig({ site: 'https://cedhu.edu.co', trailingSlash: 'always', output: 'static', devToolbar: { enabled: false } });

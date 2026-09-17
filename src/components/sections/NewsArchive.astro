@@ -1,0 +1,9 @@
+---
+import { getNews } from '../../lib/content';
+import NewsCard from '../common/NewsCard.astro';
+import '../../styles/components/news.css';
+const news = await getNews();
+const categories = ['Todas', ...new Set(news.map(item => item.category))];
+---
+<section class="section container" aria-label="Publicaciones del CEDHU"><div class="news-filters" role="group" aria-label="Filtrar publicaciones por tema" data-news-filters hidden>{categories.map((category, i) => <button type="button" data-category={category} aria-pressed={i === 0}>{category}</button>)}</div><p class="sr-only" role="status" data-news-status></p><div class="news-grid news-grid--archive">{news.map(item => <NewsCard item={item} />)}</div></section>
+<script>import '../../scripts/interactions/news-filter';</script>

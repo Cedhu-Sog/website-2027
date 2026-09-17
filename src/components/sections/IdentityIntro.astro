@@ -1,0 +1,11 @@
+---
+import { getPageSection, type PageSection } from '../../lib/content';
+import '../../styles/components/identity-intro.css';
+const content = Astro.props.content ?? await getPageSection('inicio', 'identityIntro');
+interface Props { content?: PageSection<'identityIntro'>; }
+---
+<section class="identity-intro section container" id="descubre" aria-labelledby="identity-title">
+  <p class="eyebrow">{content.eyebrow}</p>
+  <div class="identity-intro__body"><h2 id="identity-title">{content.titleStart}<br />{content.titleEnd} <em>{content.titleEmphasis}</em></h2><div class="identity-intro__copy"><p>{content.introduction}</p><p>{content.familyDescription}</p><a class="text-link" href={content.linkHref}>{content.linkLabel} <span aria-hidden="true">↗</span></a></div></div>
+  <div class="identity-intro__pillars"><span><b>01</b> {content.humanPillar}</span><span><b>02</b> {content.knowledgePillar}</span><span><b>03</b> {content.communityPillar}</span></div>
+</section>

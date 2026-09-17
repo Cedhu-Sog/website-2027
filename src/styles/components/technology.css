@@ -1,0 +1,14 @@
+.technology__heading { display: grid; gap: var(--space-md); margin-bottom: var(--space-lg); }
+.technology h2 em { font-family: var(--font-editorial); font-weight: 400; color: var(--color-accent); }
+.technology__heading > p { max-width: 26rem; color: color-mix(in srgb, var(--color-on-dark) 78%, transparent); }
+.technology__body { display: grid; gap: var(--space-lg); align-items: center; }
+.technology figure img { width: 100%; aspect-ratio: 1.6; object-fit: cover; }
+.technology figcaption { display: flex; gap: 1rem; padding-top: .8rem; font-size: .75rem; color: color-mix(in srgb, var(--color-on-dark) 70%, transparent); }
+.technology__areas > a:not(.text-link) { display: flex; align-items: center; gap: var(--space-md); min-height: 7rem; border-bottom: 1px solid color-mix(in srgb, var(--color-on-dark) 22%, transparent); text-decoration: none; }
+.technology__number { color: var(--color-accent); font-size: .75rem; }
+.technology__areas strong { display: block; font-size: clamp(1.1rem, 1.8vw, 1.45rem); font-weight: 500; line-height: 1.35; }
+.technology__areas a > span > span { display: block; margin-top: .4rem; font-size: .8rem; color: color-mix(in srgb, var(--color-on-dark) 70%, transparent); }
+.technology__areas a > span:last-child { margin-left: auto; }
+.technology__areas > a:hover strong { color: var(--color-accent); }
+.technology__areas .text-link { margin-top: var(--space-md); }
+@media (min-width: 48rem) { .technology__heading { grid-template-columns: 1.3fr 1fr; align-items: end; gap: var(--space-xl); } .technology__body { grid-template-columns: 1.3fr 1fr; } }

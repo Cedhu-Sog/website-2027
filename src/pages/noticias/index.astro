@@ -1,0 +1,9 @@
+---
+import { getPage } from '../../lib/content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/common/Breadcrumb.astro';
+import PageHero from '../../components/sections/PageHero.astro';
+import NewsArchive from '../../components/sections/NewsArchive.astro';
+const page = await getPage('noticias');
+---
+<BaseLayout title={page.title} description={page.description}><Breadcrumb label="Actualidad" /><PageHero image={page.heroImage} eyebrow={page.heroEyebrow} title={page.heroTitle} intro={page.heroDescription} /><NewsArchive /></BaseLayout>

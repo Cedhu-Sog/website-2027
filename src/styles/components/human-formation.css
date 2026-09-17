@@ -1,0 +1,9 @@
+.human-formation { display: grid; gap: var(--space-lg); align-items: center; }
+.human-formation__photo { position: relative; padding-bottom: 1rem; }
+.human-formation__photo img { width: 100%; aspect-ratio: 1.18; object-fit: cover; border-radius: 0 5rem 0 0; }
+.human-formation__photo > span { position: absolute; bottom: 0; left: 1.25rem; padding: .7rem 1.1rem; background: var(--color-accent); font-size: .75rem; font-weight: 600; letter-spacing: .14em; }
+.human-formation__copy h2 { margin-bottom: var(--space-md); }
+.human-formation__copy h2 em { font-family: var(--font-editorial); color: var(--color-primary); font-weight: 400; }
+.human-formation__copy p:not(.eyebrow) { color: var(--color-text-muted); margin-top: var(--space-sm); }
+.human-formation__copy .text-link { margin-top: var(--space-md); }
+@media (min-width: 48rem) { .human-formation { grid-template-columns: 1fr 1.05fr; gap: var(--space-xl); } }

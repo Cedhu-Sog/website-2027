@@ -1,0 +1,19 @@
+---
+import { getEducationPages, getPage, getPageSection, type EducationPage } from '../../lib/content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/common/Breadcrumb.astro';
+import PageHero from '../../components/sections/PageHero.astro';
+import EducationDetail from '../../components/sections/EducationDetail.astro';
+import AdmissionsCTA from '../../components/sections/AdmissionsCTA.astro';
+
+export async function getStaticPaths() {
+  return (await getEducationPages()).map(page => ({ params: { slug: page.route.split('/')[2] }, props: { page } }));
+}
+interface Props { page: EducationPage; }
+const { page } = Astro.props;
+const editorial = await getPage(page.slug);
+const content = await getPageSection('oferta-educativa', 'educationInterface');
+// Color treatment belongs to the existing visual template, not the editorial schema.
+const theme = ['inicial', 'ingles', 'formacion-integral'].includes(page.slug) ? 'warm' : ['ciencia-tecnologia', 'robotica'].includes(page.slug) ? 'dark' : 'green';
+---
+<BaseLayout title={editorial.title} description={editorial.description}><Breadcrumb label={editorial.title} parent={{label:'Educación',href:'/oferta-educativa/'}} /><PageHero title={editorial.heroTitle} intro={editorial.heroDescription} image={editorial.heroImage} eyebrow={editorial.title + ' · ' + editorial.heroEyebrow} theme={theme}><div class="actions"><a class="button" href="/admisiones/">{content.admissionsLabel} <span aria-hidden="true">↗</span></a></div></PageHero><EducationDetail page={page} /><AdmissionsCTA /></BaseLayout>

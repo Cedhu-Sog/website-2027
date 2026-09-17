@@ -1,0 +1,8 @@
+---
+import { getPageSection, type PageSection } from '../../lib/content';
+import Icon from '../common/Icon.astro';
+import '../../styles/components/admissions-cta.css';
+const content = Astro.props.content ?? await getPageSection('admisiones', 'admissionsCta');
+interface Props { content?: PageSection<'admissionsCta'>; }
+---
+<section class="admissions-cta"><div class="container admissions-cta__inner"><div><p class="eyebrow">{content.eyebrow}</p><h2>{content.titleStart}<br />{content.titleEnd}</h2></div><div><p>{content.description}</p><a class="button" href={content.linkHref}>{content.linkLabel} <Icon /></a></div></div></section>

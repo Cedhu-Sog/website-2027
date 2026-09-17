@@ -1,0 +1,7 @@
+.accessibility { border-top: 1px solid var(--color-line); }
+.accessibility > summary { display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); min-height: 3.25rem; list-style: none; font-size: .85rem; }
+.accessibility__options { display: flex; flex-wrap: wrap; gap: var(--space-sm) var(--space-md); padding-block: var(--space-sm) var(--space-md); }
+.accessibility__options label { display: flex; align-items: center; gap: .6rem; min-height: 2.75rem; font-size: .9rem; }
+.accessibility__options input { width: 1.2rem; height: 1.2rem; accent-color: var(--color-primary); }
+.accessibility__options button { border: 1px solid var(--color-line); background: transparent; padding: .5rem 1rem; min-height: 2.75rem; }
+.accessibility__options p { flex-basis: 100%; font-size: .8rem; color: var(--color-text-muted); }

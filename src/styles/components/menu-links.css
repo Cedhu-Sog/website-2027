@@ -1,0 +1,8 @@
+.menu-links > a, .menu-links > details > summary { display: flex; justify-content: space-between; align-items: center; min-height: 3.25rem; border-bottom: 1px solid var(--color-line); text-decoration: none; font-size: 1.2rem; }
+.menu-links ul { padding: .5rem 0 .5rem 1rem; list-style: none; }
+.menu-links li a { display: block; min-height: 2.9rem; padding: .6rem 0; font-size: .95rem; text-decoration: none; }
+.menu-links [aria-current="page"] { color: var(--color-primary); text-decoration: underline; }
+.menu-links details[open] > summary svg { transform: rotate(180deg); }
+.menu-links svg { flex-shrink: 0; }
+.menu-links__platforms { padding-block: var(--space-xs); }
+@media (min-width: 48rem) { .menu-links__platforms { display: none; } }

@@ -1,0 +1,1116 @@
+[
+  {
+    "id": "juan-carlos-ruiz-directivas",
+    "personId": "juan-carlos-ruiz",
+    "name": "Dr. Juan Carlos Ruiz",
+    "category": "directivas",
+    "role": "Director General",
+    "order": 1,
+    "description": "Líder visionario que impulsa innovación y bienestar con su “Metodología de la Felicidad”, transformando el desarrollo humano en la organización.",
+    "photo": "../assets/images/director.avif"
+  },
+  {
+    "id": "celia-elena-fajardo-garavito-directivas",
+    "personId": "celia-elena-fajardo-garavito",
+    "name": "Sra. Celia Elena Fajardo Garavito",
+    "category": "directivas",
+    "role": "Administradora del CEDHU",
+    "order": 2,
+    "description": "Administradora del CEDHU. Lidera procesos administrativos eficientes que fortalecen la institución y fomentan la excelencia académica, el desarrollo integral y la colaboración entre toda la comunidad educativa.",
+    "photo": "../assets/images/administradora.avif"
+  },
+  {
+    "id": "nancy-cabrera-bravo-directivas",
+    "personId": "nancy-cabrera-bravo",
+    "name": "Mg. Nancy Cabrera Bravo",
+    "category": "directivas",
+    "role": "Rectora del CEDHU",
+    "order": 3,
+    "description": "Su gestión se enfocará en fortalecer la calidad académica, fomentar un ambiente inclusivo y actualizar los procesos pedagógicos y tecnológicos para preparar a los estudiantes ante los retos del futuro.",
+    "photo": "../assets/images/rectora.jpg"
+  },
+  {
+    "id": "gladys-yadira-africano-coordinadores",
+    "personId": "gladys-yadira-africano",
+    "name": "Gladys Yadira Africano",
+    "category": "coordinadores",
+    "role": "Coordinadora Comportamental",
+    "order": 4,
+    "responsibilities": [
+      "Coordinadora Académica de Bachillerato"
+    ],
+    "photo": "../assets/fotos-cedhu/personal/yadira-africano.avif"
+  },
+  {
+    "id": "nancy-liliana-camargo-coordinadores",
+    "personId": "nancy-liliana-camargo",
+    "name": "Nancy Liliana Camargo",
+    "category": "coordinadores",
+    "role": "Coordinadora de Calidad",
+    "order": 5,
+    "responsibilities": [
+      "Coordinadora Académica de Primaria",
+      "Coordinadora Académica de Preescolar"
+    ],
+    "photo": "../assets/fotos-cedhu/personal/nancy-liliana-camargo.avif"
+  },
+  {
+    "id": "erika-liliana-montes-cadena-coordinadores",
+    "personId": "erika-liliana-montes-cadena",
+    "name": "Erika Liliana Montes Cadena",
+    "category": "coordinadores",
+    "role": "Psicoorientadora",
+    "order": 6,
+    "photo": "../assets/fotos-cedhu/personal/erika-liliana-montes-cadena.avif"
+  },
+  {
+    "id": "stephanie-sanchez-yaquibe-coordinadores",
+    "personId": "stephanie-sanchez-yaquibe",
+    "name": "Stephanie Sánchez Yaquibe",
+    "category": "coordinadores",
+    "role": "Coordinadora Convivencial de Bachillerato",
+    "order": 7,
+    "photo": "../assets/fotos-cedhu/personal/stephanie-sanchez-yaquibe.jpg"
+  },
+  {
+    "id": "vellcy-vargas-ayala-docentes",
+    "personId": "vellcy-vargas-ayala",
+    "name": "Vellcy Vargas Ayala",
+    "category": "docentes",
+    "role": "Párvulos",
+    "order": 8,
+    "group": "preescolar",
+    "officeHours": "lunes de 10:00 a 11:00 a. m.",
+    "photo": "../assets/fotos-cedhu/personal/vellcy-vargas-ayala.jpg"
+  },
+  {
+    "id": "laura-estefania-barrera-docentes",
+    "personId": "laura-estefania-barrera",
+    "name": "Laura Estefanía Barrera",
+    "category": "docentes",
+    "role": "Prejardín",
+    "order": 9,
+    "group": "preescolar",
+    "officeHours": "miércoles de 10:00 a 11:00 a. m.",
+    "photo": "../assets/fotos-cedhu/personal/laura-estefania-barrera.jpg"
+  },
+  {
+    "id": "natalia-lopez-ortiz-docentes",
+    "personId": "natalia-lopez-ortiz",
+    "name": "Natalia López Ortíz",
+    "category": "docentes",
+    "role": "Jardín",
+    "order": 10,
+    "group": "preescolar",
+    "officeHours": "miércoles de 10:00 a 11:00 a. m.",
+    "photo": "../assets/fotos-cedhu/personal/natalia-lopez-ortiz.jpg"
+  },
+  {
+    "id": "maria-paulina-leal-moreno-docentes",
+    "personId": "maria-paulina-leal-moreno",
+    "name": "María Paulina Leal Moreno",
+    "category": "docentes",
+    "role": "Transición A",
+    "order": 11,
+    "group": "preescolar",
+    "officeHours": "martes de 8:00 a 9:00 a. m.",
+    "photo": "../assets/fotos-cedhu/personal/maria-paulina-leal-moreno.webp"
+  },
+  {
+    "id": "laura-guatavita-docentes",
+    "personId": "laura-guatavita",
+    "name": "Laura Guatavita",
+    "category": "docentes",
+    "role": "Transición B",
+    "order": 12,
+    "group": "preescolar",
+    "officeHours": "lunes de 10:00 a 11:00 a. m.",
+    "photo": "../assets/fotos-cedhu/personal/laura-guatavita.jpg"
+  },
+  {
+    "id": "liz-yelitza-barrera-alarcon-docentes",
+    "personId": "liz-yelitza-barrera-alarcon",
+    "name": "Liz Yelitza Barrera Alarcón",
+    "category": "docentes",
+    "role": "Lengua Castellana",
+    "order": 13,
+    "group": "lengua-castellana",
+    "officeHours": "martes de 7:30 a 8:30 a. m.",
+    "assignments": [
+      {
+        "subject": "Lengua Castellana",
+        "grades": "1° y 2°"
+      },
+      {
+        "subject": "Lectura Crítica",
+        "grades": "1° y 2°"
+      },
+      {
+        "subject": "Artística",
+        "grades": "1° y 2°"
+      }
+    ],
+    "groupLeadership": "2° A",
+    "research": "2° A",
+    "photo": "../assets/fotos-cedhu/personal/liz-yelitza-barrera-alarcon.jpg"
+  },
+  {
+    "id": "yaneth-rosso-docentes",
+    "personId": "yaneth-rosso",
+    "name": "Yaneth Rosso",
+    "category": "docentes",
+    "role": "Lengua Castellana",
+    "order": 14,
+    "group": "lengua-castellana",
+    "officeHours": "lunes de 4:10 a 5:00 p. m.",
+    "assignments": [
+      {
+        "subject": "Lengua Castellana",
+        "grades": "3°, 4° y 5°"
+      },
+      {
+        "subject": "Lectura Crítica",
+        "grades": "3°, 4° y 5°"
+      }
+    ],
+    "groupLeadership": "5° A",
+    "research": "5° A",
+    "responsibilities": [
+      "Lúdicas"
+    ],
+    "photo": "../assets/fotos-cedhu/personal/yaneth-rosso.jpg"
+  },
+  {
+    "id": "elizabeth-albarracin-docentes",
+    "personId": "elizabeth-albarracin",
+    "name": "Elizabeth Albarracín",
+    "category": "docentes",
+    "role": "Lengua Castellana",
+    "order": 15,
+    "group": "lengua-castellana",
+    "officeHours": "martes de 7:30 a 8:30 a. m.",
+    "assignments": [
+      {
+        "subject": "Lengua Castellana",
+        "grades": "6° y 7°"
+      },
+      {
+        "subject": "Lectura Crítica",
+        "grades": "6° y 7°"
+      }
+    ],
+    "groupLeadership": "7° A",
+    "photo": "../assets/fotos-cedhu/personal/elizabeth-albarracin.jpg"
+  },
+  {
+    "id": "diana-paola-franco-docentes",
+    "personId": "diana-paola-franco",
+    "name": "Diana Paola Franco",
+    "category": "docentes",
+    "role": "Lengua Castellana",
+    "order": 16,
+    "group": "lengua-castellana",
+    "officeHours": "miércoles de 7:30 a 8:30 a. m.",
+    "assignments": [
+      {
+        "subject": "Lengua Castellana",
+        "grades": "8° y 9°"
+      },
+      {
+        "subject": "Lectura Crítica",
+        "grades": "8° y 9°"
+      }
+    ],
+    "groupLeadership": "9° A",
+    "photo": "../assets/fotos-cedhu/personal/diana-paola-franco.jpg"
+  },
+  {
+    "id": "monica-viviana-ayala-docentes",
+    "personId": "monica-viviana-ayala",
+    "name": "Mónica Viviana Ayala",
+    "category": "docentes",
+    "role": "Lengua Castellana",
+    "order": 17,
+    "group": "lengua-castellana",
+    "officeHours": "miércoles de 2:00 a 2:50 p. m.",
+    "assignments": [
+      {
+        "subject": "Lengua Castellana",
+        "grades": "10° y 11°"
+      },
+      {
+        "subject": "Lectura Crítica",
+        "grades": "10° y 11°"
+      }
+    ],
+    "groupLeadership": "11° B",
+    "photo": "../assets/fotos-cedhu/personal/monica-viviana-ayala.jpg"
+  },
+  {
+    "id": "nelson-omar-camargo-docentes",
+    "personId": "nelson-omar-camargo",
+    "name": "Nelson Omar Camargo",
+    "category": "docentes",
+    "role": "Lenguaje Técnico",
+    "order": 18,
+    "group": "lengua-castellana",
+    "assignments": [
+      {
+        "subject": "Lenguaje Técnico",
+        "grades": "9° a 11°"
+      }
+    ],
+    "photo": "../assets/fotos-cedhu/personal/nelson-omar-camargo.jpg"
+  },
+  {
+    "id": "ximena-aparicio-docentes",
+    "personId": "ximena-aparicio",
+    "name": "Ximena Aparicio",
+    "category": "docentes",
+    "role": "Inglés",
+    "order": 19,
+    "group": "ingles",
+    "officeHours": "martes de 2:00 a 2:50 p. m.",
+    "assignments": [
+      {
+        "subject": "Inglés",
+        "grades": "PV - PJ"
+      },
+      {
+        "subject": "Inglés",
+        "grades": "JR - TR"
+      },
+      {
+        "subject": "Inglés",
+        "grades": "1°"
+      },
+      {
+        "subject": "Lenguaje Técnico",
+        "grades": "1°, 2° y 3°"
+      }
+    ],
+    "photo": "../assets/fotos-cedhu/personal/ximena-aparicio.jpg"
+  },
+  {
+    "id": "angela-patricia-rocha-a-docentes",
+    "personId": "angela-patricia-rocha-a",
+    "name": "Ángela Patricia Rocha A",
+    "category": "docentes",
+    "role": "Inglés",
+    "order": 20,
+    "group": "ingles",
+    "officeHours": "miércoles de 3:20 a 4:10 p. m.",
+    "assignments": [
+      {
+        "subject": "Inglés",
+        "grades": "2°, 3° y 4°"
+      }
+    ],
+    "groupLeadership": "2° B",
+    "research": "2° B",
+    "photo": "../assets/fotos-cedhu/personal/angela-patricia-rocha-a.jpg"
+  },
+  {
+    "id": "alexa-cetina-docentes",
+    "personId": "alexa-cetina",
+    "name": "Alexa Cetina",
+    "category": "docentes",
+    "role": "Inglés",
+    "order": 21,
+    "group": "ingles",
+    "officeHours": "martes de 7:30 a 8:30 a. m.",
+    "assignments": [
+      {
+        "subject": "Inglés",
+        "grades": "5°"
+      },
+      {
+        "subject": "Lenguaje Técnico",
+        "grades": "4°, 5° y 6°"
+      },
+      {
+        "subject": "Conversacional",
+        "grades": "6°"
+      },
+      {
+        "subject": "Ecología",
+        "grades": "6° y 7°"
+      }
+    ],
+    "groupLeadership": "5° B",
+    "research": "5° B",
+    "photo": "../assets/fotos-cedhu/personal/alexa-cetina.jpg"
+  },
+  {
+    "id": "isabel-cristina-gomez-docentes",
+    "personId": "isabel-cristina-gomez",
+    "name": "Isabel Cristina Gómez",
+    "category": "docentes",
+    "role": "Inglés",
+    "order": 22,
+    "group": "ingles",
+    "officeHours": "lunes y martes de 10:30 a 11:00 a. m.",
+    "assignments": [
+      {
+        "subject": "Inglés",
+        "grades": "6° y 7°"
+      },
+      {
+        "subject": "Lenguaje Técnico",
+        "grades": "7°"
+      }
+    ],
+    "groupLeadership": "6° B",
+    "photo": "../assets/fotos-cedhu/personal/isabel-cristina-gomez.jpg"
+  },
+  {
+    "id": "yeison-fernando-diaz-docentes",
+    "personId": "yeison-fernando-diaz",
+    "name": "Yeison Fernando Díaz",
+    "category": "docentes",
+    "role": "Inglés",
+    "order": 23,
+    "group": "ingles",
+    "officeHours": "lunes de 7:30 a 8:30 a. m.",
+    "assignments": [
+      {
+        "subject": "Inglés",
+        "grades": "8° y 9°"
+      },
+      {
+        "subject": "Lenguaje Técnico",
+        "grades": "8°"
+      }
+    ],
+    "groupLeadership": "9° B",
+    "photo": "../assets/fotos-cedhu/personal/yeison-fernando-diaz.jpg"
+  },
+  {
+    "id": "lida-salamanca-docentes",
+    "personId": "lida-salamanca",
+    "name": "Lida Salamanca",
+    "category": "docentes",
+    "role": "Inglés",
+    "order": 24,
+    "group": "ingles",
+    "officeHours": "viernes de 7:30 a 8:30 a. m.",
+    "assignments": [
+      {
+        "subject": "Inglés",
+        "grades": "10° y 11°"
+      },
+      {
+        "subject": "Conversacional",
+        "grades": "7° a 9°"
+      }
+    ],
+    "photo": "../assets/fotos-cedhu/personal/lida-salamanca.jpg"
+  },
+  {
+    "id": "karen-andrea-barrera-docentes",
+    "personId": "karen-andrea-barrera",
+    "name": "Karen Andrea Barrera",
+    "category": "docentes",
+    "role": "Matemáticas",
+    "order": 25,
+    "group": "matematicas",
+    "officeHours": "lunes de 7:30 a 8:30 a. m.",
+    "assignments": [
+      {
+        "subject": "Matemáticas",
+        "grades": "1°, 2° y 3°"
+      },
+      {
+        "subject": "Geometría",
+        "grades": "1°, 2° y 3°"
+      },
+      {
+        "subject": "Estadística",
+        "grades": "1° y 2°"
+      }
+    ],
+    "photo": "../assets/fotos-cedhu/personal/karen-andrea-barrera.jpg"
+  },
+  {
+    "id": "yenny-avella-docentes",
+    "personId": "yenny-avella",
+    "name": "Yenny Avella",
+    "category": "docentes",
+    "role": "Matemáticas",
+    "order": 26,
+    "group": "matematicas",
+    "officeHours": "miércoles de 7:30 a 8:30 a. m.",
+    "assignments": [
+      {
+        "subject": "Matemáticas",
+        "grades": "4° y 5°"
+      },
+      {
+        "subject": "Geometría",
+        "grades": "4° y 5°"
+      },
+      {
+        "subject": "Estadística",
+        "grades": "3°, 4°, 5° y 6°"
+      }
+    ],
+    "groupLeadership": "4° B",
+    "research": "4° B",
+    "photo": "../assets/fotos-cedhu/personal/yenny-avella.jpg"
+  },
+  {
+    "id": "lyd-angelica-puerto-docentes",
+    "personId": "lyd-angelica-puerto",
+    "name": "Lyd Angélica Puerto",
+    "category": "docentes",
+    "role": "Matemáticas",
+    "order": 27,
+    "group": "matematicas",
+    "officeHours": "martes de 8:30 a 9:30 a. m.",
+    "assignments": [
+      {
+        "subject": "Matemáticas",
+        "grades": "6° y 7°"
+      },
+      {
+        "subject": "Geometría",
+        "grades": "6° y 7°"
+      },
+      {
+        "subject": "Estadística",
+        "grades": "7°"
+      }
+    ],
+    "groupLeadership": "7° B",
+    "photo": "../assets/fotos-cedhu/personal/lyd-angelica-puerto.jpg"
+  },
+  {
+    "id": "maria-fernanda-castillo-docentes",
+    "personId": "maria-fernanda-castillo",
+    "name": "María Fernanda Castillo",
+    "category": "docentes",
+    "role": "Matemáticas",
+    "order": 28,
+    "group": "matematicas",
+    "officeHours": "jueves de 11:10 a. m. a 12:00 m.",
+    "assignments": [
+      {
+        "subject": "Matemáticas",
+        "grades": "8° y 9°"
+      },
+      {
+        "subject": "Geometría",
+        "grades": "8° y 9°"
+      },
+      {
+        "subject": "Estadística",
+        "grades": "8°"
+      }
+    ],
+    "groupLeadership": "8° C",
+    "photo": "../assets/fotos-cedhu/personal/maria-fernanda-castillo.jpg"
+  },
+  {
+    "id": "huber-suarez-docentes",
+    "personId": "huber-suarez",
+    "name": "Huber Suárez",
+    "category": "docentes",
+    "role": "Matemáticas",
+    "order": 29,
+    "group": "matematicas",
+    "officeHours": "viernes de 11:10 a. m. a 12:00 m.",
+    "assignments": [
+      {
+        "subject": "Matemáticas",
+        "grades": "10° y 11°"
+      },
+      {
+        "subject": "Geometría",
+        "grades": "10° y 11°"
+      },
+      {
+        "subject": "Estadística",
+        "grades": "9°, 10° y 11°"
+      }
+    ],
+    "groupLeadership": "11° A",
+    "photo": "../assets/fotos-cedhu/personal/huber-suarez.jpg"
+  },
+  {
+    "id": "alba-salcedo-docentes",
+    "personId": "alba-salcedo",
+    "name": "Alba Salcedo",
+    "category": "docentes",
+    "role": "Ciencias Naturales",
+    "order": 30,
+    "group": "ciencias-naturales",
+    "officeHours": "lunes de 3:20 a 4:00 p. m.",
+    "assignments": [
+      {
+        "subject": "Explorando, mi ambiente",
+        "grades": "Preescolar"
+      },
+      {
+        "subject": "Imagin-Arte",
+        "grades": "Preescolar"
+      },
+      {
+        "subject": "Ciencias Naturales",
+        "grades": "1° y 2°"
+      },
+      {
+        "subject": "Religión",
+        "grades": "1° A, 2° y 3°"
+      }
+    ],
+    "groupLeadership": "1° A",
+    "research": "1° A",
+    "photo": "../assets/fotos-cedhu/personal/alba-salcedo.jpg"
+  },
+  {
+    "id": "jenny-moreno-docentes",
+    "personId": "jenny-moreno",
+    "name": "Jenny Moreno",
+    "category": "docentes",
+    "role": "Ciencias Naturales",
+    "order": 31,
+    "group": "ciencias-naturales",
+    "officeHours": "miércoles de 7:30 a 8:30 a. m.",
+    "assignments": [
+      {
+        "subject": "Ciencias Naturales",
+        "grades": "3° y 4°"
+      },
+      {
+        "subject": "Química",
+        "grades": "3° y 4°"
+      },
+      {
+        "subject": "Biología",
+        "grades": "5°"
+      },
+      {
+        "subject": "Física",
+        "grades": "3°"
+      }
+    ],
+    "groupLeadership": "4° A",
+    "research": "4° A",
+    "photo": "../assets/fotos-cedhu/personal/jenny-moreno.jpg"
+  },
+  {
+    "id": "gladys-yadira-africano-docentes",
+    "personId": "gladys-yadira-africano",
+    "name": "Yadira Africano",
+    "category": "docentes",
+    "role": "Biología",
+    "order": 32,
+    "group": "ciencias-naturales",
+    "officeHours": "miércoles de 9:30 a 10:30 a. m.",
+    "assignments": [
+      {
+        "subject": "Biología",
+        "grades": "6°, 7° y 8°"
+      }
+    ],
+    "photo": "../assets/fotos-cedhu/personal/yadira-africano.avif"
+  },
+  {
+    "id": "nydia-gomez-docentes",
+    "personId": "nydia-gomez",
+    "name": "Nydia Gómez",
+    "category": "docentes",
+    "role": "Biología / Ecología",
+    "order": 33,
+    "group": "ciencias-naturales",
+    "officeHours": "miércoles de 7:30 a 8:30 a. m.",
+    "assignments": [
+      {
+        "subject": "Biología",
+        "grades": "9° a 11°"
+      },
+      {
+        "subject": "Ecología",
+        "grades": "8°, 9°, 10° y 11°"
+      }
+    ],
+    "groupLeadership": "10° B",
+    "research": "9°, 10° y 11°",
+    "photo": "../assets/fotos-cedhu/personal/nydia-gomez.jpg"
+  },
+  {
+    "id": "diego-bernal-docentes",
+    "personId": "diego-bernal",
+    "name": "Diego Bernal",
+    "category": "docentes",
+    "role": "Dibujo Técnico",
+    "order": 34,
+    "group": "ciencias-naturales",
+    "officeHours": "martes de 11:10 a. m. a 12:00 m.",
+    "assignments": [
+      {
+        "subject": "Dibujo Técnico",
+        "grades": "6° a 11°"
+      }
+    ],
+    "groupLeadership": "8° B",
+    "research": "6°, 7° y 8°",
+    "responsibilities": [
+      "Lúdicas"
+    ],
+    "photo": "../assets/fotos-cedhu/personal/diego-bernal.jpg"
+  },
+  {
+    "id": "angie-moreno-c-docentes",
+    "personId": "angie-moreno-c",
+    "name": "Angie Moreno C",
+    "category": "docentes",
+    "role": "Física",
+    "order": 35,
+    "group": "ciencias-naturales",
+    "officeHours": "jueves de 7:30 a 8:30 a. m.",
+    "assignments": [
+      {
+        "subject": "Física",
+        "grades": "4° a 11°"
+      }
+    ],
+    "groupLeadership": "10° A",
+    "responsibilities": [
+      "Lúdicas"
+    ],
+    "photo": "../assets/fotos-cedhu/personal/angie-moreno-c.jpg"
+  },
+  {
+    "id": "ferney-gonzalez-docentes",
+    "personId": "ferney-gonzalez",
+    "name": "Ferney González",
+    "category": "docentes",
+    "role": "Química",
+    "order": 36,
+    "group": "ciencias-naturales",
+    "officeHours": "viernes de 11:10 a. m. a 12:00 m.",
+    "assignments": [
+      {
+        "subject": "Química",
+        "grades": "5° a 11°"
+      }
+    ],
+    "groupLeadership": "9° C",
+    "photo": "../assets/fotos-cedhu/personal/ferney-gonzalez.jpg"
+  },
+  {
+    "id": "yasmin-gonzalez-docentes",
+    "personId": "yasmin-gonzalez",
+    "name": "Yasmin González",
+    "category": "docentes",
+    "role": "Ciencias Sociales",
+    "order": 37,
+    "group": "ciencias-sociales",
+    "officeHours": "miércoles de 2:00 a 2:50 p. m.",
+    "assignments": [
+      {
+        "subject": "Ciencias Sociales",
+        "grades": "1° a 5°"
+      },
+      {
+        "subject": "Competencias Ciudadanas",
+        "grades": "1° a 5°"
+      },
+      {
+        "subject": "Religión",
+        "grades": "4°"
+      }
+    ],
+    "groupLeadership": "3° B",
+    "research": "3° B",
+    "photo": "../assets/fotos-cedhu/personal/yasmin-gonzalez.jpg"
+  },
+  {
+    "id": "loren-daniela-perez-docentes",
+    "personId": "loren-daniela-perez",
+    "name": "Loren Daniela Pérez",
+    "category": "docentes",
+    "role": "Ciencias Sociales",
+    "order": 38,
+    "group": "ciencias-sociales",
+    "officeHours": "jueves de 7:30 a 8:30 a. m.",
+    "assignments": [
+      {
+        "subject": "Ciencias Sociales",
+        "grades": "7° a 11°"
+      },
+      {
+        "subject": "Competencias Ciudadanas",
+        "grades": "7° a 11°"
+      }
+    ],
+    "groupLeadership": "11° C",
+    "photo": "../assets/fotos-cedhu/personal/loren-daniela-perez.jpg"
+  },
+  {
+    "id": "diego-salcedo-docentes",
+    "personId": "diego-salcedo",
+    "name": "Diego Salcedo",
+    "category": "docentes",
+    "role": "Filosofía",
+    "order": 39,
+    "group": "ciencias-sociales",
+    "officeHours": "martes de 7:30 a 8:30 a. m.",
+    "assignments": [
+      {
+        "subject": "Filosofía",
+        "grades": "6° a 11°"
+      },
+      {
+        "subject": "Competencias C",
+        "grades": "6°"
+      },
+      {
+        "subject": "Ciencias Sociales",
+        "grades": "6° ABC"
+      }
+    ],
+    "groupLeadership": "7° C",
+    "photo": "../assets/fotos-cedhu/personal/diego-salcedo.jpg"
+  },
+  {
+    "id": "padre-william-chaparro-docentes",
+    "personId": "padre-william-chaparro",
+    "name": "Padre William Chaparro",
+    "category": "docentes",
+    "role": "Educación Emocional",
+    "order": 40,
+    "group": "religion-educacion-emocional",
+    "officeHours": "lunes y martes de 10:30 a 11:00 a. m.",
+    "assignments": [
+      {
+        "subject": "Desarrollo Emocional",
+        "grades": "6° a 11°"
+      }
+    ],
+    "photo": "../assets/fotos-cedhu/personal/padre-william-chaparro.jpg"
+  },
+  {
+    "id": "esperanza-pena-docentes",
+    "personId": "esperanza-pena",
+    "name": "Esperanza Peña",
+    "category": "docentes",
+    "role": "Educación Emocional",
+    "order": 41,
+    "group": "religion-educacion-emocional",
+    "officeHours": "miércoles de 2:00 a 2:50 p. m.",
+    "assignments": [
+      {
+        "subject": "Desarrollo Emocional",
+        "grades": "1° a 5°"
+      },
+      {
+        "subject": "Artística",
+        "grades": "3° a 5°"
+      },
+      {
+        "subject": "Expresión Teatral",
+        "grades": "Preescolar, 1° y 2°"
+      }
+    ],
+    "groupLeadership": "3° A",
+    "research": "3° A",
+    "photo": "../assets/fotos-cedhu/personal/esperanza-pena.jpg"
+  },
+  {
+    "id": "padre-holman-horacio-herrera-chaparro-docentes",
+    "personId": "padre-holman-horacio-herrera-chaparro",
+    "name": "Padre Holman Horacio Herrera Chaparro",
+    "category": "docentes",
+    "role": "Religión",
+    "order": 42,
+    "group": "religion-educacion-emocional",
+    "officeHours": "jueves de 11:00 a. m. a 12:00 m.",
+    "assignments": [
+      {
+        "subject": "Religión",
+        "grades": "5° a 11°"
+      }
+    ],
+    "photo": "../assets/fotos-cedhu/personal/padre-holman-horacio-herrera-chaparro.jpg"
+  },
+  {
+    "id": "yaqueline-barrera-docentes",
+    "personId": "yaqueline-barrera",
+    "name": "Yaqueline Barrera",
+    "category": "docentes",
+    "role": "Educación Física",
+    "order": 43,
+    "group": "educacion-fisica",
+    "officeHours": "miércoles de 10:00 a 11:00 a. m.",
+    "assignments": [
+      {
+        "subject": "Desarrollo Psicomotor",
+        "grades": "Preescolar"
+      },
+      {
+        "subject": "Educación Física",
+        "grades": "1° y 2°"
+      },
+      {
+        "subject": "Religión",
+        "grades": "1° B"
+      }
+    ],
+    "groupLeadership": "1° B",
+    "research": "1° B",
+    "photo": "../assets/fotos-cedhu/personal/yaqueline-barrera.jpg"
+  },
+  {
+    "id": "enrique-diaz-docentes",
+    "personId": "enrique-diaz",
+    "name": "Enrique Díaz",
+    "category": "docentes",
+    "role": "Educación Física",
+    "order": 44,
+    "group": "educacion-fisica",
+    "officeHours": "martes de 2:00 a 2:50 p. m.",
+    "assignments": [
+      {
+        "subject": "Educación Física",
+        "grades": "3° a 7°"
+      }
+    ],
+    "groupLeadership": "6° A",
+    "photo": "../assets/fotos-cedhu/personal/enrique-diaz.jpg"
+  },
+  {
+    "id": "francisco-galvis-docentes",
+    "personId": "francisco-galvis",
+    "name": "Francisco Galvis",
+    "category": "docentes",
+    "role": "Educación Física",
+    "order": 45,
+    "group": "educacion-fisica",
+    "officeHours": "jueves de 2:00 a 2:50 p. m.",
+    "assignments": [
+      {
+        "subject": "Educación Física",
+        "grades": "8° a 11°"
+      }
+    ],
+    "groupLeadership": "9° C",
+    "photo": "../assets/fotos-cedhu/personal/francisco-galvis.jpg"
+  },
+  {
+    "id": "jair-sebastian-estupinan-docentes",
+    "personId": "jair-sebastian-estupinan",
+    "name": "Jair Sebastián Estupiñán",
+    "category": "docentes",
+    "role": "Sistemas / Robótica",
+    "order": 46,
+    "group": "sistemas-robotica",
+    "officeHours": "lunes de 7:30 a 8:30 a. m.",
+    "assignments": [
+      {
+        "subject": "Sistemas",
+        "grades": "2° a 6° y 7° A, B y C"
+      },
+      {
+        "subject": "Robótica",
+        "grades": "2° a 6°"
+      }
+    ],
+    "groupLeadership": "6° C",
+    "photo": "../assets/fotos-cedhu/personal/jair-sebastian-estupinan.jpg"
+  },
+  {
+    "id": "esmeralda-diaz-docentes",
+    "personId": "esmeralda-diaz",
+    "name": "Esmeralda Díaz",
+    "category": "docentes",
+    "role": "Sistemas / Robótica",
+    "order": 48,
+    "group": "sistemas-robotica",
+    "officeHours": "viernes de 7:30 a 8:30 a. m.",
+    "assignments": [
+      {
+        "subject": "Sistemas",
+        "grades": "8° a 11°"
+      },
+      {
+        "subject": "Robótica",
+        "grades": "8° a 11°"
+      },
+      {
+        "subject": "Robótica",
+        "grades": "7° A, B y C"
+      }
+    ],
+    "photo": "../assets/fotos-cedhu/personal/esmeralda-diaz.avif"
+  },
+  {
+    "id": "jairo-sandoval-docentes",
+    "personId": "jairo-sandoval",
+    "name": "Jairo Sandoval",
+    "category": "docentes",
+    "role": "Música",
+    "order": 49,
+    "group": "musica",
+    "officeHours": "martes de 3:20 a 4:10 p. m.",
+    "assignments": [
+      {
+        "subject": "Música",
+        "grades": "Preescolar"
+      },
+      {
+        "subject": "Música",
+        "grades": "1° a 5°"
+      }
+    ],
+    "photo": "../assets/fotos-cedhu/personal/jairo-sandoval.jpg"
+  },
+  {
+    "id": "hugo-ernesto-ruiz-fajardo-administrativos",
+    "personId": "hugo-ernesto-ruiz-fajardo",
+    "name": "Hugo Ernesto Ruiz Fajardo",
+    "category": "administrativos",
+    "role": "Coordinador SG-SST",
+    "order": 50,
+    "description": "Coordinador del Sistema de Gestión de Seguridad y Salud en el Trabajo, encargado de promover condiciones seguras y adecuadas para la comunidad educativa.",
+    "officeHours": "lunes a viernes de 10:00 a 11:00 a. m. y de 3:00 a 4:00 p. m.",
+    "photo": "../assets/fotos-cedhu/personal/hugo-ernesto-ruiz-fajardo.avif"
+  },
+  {
+    "id": "luz-mary-barrera-gil-administrativos",
+    "personId": "luz-mary-barrera-gil",
+    "name": "Luz Mary Barrera Gil",
+    "category": "administrativos",
+    "role": "Tesorera",
+    "order": 51,
+    "description": "Responsable del área de tesorería institucional, encargada de apoyar los procesos administrativos y financieros del CEDHU.",
+    "officeHours": "lunes a viernes de 10:00 a 11:00 a. m. y de 3:00 a 4:00 p. m.",
+    "photo": "../assets/fotos-cedhu/personal/luz-mary-barrera-gil.jpg"
+  },
+  {
+    "id": "paola-ochoa-aguilar-administrativos",
+    "personId": "paola-ochoa-aguilar",
+    "name": "Paola Ochoa Aguilar",
+    "category": "administrativos",
+    "role": "Contadora",
+    "order": 52,
+    "description": "Responsable del acompañamiento contable de la institución, apoyando la organización, revisión y gestión de los procesos financieros.",
+    "officeHours": "lunes a viernes de 10:00 a 11:00 a. m. y de 3:00 a 4:00 p. m.",
+    "photo": "../assets/fotos-cedhu/personal/paola-ochoa-aguilar.jpg"
+  },
+  {
+    "id": "yina-paola-coy-fonseca-administrativos",
+    "personId": "yina-paola-coy-fonseca",
+    "name": "Yina Paola Coy Fonseca",
+    "category": "administrativos",
+    "role": "Auxiliar Contable",
+    "order": 53,
+    "description": "Apoya los procesos contables y administrativos de la institución, contribuyendo al orden y seguimiento de la información financiera.",
+    "officeHours": "lunes a viernes de 10:00 a 11:00 a. m. y de 3:00 a 4:00 p. m.",
+    "photo": "../assets/fotos-cedhu/personal/yina-paola-coy-fonseca.jpg"
+  },
+  {
+    "id": "fabiola-vargas-echavarria-administrativos",
+    "personId": "fabiola-vargas-echavarria",
+    "name": "Fabiola Vargas Echavarría",
+    "category": "administrativos",
+    "role": "Enfermera",
+    "order": 54,
+    "description": "Encargada de brindar apoyo en primeros auxilios y acompañamiento básico en salud a los educandos y a la comunidad educativa.",
+    "officeHours": "lunes a viernes de 10:00 a 11:00 a. m. y de 3:00 a 4:00 p. m.",
+    "photo": "../assets/fotos-cedhu/personal/fabiola-vargas-echavarria.jpg"
+  },
+  {
+    "id": "alexis-patarroyo-administrativos",
+    "personId": "alexis-patarroyo",
+    "name": "Alexis Patarroyo",
+    "category": "administrativos",
+    "role": "Coordinador de Tecnología",
+    "order": 55,
+    "description": "Responsable del acompañamiento tecnológico institucional, soporte técnico, gestión de herramientas digitales y apoyo a los procesos informáticos del CEDHU.",
+    "officeHours": "lunes a viernes de 10:00 a 11:00 a. m. y de 3:00 a 4:00 p. m.",
+    "photo": "../assets/fotos-cedhu/personal/alexis-patarroyo.jpg"
+  },
+  {
+    "id": "angela-patricia-perez-perez-servicios-generales",
+    "personId": "angela-patricia-perez-perez",
+    "name": "Angela Patricia Pérez Pérez",
+    "category": "servicios-generales",
+    "role": "Auxiliar de servicios generales",
+    "order": 56,
+    "photo": "../assets/fotos-cedhu/personal/angela-patricia-perez-perez.jpg"
+  },
+  {
+    "id": "estela-alarcon-servicios-generales",
+    "personId": "estela-alarcon",
+    "name": "Estela Alarcón",
+    "category": "servicios-generales",
+    "role": "Auxiliar de servicios generales",
+    "order": 57,
+    "photo": "../assets/fotos-cedhu/personal/estela-alarcon.jpg"
+  },
+  {
+    "id": "maria-eugenia-murillo-patino-servicios-generales",
+    "personId": "maria-eugenia-murillo-patino",
+    "name": "María Eugenia Murillo Patiño",
+    "category": "servicios-generales",
+    "role": "Auxiliar de servicios generales",
+    "order": 58,
+    "photo": "../assets/fotos-cedhu/personal/maria-eugenia-murillo-patino.jpg"
+  },
+  {
+    "id": "sonia-isabel-perez-perez-servicios-generales",
+    "personId": "sonia-isabel-perez-perez",
+    "name": "Sonia Isabel Pérez Pérez",
+    "category": "servicios-generales",
+    "role": "Auxiliar de servicios generales",
+    "order": 59,
+    "photo": "../assets/fotos-cedhu/personal/sonia-isabel-perez-perez.jpg"
+  },
+  {
+    "id": "florangela-pineda-conde-servicios-generales",
+    "personId": "florangela-pineda-conde",
+    "name": "Florangela Pineda Conde",
+    "category": "servicios-generales",
+    "role": "Auxiliar de servicios generales",
+    "order": 60,
+    "photo": "../assets/fotos-cedhu/personal/florangela-pineda-conde.jpg"
+  },
+  {
+    "id": "hector-horacio-perez-diaz-servicios-generales",
+    "personId": "hector-horacio-perez-diaz",
+    "name": "Héctor Horacio Pérez Díaz",
+    "category": "servicios-generales",
+    "role": "Auxiliar de servicios generales / Mantenimiento",
+    "order": 61,
+    "photo": "../assets/fotos-cedhu/personal/hector-horacio-perez-diaz.jpg"
+  },
+  {
+    "id": "jorge-fabio-rusinque-bustos-servicios-generales",
+    "personId": "jorge-fabio-rusinque-bustos",
+    "name": "Jorge Fabio Rusinque Bustos",
+    "category": "servicios-generales",
+    "role": "Auxiliar de servicios generales / Mantenimiento",
+    "order": 62,
+    "photo": "../assets/fotos-cedhu/personal/jorge-fabio-rusinque-bustos.webp"
+  },
+  {
+    "id": "luis-carlos-rodriguez-rojas-servicios-generales",
+    "personId": "luis-carlos-rodriguez-rojas",
+    "name": "Luis Carlos Rodríguez Rojas",
+    "category": "servicios-generales",
+    "role": "Auxiliar de servicios generales / Mantenimiento",
+    "order": 63,
+    "photo": "../assets/fotos-cedhu/personal/luis-carlos-rodriguez-rojas.jpg"
+  },
+  {
+    "id": "carlos-julio-novoa-guevara-servicios-generales",
+    "personId": "carlos-julio-novoa-guevara",
+    "name": "Carlos Julio Novoa Guevara",
+    "category": "servicios-generales",
+    "role": "Auxiliar de servicios generales / Mantenimiento",
+    "order": 64,
+    "photo": "../assets/fotos-cedhu/personal/carlos-julio-novoa-guevara.jpg"
+  }
+]

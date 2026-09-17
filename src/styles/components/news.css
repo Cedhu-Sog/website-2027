@@ -1,0 +1,24 @@
+.news-grid { display: grid; gap: var(--space-lg) var(--space-md); }
+.news-card { min-width: 0; }
+.news-card__image { display: block; overflow: hidden; }
+.news-card__image img { width: 100%; aspect-ratio: 1.5; object-fit: cover; transition: transform var(--duration-normal); }
+.news-card:hover img { transform: scale(1.025); }
+.news-card__meta { display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem; margin-block: 1rem; font-size: .75rem; color: var(--color-text-muted); }
+.news-card__meta > span:first-child { color: var(--color-primary); text-transform: uppercase; letter-spacing: .08em; }
+.news-card h3 { font-size: 1.45rem; }
+.news-card h3 a { display: flex; justify-content: space-between; gap: 1.5rem; text-decoration: none; }
+.news-card h3 span { flex-shrink: 0; color: var(--color-primary); }
+.news-card h3 a:hover { text-decoration: underline; }
+.news-card > p { margin-top: .85rem; font-size: .9rem; color: var(--color-text-muted); }
+.news-filters { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: var(--space-lg); }
+.news-filters button { min-height: 2.8rem; border: 1px solid var(--color-line); border-radius: var(--radius-pill); padding: .6rem 1.1rem; background: transparent; font-size: .85rem; }
+.news-filters [aria-pressed="true"] { background: var(--color-primary-dark); color: var(--color-on-dark); border-color: var(--color-primary-dark); }
+.article-header { max-width: 58rem; padding-block: var(--space-page-hero); }
+.article-header > p:not(.eyebrow) { max-width: var(--measure-page-intro); margin-top: var(--space-md); color: var(--color-text-muted); font-size: var(--text-page-intro); line-height: var(--leading-page-intro); }
+.article-layout { display: grid; gap: var(--space-lg); padding-bottom: var(--space-xl); }
+.article-layout__copy { display: grid; align-content: start; gap: var(--space-md); }
+.article-layout__copy > p { color: var(--color-text-muted); }
+.article-layout__poster img { width: 100%; height: auto; }
+.article-layout__poster figcaption { margin-top: var(--space-sm); font-size: .8rem; }
+.article-related { margin-top: var(--space-lg); border-top: 1px solid var(--color-line); padding-top: var(--space-md); }
+@media (min-width: 48rem) { .news-grid { grid-template-columns: repeat(3,minmax(0,1fr)); } .news-grid--archive { grid-template-columns: repeat(2,minmax(0,1fr)); } .article-layout { grid-template-columns: 1.2fr 1fr; align-items: start; gap: var(--space-xl); } }

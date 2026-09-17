@@ -1,0 +1,581 @@
+{
+  "sourcePage": "https://cedhu.edu.co/nosotros/",
+  "checkedOn": "2026-09-15",
+  "records": [
+    {
+      "id": "juan-carlos-ruiz-directivas",
+      "name": "Dr. Juan Carlos Ruiz",
+      "sourceName": "DR. JUAN CARLOS RUIZ",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/juancarlos.avif",
+      "localFile": "src/assets/images/director.avif",
+      "status": "verified",
+      "sha256": "ac83baacb8de2944012ee345b17cbdfe3bff51bfd0a220af7701ee9499c8de34"
+    },
+    {
+      "id": "celia-elena-fajardo-garavito-directivas",
+      "name": "Sra. Celia Elena Fajardo Garavito",
+      "sourceName": "SRA. CELIA ELENA FAJARDO GARAVITO",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/donacelia.avif",
+      "localFile": "src/assets/images/administradora.avif",
+      "status": "verified",
+      "sha256": "df9b9d46d33520006ed61d50e03299a93b83688332709983bc8b0493e37e2267"
+    },
+    {
+      "id": "nancy-cabrera-bravo-directivas",
+      "name": "Mg. Nancy Cabrera Bravo",
+      "sourceName": "MG. NANCY CABRERA BRAVO",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Nancy-Cabrera.jpg",
+      "localFile": "src/assets/images/rectora.jpg",
+      "status": "verified",
+      "sha256": "9272f607b5efc75abf58b385ae5d480e1a6c8be5dff01b6ab2fddb20dab6ae09"
+    },
+    {
+      "id": "gladys-yadira-africano-coordinadores",
+      "name": "Gladys Yadira Africano",
+      "sourceName": "Gladys Yadira Africano",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Yadira-Africano.avif",
+      "localFile": "src/assets/fotos-cedhu/personal/yadira-africano.avif",
+      "status": "verified",
+      "sha256": "87dd37e8e272491f5881aaa3310ee0d6a8b1a03e6ffd8d411ccc0de0766125c4"
+    },
+    {
+      "id": "nancy-liliana-camargo-coordinadores",
+      "name": "Nancy Liliana Camargo",
+      "sourceName": "Nancy Liliana Camargo",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/nancy_liliana.avif",
+      "localFile": "src/assets/fotos-cedhu/personal/nancy-liliana-camargo.avif",
+      "status": "verified",
+      "sha256": "78f7146c1a63375eb3fb65dd31b110b089c57bac9d812111ea5cef57b6ea5209"
+    },
+    {
+      "id": "erika-liliana-montes-cadena-coordinadores",
+      "name": "Erika Liliana Montes Cadena",
+      "sourceName": "Erika Liliana Montes Cadena",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/erika.avif",
+      "localFile": "src/assets/fotos-cedhu/personal/erika-liliana-montes-cadena.avif",
+      "status": "verified",
+      "sha256": "0b37d3b8de1013636a47ee7ad1c625d6f2440c860036e607ba256c9b4b0d1ccd"
+    },
+    {
+      "id": "stephanie-sanchez-yaquibe-coordinadores",
+      "name": "Stephanie Sánchez Yaquibe",
+      "sourceName": "Stephanie Sánchez Yaquibe",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Stephanie-Sanchez.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/stephanie-sanchez-yaquibe.jpg",
+      "status": "verified",
+      "sha256": "0bfaf03e88c713d81d1207c60be770291e74900ab7eccb909c1e6df43bf62bdd"
+    },
+    {
+      "id": "vellcy-vargas-ayala-docentes",
+      "name": "Vellcy Vargas Ayala",
+      "sourceName": "Vellcy Vargas Ayala",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Vellcy-Vargas.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/vellcy-vargas-ayala.jpg",
+      "status": "verified",
+      "sha256": "5fee277405f0ab51fbf0e11022ed92491b9fa41f94db23d14c0422df2391402c"
+    },
+    {
+      "id": "laura-estefania-barrera-docentes",
+      "name": "Laura Estefanía Barrera",
+      "sourceName": "Laura Estefanía Barrera",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Laura-Estefania-Barrera.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/laura-estefania-barrera.jpg",
+      "status": "verified",
+      "sha256": "344f980632831516b8ba6002be36cd3cfd3ce4ccc05836e7bf2003b3a668bf88"
+    },
+    {
+      "id": "natalia-lopez-ortiz-docentes",
+      "name": "Natalia López Ortíz",
+      "sourceName": "Natalia López Ortíz",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Natalia-Lopez.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/natalia-lopez-ortiz.jpg",
+      "status": "verified",
+      "sha256": "8c478ee790769f0235dee95f02d0aca7ad181cc5d46f7e1c2fe99c0f6eafacb6"
+    },
+    {
+      "id": "camila-zorro-docentes",
+      "name": "Camila Zorro",
+      "sourceName": "Camila Zorro",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Camila-Zorro.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/camila-zorro.jpg",
+      "status": "verified",
+      "sha256": "945f067eb8a9567dbdc86166b2a0749d1e6120d38089d3408912e2860df3cbd8"
+    },
+    {
+      "id": "laura-guatavita-docentes",
+      "name": "Laura Guatavita",
+      "sourceName": "Laura Guatavita",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Laura-Guatavita.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/laura-guatavita.jpg",
+      "status": "verified",
+      "sha256": "e097a239a770d5bd9f1600edd032b565eeda9062566b046f4391c42db2acfa85"
+    },
+    {
+      "id": "liz-yelitza-barrera-alarcon-docentes",
+      "name": "Liz Yelitza Barrera Alarcón",
+      "sourceName": "Liz Yelitza Barrera Alarcón",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Liz-Yelitza-Barrera.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/liz-yelitza-barrera-alarcon.jpg",
+      "status": "verified",
+      "sha256": "4af7fd1e68fdb365be7909d17433f69b54ff2be54ddc3dab555e7dafe7bffd58"
+    },
+    {
+      "id": "yaneth-rosso-docentes",
+      "name": "Yaneth Rosso",
+      "sourceName": "Yaneth Rosso",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Yaneth-Rosso.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/yaneth-rosso.jpg",
+      "status": "verified",
+      "sha256": "fb493444cbc6e3a77c73ac1e8be383193072050ca1cc1a9c0a786381b84a9be0"
+    },
+    {
+      "id": "elizabeth-albarracin-docentes",
+      "name": "Elizabeth Albarracín",
+      "sourceName": "Elizabeth Albarracín",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Elizabeth-Albarracin.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/elizabeth-albarracin.jpg",
+      "status": "verified",
+      "sha256": "681cb018df785926c9ece3ee0f2469691d499967d5137b0eb73f450651a0fdfe"
+    },
+    {
+      "id": "diana-paola-franco-docentes",
+      "name": "Diana Paola Franco",
+      "sourceName": "Diana Paola Franco",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Diana-Paola-Franco.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/diana-paola-franco.jpg",
+      "status": "verified",
+      "sha256": "551964a74ca89413b800d74fdf320d6ca09eec1d74c28dfdb377063f844a98f1"
+    },
+    {
+      "id": "monica-viviana-ayala-docentes",
+      "name": "Mónica Viviana Ayala",
+      "sourceName": "Mónica Viviana Ayala",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Monica-Ayala.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/monica-viviana-ayala.jpg",
+      "status": "verified",
+      "sha256": "4deb8315288f733e525f0afcb5cb1bdb8c8e2d079a322695ba029d14786e03b8"
+    },
+    {
+      "id": "nelson-omar-camargo-docentes",
+      "name": "Nelson Omar Camargo",
+      "sourceName": "Nelson Omar Camargo",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Nelson-Camargo.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/nelson-omar-camargo.jpg",
+      "status": "verified",
+      "sha256": "98cd307a259c84c2cc2ba34e7546f47a3851f8da9b95fce2eefca9d03fba73f6"
+    },
+    {
+      "id": "ximena-aparicio-docentes",
+      "name": "Ximena Aparicio",
+      "sourceName": "Ximena Aparicio",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Ximena-Aparicio.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/ximena-aparicio.jpg",
+      "status": "verified",
+      "sha256": "74b52cfcd6207c7e4f0bb924d49d096b49e41b5e5c8e9a4718691a6b51d453c5"
+    },
+    {
+      "id": "angela-patricia-rocha-a-docentes",
+      "name": "Ángela Patricia Rocha A",
+      "sourceName": "Ángela Patricia Rocha A",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Angela-Patricia-Rocha.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/angela-patricia-rocha-a.jpg",
+      "status": "verified",
+      "sha256": "a816fed10955e0276e78b806401cc95705c08e23b7d48c8bb5fc4c6f77c339ca"
+    },
+    {
+      "id": "alexa-cetina-docentes",
+      "name": "Alexa Cetina",
+      "sourceName": "Alexa Cetina",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Alexa-Cetina.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/alexa-cetina.jpg",
+      "status": "verified",
+      "sha256": "9c8f203e47c0120ac12a8cb2b905d96dffbc587090f5e42ae3edef55ae2c7e78"
+    },
+    {
+      "id": "isabel-cristina-gomez-docentes",
+      "name": "Isabel Cristina Gómez",
+      "sourceName": "Isabel Cristina Gómez",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Isabel-Gomez.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/isabel-cristina-gomez.jpg",
+      "status": "verified",
+      "sha256": "c9b70b2678bf6de64e57dda2df26552f4ff9dda4951259dc4f731e380f16b305"
+    },
+    {
+      "id": "yeison-fernando-diaz-docentes",
+      "name": "Yeison Fernando Díaz",
+      "sourceName": "Yeison Fernando Díaz",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Yeison-Fernando-Diaz.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/yeison-fernando-diaz.jpg",
+      "status": "verified",
+      "sha256": "b3e864121a3422681596f0f0986232f09b87673513e9c640fa89280d94aa41c0"
+    },
+    {
+      "id": "lida-salamanca-docentes",
+      "name": "Lida Salamanca",
+      "sourceName": "Lida Salamanca",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Lida-Salamanca.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/lida-salamanca.jpg",
+      "status": "verified",
+      "sha256": "6753c175e85cae3a05661f04b7be9a031039c0e1a944c9888859c1639fa42b87"
+    },
+    {
+      "id": "karen-andrea-barrera-docentes",
+      "name": "Karen Andrea Barrera",
+      "sourceName": "Karen Andrea Barrera",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Karen-Andrea-Barrera.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/karen-andrea-barrera.jpg",
+      "status": "verified",
+      "sha256": "cafabdc6a0541c6e6d627efebf9596d32b64cb87218975ed4a201e093421192d"
+    },
+    {
+      "id": "yenny-avella-docentes",
+      "name": "Yenny Avella",
+      "sourceName": "Yenny Avella",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Yenny-Avella.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/yenny-avella.jpg",
+      "status": "verified",
+      "sha256": "b0be55c0da3de9ba03338caad48e7e270ab7930ed932455cbfe18ffc87b8da13"
+    },
+    {
+      "id": "lyd-angelica-puerto-docentes",
+      "name": "Lyd Angélica Puerto",
+      "sourceName": "Lyd Angélica Puerto",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Lyd-Angelica-Puerto.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/lyd-angelica-puerto.jpg",
+      "status": "verified",
+      "sha256": "434a53cb0c4a816b34491019d93332e0a19ce94cdba1da41686e7c0a08846c0f"
+    },
+    {
+      "id": "maria-fernanda-castillo-docentes",
+      "name": "María Fernanda Castillo",
+      "sourceName": "María Fernanda Castillo",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Maria-Fernanda-Castillo.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/maria-fernanda-castillo.jpg",
+      "status": "verified",
+      "sha256": "026b7b77ea1adb9175758fa26e45767fd95f138e388c9a3ca3b8019d60370b81"
+    },
+    {
+      "id": "huber-suarez-docentes",
+      "name": "Huber Suárez",
+      "sourceName": "Huber Suárez",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Huber-Suarez.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/huber-suarez.jpg",
+      "status": "verified",
+      "sha256": "f3ec0fd8848f81705b2a4e3f41ccb04e890c4a4d9580fd9da35b3b9afb0ce5da"
+    },
+    {
+      "id": "alba-salcedo-docentes",
+      "name": "Alba Salcedo",
+      "sourceName": "Alba Salcedo",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Alba-Salcedo.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/alba-salcedo.jpg",
+      "status": "verified",
+      "sha256": "b4d944eaa0653cf96b0d86f736798cf69d9c0e76dae42bd3603760c91b852504"
+    },
+    {
+      "id": "jenny-moreno-docentes",
+      "name": "Jenny Moreno",
+      "sourceName": "Jenny Moreno",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Jenny-Moreno.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/jenny-moreno.jpg",
+      "status": "verified",
+      "sha256": "117a43200a20ad6be4b53619ef7ef54ac0a96467fc2868f717b25b12f66f99c7"
+    },
+    {
+      "id": "gladys-yadira-africano-docentes",
+      "name": "Yadira Africano",
+      "sourceName": "Yadira Africano",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Yadira-Africano.avif",
+      "localFile": "src/assets/fotos-cedhu/personal/yadira-africano.avif",
+      "status": "verified",
+      "sha256": "87dd37e8e272491f5881aaa3310ee0d6a8b1a03e6ffd8d411ccc0de0766125c4"
+    },
+    {
+      "id": "nydia-gomez-docentes",
+      "name": "Nydia Gómez",
+      "sourceName": "Nydia Gómez",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Nydia-Gomez.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/nydia-gomez.jpg",
+      "status": "verified",
+      "sha256": "0fcfd6c0da8130efd42ef78c5a316d787df334417ee352c43e46e472d8234a65"
+    },
+    {
+      "id": "diego-bernal-docentes",
+      "name": "Diego Bernal",
+      "sourceName": "Diego Bernal",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Diego-Bernal.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/diego-bernal.jpg",
+      "status": "verified",
+      "sha256": "c1c2efdf6fc103a65f2655a2ac7db61064cbdf3e1cf8dbb69d5d33d576a373d8"
+    },
+    {
+      "id": "angie-moreno-c-docentes",
+      "name": "Angie Moreno C",
+      "sourceName": "Angie Moreno C",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Angie-Moreno.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/angie-moreno-c.jpg",
+      "status": "verified",
+      "sha256": "8b87d920421bbdb59db15d801e13b5345ccc5555fa1d1090472d282335e7f860"
+    },
+    {
+      "id": "ferney-gonzalez-docentes",
+      "name": "Ferney González",
+      "sourceName": "Ferney González",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Ferney-Gonzalez.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/ferney-gonzalez.jpg",
+      "status": "verified",
+      "sha256": "b8d8d3c4c1bb5f2edee6f5cf350c8a53177b65dc4bbe605a1ed7d7bcf3f4eeb8"
+    },
+    {
+      "id": "yasmin-gonzalez-docentes",
+      "name": "Yasmin González",
+      "sourceName": "Yasmin González",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Yasmin-Gonzalez.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/yasmin-gonzalez.jpg",
+      "status": "verified",
+      "sha256": "cfd0689db94e27d3db2b2e7cdbbfdb9428663931390f53fc5909780509b38632"
+    },
+    {
+      "id": "loren-daniela-perez-docentes",
+      "name": "Loren Daniela Pérez",
+      "sourceName": "Loren Daniela Pérez",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Loren-Perez.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/loren-daniela-perez.jpg",
+      "status": "verified",
+      "sha256": "058fecc70ddd15a04f6ce28ba68208d1dac1c218f3e8ed2fd67dc66eb4dd7459"
+    },
+    {
+      "id": "diego-salcedo-docentes",
+      "name": "Diego Salcedo",
+      "sourceName": "Diego Salcedo",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Diego-Salcedo.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/diego-salcedo.jpg",
+      "status": "verified",
+      "sha256": "9bc73a8e6e7675ea9990ea2954f62f34890542de5eb57e6ee0609175e7b7e094"
+    },
+    {
+      "id": "padre-william-chaparro-docentes",
+      "name": "Padre William Chaparro",
+      "sourceName": "Padre William Chaparro",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Padre-William-Chaparro.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/padre-william-chaparro.jpg",
+      "status": "verified",
+      "sha256": "7ab818183f7c8da71f5c055b4ae834ea990b9567404361bd873ccadca533bc13"
+    },
+    {
+      "id": "esperanza-pena-docentes",
+      "name": "Esperanza Peña",
+      "sourceName": "Esperanza Peña",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Esperanza-Pe%C3%B1a.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/esperanza-pena.jpg",
+      "status": "verified",
+      "sha256": "423d8bff530c07fa543bd5944a95213dd6f7eb1846b8ca59d7ab4300ca629c90"
+    },
+    {
+      "id": "padre-holman-horacio-herrera-chaparro-docentes",
+      "name": "Padre Holman Horacio Herrera Chaparro",
+      "sourceName": "Padre Holman Horacio Herrera Chaparro",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Padre-Holman-Horacio-Herrera.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/padre-holman-horacio-herrera-chaparro.jpg",
+      "status": "verified",
+      "sha256": "2095b3cfa1cf98fb3d527c385f94bbefdea869ab0a779b9fab2be9947b1f44bd"
+    },
+    {
+      "id": "yaqueline-barrera-docentes",
+      "name": "Yaqueline Barrera",
+      "sourceName": "Yaqueline Barrera",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Yaqueline-Barrera.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/yaqueline-barrera.jpg",
+      "status": "verified",
+      "sha256": "e3bc66bdfee93b9440e809633de5d8cb5d72e340f38d46dcc53f47b6c736fa82"
+    },
+    {
+      "id": "enrique-diaz-docentes",
+      "name": "Enrique Díaz",
+      "sourceName": "Enrique Díaz",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Enrique-Diaz.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/enrique-diaz.jpg",
+      "status": "verified",
+      "sha256": "5c592855dfa2f9c930170ec3dd05e42ac029e20e221c44312925181f87e4f794"
+    },
+    {
+      "id": "francisco-galvis-docentes",
+      "name": "Francisco Galvis",
+      "sourceName": "Francisco Galvis",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Francisco-Galvis.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/francisco-galvis.jpg",
+      "status": "verified",
+      "sha256": "88654b8cfe12d4b3f9de56da9351a014916fae3bad2dcef45e5aedd253b1467e"
+    },
+    {
+      "id": "jair-sebastian-estupinan-docentes",
+      "name": "Jair Sebastián Estupiñán",
+      "sourceName": "Jair Sebastián Estupiñán",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Jair-Sebastian-Estupinan.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/jair-sebastian-estupinan.jpg",
+      "status": "verified",
+      "sha256": "36b52d6ceb8dea90a777a28133c966e29993b4fe9ce55dc35536976128d72e61"
+    },
+    {
+      "id": "jose-esteban-montanez-docentes",
+      "name": "José Esteban Montañez",
+      "sourceName": "José Esteban Montañez",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Jose-Esteban-Montanez.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/jose-esteban-montanez.jpg",
+      "status": "verified",
+      "sha256": "37e5ea09bea2990fcfd8a3ed8ed53fb5e9b342c976303aa3151aa4d04f959aad"
+    },
+    {
+      "id": "esmeralda-diaz-docentes",
+      "name": "Esmeralda Díaz",
+      "sourceName": "Esmeralda Díaz",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Esmeralda-Diaz.avif",
+      "localFile": "src/assets/fotos-cedhu/personal/esmeralda-diaz.avif",
+      "status": "verified",
+      "sha256": "8082805656be5b1b66ea8f29ce639275925e10079070290ca02b14247535be61"
+    },
+    {
+      "id": "jairo-sandoval-docentes",
+      "name": "Jairo Sandoval",
+      "sourceName": "Jairo Sandoval",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Jairo-Sandoval.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/jairo-sandoval.jpg",
+      "status": "verified",
+      "sha256": "1105f1cca443b1bad7827338dd370e9e1c44df52d69048d328183024a1c03e1d"
+    },
+    {
+      "id": "hugo-ernesto-ruiz-fajardo-administrativos",
+      "name": "Hugo Ernesto Ruiz Fajardo",
+      "sourceName": "Hugo Ernesto Ruiz Fajardo",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/donhugo.avif",
+      "localFile": "src/assets/fotos-cedhu/personal/hugo-ernesto-ruiz-fajardo.avif",
+      "status": "verified",
+      "sha256": "627686f4e96449373328b6d1e0c6df0cc081152e63a599610d9b3203e7366958"
+    },
+    {
+      "id": "luz-mary-barrera-gil-administrativos",
+      "name": "Luz Mary Barrera Gil",
+      "sourceName": "Luz Mary Barrera Gil",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Luz-Barrera.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/luz-mary-barrera-gil.jpg",
+      "status": "verified",
+      "sha256": "46fb06fa4c17fa6cc8e562f45d865583298bdcfc83ee65e2f7d595f1c925107b"
+    },
+    {
+      "id": "paola-ochoa-aguilar-administrativos",
+      "name": "Paola Ochoa Aguilar",
+      "sourceName": "Paola Ochoa Aguilar",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Paola-Ochoa.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/paola-ochoa-aguilar.jpg",
+      "status": "verified",
+      "sha256": "bca39e869a7812d54030806c62a04f403a37175b85c55acd6db1c8f937339c23"
+    },
+    {
+      "id": "yina-paola-coy-fonseca-administrativos",
+      "name": "Yina Paola Coy Fonseca",
+      "sourceName": "Yina Paola Coy Fonseca",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Yina-Coy.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/yina-paola-coy-fonseca.jpg",
+      "status": "verified",
+      "sha256": "113ee2f62bd4b57425d7387565de2d76cb7539efa43e1611e035e6fe5f1257a7"
+    },
+    {
+      "id": "fabiola-vargas-echavarria-administrativos",
+      "name": "Fabiola Vargas Echavarría",
+      "sourceName": "Fabiola Vargas Echavarría",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Fabiola-Vargas.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/fabiola-vargas-echavarria.jpg",
+      "status": "verified",
+      "sha256": "fb1e8ac617fdfeb4795538227e1654221354af60c17f563a892f0c196f373647"
+    },
+    {
+      "id": "alexis-patarroyo-administrativos",
+      "name": "Alexis Patarroyo",
+      "sourceName": "Alexis Patarroyo",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Alexis-Patarroyo.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/alexis-patarroyo.jpg",
+      "status": "verified",
+      "sha256": "73f64d630de0364665938aab51d158b37d8a6b7b27f427c37bf1811b3a63b9f5"
+    },
+    {
+      "id": "angela-patricia-perez-perez-servicios-generales",
+      "name": "Angela Patricia Pérez Pérez",
+      "sourceName": "Angela Patricia Pérez Pérez",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Angela-Perez.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/angela-patricia-perez-perez.jpg",
+      "status": "verified",
+      "sha256": "026b8f686784a27d7fb14fbf5de9d0c01f743d8dfeb5910b44eee92d7c2f8889"
+    },
+    {
+      "id": "estela-alarcon-servicios-generales",
+      "name": "Estela Alarcón",
+      "sourceName": "Estela Alarcón",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Estela-Alarcon.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/estela-alarcon.jpg",
+      "status": "verified",
+      "sha256": "ff1eb6d4e2780199ecee11304b282703a82efc0913624d565e7c010b1fb20ddf"
+    },
+    {
+      "id": "maria-eugenia-murillo-patino-servicios-generales",
+      "name": "María Eugenia Murillo Patiño",
+      "sourceName": "María Eugenia Murillo Patiño",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Maria-Murillo.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/maria-eugenia-murillo-patino.jpg",
+      "status": "verified",
+      "sha256": "cf5a2e2a3b76289a1830c5be923d9c2cbfd1753fa05d27dd0d1b32497d009060"
+    },
+    {
+      "id": "sonia-isabel-perez-perez-servicios-generales",
+      "name": "Sonia Isabel Pérez Pérez",
+      "sourceName": "Sonia Isabel Pérez Pérez",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Sonia-Perez.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/sonia-isabel-perez-perez.jpg",
+      "status": "verified",
+      "sha256": "884d0266680ae2dfd07d6e9cd20ec1648fb89d2d893c73d2fef67a98af58bb33"
+    },
+    {
+      "id": "florangela-pineda-conde-servicios-generales",
+      "name": "Florangela Pineda Conde",
+      "sourceName": "Florangela Pineda Conde",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Florangela-Pineda.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/florangela-pineda-conde.jpg",
+      "status": "verified",
+      "sha256": "16865f38016c06d9a0c3a06add1c9ffbdda465615dd651612fe29977d9404bad"
+    },
+    {
+      "id": "hector-horacio-perez-diaz-servicios-generales",
+      "name": "Héctor Horacio Pérez Díaz",
+      "sourceName": "Héctor Horacio Pérez Díaz",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Hector-Perez.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/hector-horacio-perez-diaz.jpg",
+      "status": "verified",
+      "sha256": "c0365471fda853972b72164d4cdd68ce1d91724df7cb4bd3cf6c3ad426913e5c"
+    },
+    {
+      "id": "jorge-fabio-rusinque-bustos-servicios-generales",
+      "name": "Jorge Fabio Rusinque Bustos",
+      "sourceName": "Jorge Fabio Rusinque Bustos",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Jorge-Rusinque.jpg",
+      "localFile": "src/assets/images/logo.avif",
+      "status": "HTTP 404; institutional logo"
+    },
+    {
+      "id": "luis-carlos-rodriguez-rojas-servicios-generales",
+      "name": "Luis Carlos Rodríguez Rojas",
+      "sourceName": "Luis Carlos Rodríguez Rojas",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Luis-Rodriguez.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/luis-carlos-rodriguez-rojas.jpg",
+      "status": "verified",
+      "sha256": "0eb03a28d86ba3729c37f3548a57ff03dcff0f3c7cf5dacda0fdfbabaa1a7ed8"
+    },
+    {
+      "id": "carlos-julio-novoa-guevara-servicios-generales",
+      "name": "Carlos Julio Novoa Guevara",
+      "sourceName": "Carlos Julio Novoa Guevara",
+      "sourceUrl": "https://cedhu.edu.co/static/core/img/Carlos-Novoa.jpg",
+      "localFile": "src/assets/fotos-cedhu/personal/carlos-julio-novoa-guevara.jpg",
+      "status": "verified",
+      "sha256": "838bf096280ccf94dfc2327e1251a8bb31ed61c53290d92f40415f09e89f609a"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+---
+import MenuLinks from './MenuLinks.astro';
+import Icon from '../common/Icon.astro';
+import '../../styles/components/mobile-more-sheet.css';
+---
+<dialog class="mobile-more-sheet" id="mobile-more-sheet" aria-labelledby="mobile-more-title">
+  <div class="mobile-more-sheet__content">
+    <button class="mobile-more-sheet__handle" type="button" data-more-close aria-label="Cerrar menú"><span aria-hidden="true"></span></button>
+    <div class="mobile-more-sheet__heading">
+      <h2 id="mobile-more-title">Más</h2>
+      <button class="mobile-more-sheet__close" type="button" data-more-close aria-label="Cerrar menú" autofocus><Icon name="close" /></button>
+    </div>
+    <nav aria-label="Más opciones de navegación"><MenuLinks secondaryOnly /></nav>
+  </div>
+</dialog>
+<noscript>
+  <nav class="mobile-more-fallback container" id="mobile-more-fallback" aria-label="Más opciones de navegación">
+    <h2>Más</h2>
+    <MenuLinks secondaryOnly />
+  </nav>
+</noscript>
+<script>import '../../scripts/interactions/mobile-more-sheet';</script>

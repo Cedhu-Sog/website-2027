@@ -1,0 +1,15 @@
+.levels__grid { display: grid; gap: var(--space-lg); }
+.level { min-width: 0; }
+.level__image { display: block; overflow: hidden; background: var(--color-tint); }
+.level__image img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; transition: transform var(--duration-normal) var(--ease-standard); }
+.level:hover img { transform: scale(1.035); }
+.level--inicial .level__image { border-radius: 5rem 0 0 0; }
+.level--bachillerato .level__image { border-radius: 0 0 5rem 0; }
+.level__heading { display: flex; align-items: center; gap: .8rem; margin-block: var(--space-md) .75rem; }
+.level__heading > span:first-child { font-size: .75rem; color: var(--color-text-muted); }
+.level__heading > span:last-child { margin-left: auto; font-size: 1.5rem; color: var(--color-primary); }
+.level__heading h3 { font-size: 1.4rem; }
+.level__heading a { text-decoration: none; }
+.level__heading a:hover { text-decoration: underline; }
+.level > p { font-size: .9rem; color: var(--color-text-muted); max-width: 34rem; }
+@media (min-width: 48rem) { .levels__grid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: var(--space-md); } .level--primaria { padding-top: 2.25rem; } .level--bachillerato { padding-top: 4.5rem; } }

@@ -1,0 +1,17 @@
+---
+import { site } from '../../data/site';
+import Accessibility from './Accessibility.astro';
+import '../../styles/components/footer.css';
+---
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__main">
+      <div class="site-footer__identity"><a href="/" class="site-footer__wordmark">CEDHU<span aria-hidden="true">.</span></a><p>{site.fullName}</p><p class="site-footer__motto">{site.motto}</p><p>{site.address}<br />{site.city}, Colombia</p></div>
+      <nav aria-label="Explorar CEDHU"><h2>Conócenos</h2><a href="/nosotros/">Nuestro colegio</a><a href="/oferta-educativa/">Propuesta educativa</a><a href="/nosotros/pedagogia-de-la-felicidad/">Pedagogía de la Felicidad</a><a href="/nosotros/espacios/">Nuestros espacios</a><a href="/noticias/">Vida CEDHU</a></nav>
+      <nav aria-label="Servicios para familias"><h2>Para las familias</h2><a href="/admisiones/">Admisiones</a><a href="/servicios-en-linea/">Servicios en línea</a><a href="/documentos/">Documentos</a><a href="/ludicas/">Lúdicas</a><a href="/admisiones/#preguntas">Preguntas frecuentes</a></nav>
+      <div class="site-footer__contact"><h2>Conversemos</h2><a href={`mailto:${site.email}`}>{site.email}</a>{site.phones.map(phone => <a href={phone.href}>{phone.label}</a>)}<a href={site.whatsapp} target="_blank" rel="noopener noreferrer">WhatsApp <span aria-hidden="true">↗</span><span class="sr-only"> (abre en otra pestaña)</span></a><div class="site-footer__socials">{site.socials.map(link => <a href={link.href} target="_blank" rel="noopener noreferrer">{link.label}<span class="sr-only"> (abre en otra pestaña)</span></a>)}</div></div>
+    </div>
+    <Accessibility />
+    <div class="site-footer__legal"><p>© {new Date().getFullYear()} CEDHU. Todos los derechos reservados.</p><a href="/documentos/#proteccion-de-datos">Tratamiento de datos personales</a><a href="/contacto/">Contacto</a></div>
+  </div>
+</footer>
