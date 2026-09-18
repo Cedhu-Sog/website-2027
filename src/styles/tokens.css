@@ -44,6 +44,7 @@
   --shadow-mobile-logo: 0 2px 8px #103e2e0a;
   --floating-logo-width: 8.5rem;
   --floating-logo-height: 3rem;
+  --compact-logo-image-height: 2.125rem;
   --color-glass-background: rgba(255, 255, 255, .55);
   --color-glass-border: rgba(255, 255, 255, .35);
   --color-glass-highlight: rgba(255, 255, 255, .28);

@@ -5,17 +5,16 @@ import { navigation, site } from '../../data/site';
 import Icon from '../common/Icon.astro';
 import MenuLinks from './MenuLinks.astro';
 import PlatformLinks from './PlatformLinks.astro';
-import FloatingLogo from './FloatingLogo.astro';
 import '../../styles/components/header.css';
 const current = Astro.url.pathname;
 ---
-<header class:list={['site-header', current === '/' && 'site-header--scroll-logo']}>
+<header class="site-header site-header--scroll-logo">
   <div class="site-header__utility container">
     <span>{site.fullName} <span aria-hidden="true">·</span> {site.city}</span>
     <div class="site-header__community"><span>Comunidad CEDHU</span><PlatformLinks /></div>
   </div>
   <div class="site-header__main container">
-    <a class="site-header__brand" href="/" aria-label="CEDHU, ir al inicio"><Image {...media.logo} width={135} height={61} loading="eager" /></a>
+    <a class="site-header__brand" href="/" aria-label="CEDHU, ir al inicio"><Image {...media.logo} width={135} height={61} loading="eager" data-floating-logo-trigger /></a>
     <nav class="desktop-nav" aria-label="Navegación principal">
       <ul>{navigation.map(item => <li>
         {item.children ? <details class="nav-dropdown" data-nav-dropdown>
@@ -34,5 +33,4 @@ const current = Astro.url.pathname;
     </details>
   </div>
 </header>
-{current === '/' && <FloatingLogo />}
 <script>import '../../scripts/interactions/navigation';</script>

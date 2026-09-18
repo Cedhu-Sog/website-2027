@@ -23,6 +23,8 @@ for (const file of htmlFiles) {
   const check = (valid, message) => { if (!valid) errors.push(`${route}: ${message}`); };
   check((html.match(/<h1(?:\s|>)/g) ?? []).length === 1, 'must contain exactly one h1');
   check((html.match(/<main(?:\s|>)/g) ?? []).length === 1, 'must contain exactly one main');
+  check((html.match(/\bdata-floating-logo(?=[\s=>])/g) ?? []).length === 1, 'must contain exactly one global floating logo');
+  check((html.match(/\bdata-floating-logo-trigger(?=[\s=>])/g) ?? []).length === 1, 'must contain exactly one floating logo trigger');
   check(new Set(ids).size === ids.length, 'duplicate element IDs');
   check(Boolean(title) && !titles.has(title), 'missing or duplicated page title');
   titles.add(title);

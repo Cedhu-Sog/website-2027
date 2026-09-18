@@ -32,6 +32,16 @@ Ejecutar siempre `build` antes de `check:site`. No hay comandos de lint o typech
 - `public/documentos/` y `public/videos/`: nueve PDFs y el recorrido institucional original.
 - `scripts/check-site.mjs`: validación del HTML generado con módulos nativos de Node.
 
+### Logo global en móvil y tablet
+
+Todas las páginas deben componer `BaseLayout.astro`, incluidas las rutas generadas desde Content Collections. El layout monta una sola instancia de `navigation/FloatingLogo.astro`; no importar el pill, su CSS ni su script desde las páginas.
+
+`Header.astro` proporciona la barra inicial y marca su imagen con `data-floating-logo-trigger`. Así, cualquier hero (o una página sin hero) hereda el mismo comportamiento sin configuración. El único controlador, `src/scripts/interactions/floating-logo.ts`, observa ese elemento; si falta el atributo, observa el logo del encabezado como respaldo, sin umbrales de `scrollY`. Si tampoco existe ese logo, el pill permanece oculto. Mantener un único trigger en el documento.
+
+El componente importa `src/styles/components/floating-logo.css` y el controlador. La barra usa `header.css` y ambos estados comparten los tokens de tamaño. Por debajo de `62rem`, el logo original sale con la página y el pill aparece cuando deja de intersectar el viewport. Escritorio conserva su encabezado sticky. El controlador desconecta el observador y el listener responsive en `pagehide`, y los restablece en `pageshow` para la navegación atrás/adelante. Sin JavaScript, la barra inicial sigue disponible y el pill queda oculto.
+
+`npm run check:site` exige exactamente un pill y un trigger en cada HTML generado. Para comprobar nuevas páginas, revisar inicio, scroll, regreso arriba, navegación atrás y los límites responsive.
+
 ## Rutas
 
 El build incluye 27 páginas HTML (22 páginas editoriales, cuatro noticias y la página 404), además de `sitemap.xml` y `robots.txt`.
