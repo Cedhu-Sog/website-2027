@@ -7,7 +7,6 @@
 .level--bachillerato .level__image { border-radius: 0 0 5rem 0; }
 .level__heading { display: flex; align-items: center; gap: .8rem; margin-block: var(--space-md) .75rem; }
 .level__heading > span:first-child { font-size: .75rem; color: var(--color-text-muted); }
-.level__heading > span:last-child { margin-left: auto; font-size: 1.5rem; color: var(--color-primary); }
 .level__heading h3 { font-size: 1.4rem; }
 .level__heading a { text-decoration: none; }
 .level__heading a:hover { text-decoration: underline; }

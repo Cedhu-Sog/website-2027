@@ -10,7 +10,7 @@ import cienciaCedhu from '../assets/fotos-cedhu/feria-cientifica-experimentacion
 import logo from '../assets/images/logo.avif';
 import inicial from '../assets/images/inicial.jpg';
 import primaria from '../assets/images/primaria.jpg';
-import bachillerato from '../assets/images/bachillerato.png';
+import bachillerato from '../assets/images/bachillerato.webp';
 import valores from '../assets/images/valores.jpeg';
 import musica from '../assets/images/musica.jpeg';
 import laboratorio from '../assets/images/laboratorio.jpg';
@@ -44,7 +44,7 @@ export const media = {
   logo: { src: logo, alt: 'CEDHU — Centro de Desarrollo Humano. Orden es Bienestar.' },
   inicial: { src: inicial, alt: 'Educandos de preescolar en una actividad de aula del CEDHU.' },
   primaria: { src: primaria, alt: 'Educandos de primaria trabajando en su salón de clase.' },
-  bachillerato: { src: bachillerato, alt: 'Educandos del CEDHU durante una actividad académica.' },
+  bachillerato: { src: bachillerato, alt: 'Tres educandos de bachillerato del CEDHU con uniforme en el patio del colegio.' },
   valores: { src: valores, alt: 'Educandos compartiendo una actividad en el aula.' },
   musica: { src: musica, alt: 'Presentación musical de la Tuna del CEDHU.' },
   laboratorio: { src: laboratorio, alt: 'Educandos realizando una práctica en el laboratorio del CEDHU.' },

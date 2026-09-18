@@ -5,10 +5,11 @@ import { navigation, site } from '../../data/site';
 import Icon from '../common/Icon.astro';
 import MenuLinks from './MenuLinks.astro';
 import PlatformLinks from './PlatformLinks.astro';
+import FloatingLogo from './FloatingLogo.astro';
 import '../../styles/components/header.css';
 const current = Astro.url.pathname;
 ---
-<header class="site-header">
+<header class:list={['site-header', current === '/' && 'site-header--scroll-logo']}>
   <div class="site-header__utility container">
     <span>{site.fullName} <span aria-hidden="true">·</span> {site.city}</span>
     <div class="site-header__community"><span>Comunidad CEDHU</span><PlatformLinks /></div>
@@ -33,4 +34,5 @@ const current = Astro.url.pathname;
     </details>
   </div>
 </header>
+{current === '/' && <FloatingLogo />}
 <script>import '../../scripts/interactions/navigation';</script>

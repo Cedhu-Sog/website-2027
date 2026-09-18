@@ -8,7 +8,6 @@
 .technology__number { color: var(--color-accent); font-size: .75rem; }
 .technology__areas strong { display: block; font-size: clamp(1.1rem, 1.8vw, 1.45rem); font-weight: 500; line-height: 1.35; }
 .technology__areas a > span > span { display: block; margin-top: .4rem; font-size: .8rem; color: color-mix(in srgb, var(--color-on-dark) 70%, transparent); }
-.technology__areas a > span:last-child { margin-left: auto; }
 .technology__areas > a:hover strong { color: var(--color-accent); }
 .technology__areas .text-link { margin-top: var(--space-md); }
 @media (min-width: 48rem) { .technology__heading { grid-template-columns: 1.3fr 1fr; align-items: end; gap: var(--space-xl); } .technology__body { grid-template-columns: 1.3fr 1fr; } }

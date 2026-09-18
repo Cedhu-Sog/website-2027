@@ -32,6 +32,6 @@ const projectId = `proyecto-${project.slug}`;
   </div>}
   {!!project.pdfs?.length && <section class="research-project__documents" aria-labelledby={`${projectId}-documents`}>
     <h4 id={`${projectId}-documents`}>Documentos del proyecto</h4>
-    <ul>{project.pdfs.map(pdf => <li><span>{pdf.title} <span class="research-project__format">PDF</span></span><div class="research-project__document-actions"><a class="text-link" href={pdf.href} type="application/pdf">Ver documento<span class="sr-only">: {pdf.title}</span><span aria-hidden="true">↗</span></a><a class="text-link" href={pdf.href} download>Descargar PDF<span class="sr-only">: {pdf.title}</span><span aria-hidden="true">↓</span></a></div></li>)}</ul>
+    <ul>{project.pdfs.map(pdf => <li><span>{pdf.title} <span class="research-project__format">PDF</span></span><div class="research-project__document-actions"><a class="text-link" href={pdf.href} type="application/pdf">Ver documento<span class="sr-only">: {pdf.title}</span></a><a class="text-link" href={pdf.href} download>Descargar PDF<span class="sr-only">: {pdf.title}</span></a></div></li>)}</ul>
   </section>}
 </article>

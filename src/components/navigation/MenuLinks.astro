@@ -10,11 +10,11 @@ const items = secondaryOnly ? navigation.filter(item => item.href !== '/contacto
 ---
 <div class="menu-links">
   <div class="menu-links__platforms"><PlatformLinks showNames /></div>
-  {!secondaryOnly && <a href="/" aria-current={current === '/' ? 'page' : undefined}>Inicio <span aria-hidden="true">↗</span></a>}
+  {!secondaryOnly && <a href="/" aria-current={current === '/' ? 'page' : undefined}>Inicio</a>}
   {items.map(item => item.children ? <details>
     <summary>{item.label}<Icon name="chevron" /></summary>
     <ul>{item.children.map(child => <li><a href={child.href} aria-current={current === child.href ? 'page' : undefined}>{child.label}</a></li>)}</ul>
-  </details> : <a href={item.href} aria-current={current === item.href ? 'page' : undefined}>{item.label}<span aria-hidden="true">↗</span></a>)}
-  {!secondaryOnly && <a href="/admisiones/">Admisiones <span aria-hidden="true">↗</span></a>}
-  <a href="/documentos/" aria-current={secondaryOnly && current === '/documentos/' ? 'page' : undefined}>Documentos <span aria-hidden="true">↗</span></a>
+  </details> : <a href={item.href} aria-current={current === item.href ? 'page' : undefined}>{item.label}</a>)}
+  {!secondaryOnly && <a href="/admisiones/">Admisiones</a>}
+  <a href="/documentos/" aria-current={secondaryOnly && current === '/documentos/' ? 'page' : undefined}>Documentos</a>
 </div>

@@ -42,6 +42,14 @@
   --mobile-dock-height: calc(4.05rem + env(safe-area-inset-bottom));
   --text-mobile-dock: clamp(.6875rem, 3vw, .75rem);
   --shadow-mobile-logo: 0 2px 8px #103e2e0a;
+  --floating-logo-width: 8.5rem;
+  --floating-logo-height: 3rem;
+  --color-glass-background: rgba(255, 255, 255, .55);
+  --color-glass-border: rgba(255, 255, 255, .35);
+  --color-glass-highlight: rgba(255, 255, 255, .28);
+  --shadow-glass: 0 8px 24px rgba(0, 0, 0, .10), inset 0 1px 0 var(--color-glass-highlight);
+  --blur-glass: 18px;
+  --duration-floating-logo: 250ms;
   --color-mobile-backdrop: #103e2e26;
   --shadow-menu: 0 16px 45px #103e2e18;
   --duration-fast: 180ms;

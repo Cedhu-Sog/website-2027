@@ -10,5 +10,5 @@ interface Props { content?: PageSection<'educationalLevels'>; }
 ---
 <section class="levels section section--white" aria-label="Niveles educativos"><div class="container">
   <SectionHeader eyebrow={content.eyebrow} title={content.title} href={content.linkHref} linkLabel={content.linkLabel} />
-  <div class="levels__grid">{levels.map((level, i) => <article class={`level level--${level.slug}`}><a class="level__image" href={`/oferta-educativa/${level.slug}/`} tabindex="-1" aria-hidden="true"><Photo name={level.image} sizes="(min-width: 768px) 30vw, 90vw" /></a><div class="level__heading"><span>0{i+1}</span><h3><a href={`/oferta-educativa/${level.slug}/`}>{level.name}</a></h3><span aria-hidden="true">↗</span></div><p>{level.intro}</p></article>)}</div>
+  <div class="levels__grid">{levels.map((level, i) => <article class={`level level--${level.slug}`}><a class="level__image" href={`/oferta-educativa/${level.slug}/`} tabindex="-1" aria-hidden="true"><Photo name={level.image} sizes="(min-width: 768px) 30vw, 90vw" /></a><div class="level__heading"><span>0{i+1}</span><h3><a href={`/oferta-educativa/${level.slug}/`}>{level.name}</a></h3></div><p>{level.intro}</p></article>)}</div>
 </div></section>

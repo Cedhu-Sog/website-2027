@@ -7,6 +7,6 @@ const { item } = Astro.props;
 <article class="news-card" data-news-category={item.category}>
   <a class="news-card__image" href={`/noticias/${item.slug}/`} tabindex="-1" aria-hidden="true"><Photo name={item.image} sizes="(min-width: 768px) 35vw, 90vw" /></a>
   <div class="news-card__meta"><span>{item.category}</span>{item.date ? <time datetime={item.date}>{item.dateLabel}</time> : <span>{item.dateLabel}</span>}</div>
-  <h3><a href={`/noticias/${item.slug}/`}>{item.title}<span aria-hidden="true">↗</span></a></h3>
+  <h3><a href={`/noticias/${item.slug}/`}>{item.title}</a></h3>
   <p>{item.description}</p>
 </article>

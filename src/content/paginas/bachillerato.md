@@ -5,7 +5,7 @@ description: Una formación que une competencias académicas, sociales y tecnol�
 heroTitle: Pensar con criterio. Construir un camino propio.
 heroDescription: Una formación que une competencias académicas, sociales y tecnológicas con el proyecto de vida.
 heroEyebrow: Ideas con propósito
-heroImage: aulaCedhu
+heroImage: bachillerato
 education:
   order: 2
   methodology: Retos que invitan a ir más allá
