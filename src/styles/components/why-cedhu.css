@@ -81,14 +81,6 @@
 }
 
 @media (min-width: 48rem) {
-  .why-cedhu__sticky {
-    display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-    gap: var(--space-lg);
-    align-items: center;
-  }
-
-  .why-cedhu__photo { margin-top: 0; }
   .why-cedhu__item { column-gap: var(--space-md); }
 }
 
@@ -102,6 +94,9 @@
   .why-cedhu__intro { align-self: stretch; }
 
   .why-cedhu__sticky {
+    /* The stretched outer column bounds the entire block's sticky travel. */
+    position: sticky;
+    top: calc(var(--header-desktop-height) + var(--space-md));
     display: block;
     align-self: start;
   }
@@ -126,19 +121,23 @@
   .why-cedhu__photo { margin-top: var(--space-md); }
 
   .why-cedhu__photo img {
-    height: clamp(13.75rem, 34svh, 17.5rem);
+    height: clamp(9.375rem, 25dvh, 14.375rem);
     aspect-ratio: auto;
     object-position: 50% 30%;
   }
 }
 
-/* The outer column stretches to the list's height and bounds the single sticky
-   wrapper containing the heading, introduction, photograph and caption. */
-@media (min-width: 62rem) and (min-height: 44rem) {
-  .why-cedhu__sticky {
-    position: sticky;
-    top: calc(var(--header-desktop-height) + var(--space-md));
+/* Height only compacts the content; sticky activation depends on width. */
+@media (min-width: 62rem) and (max-height: 45rem) {
+  .why-cedhu__intro .eyebrow { margin-bottom: var(--space-xs); }
+
+  .why-cedhu__intro h2 {
+    font-size: calc(var(--text-h2) * .85);
+    line-height: 1.02;
   }
+
+  .why-cedhu__description { margin-top: var(--space-xs); }
+  .why-cedhu__photo { margin-top: var(--space-sm); }
 }
 
 @media print {
