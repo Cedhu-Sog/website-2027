@@ -81,7 +81,7 @@
 }
 
 @media (min-width: 48rem) {
-  .why-cedhu__intro {
+  .why-cedhu__sticky {
     display: grid;
     grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
     gap: var(--space-lg);
@@ -99,7 +99,9 @@
     align-items: start;
   }
 
-  .why-cedhu__intro {
+  .why-cedhu__intro { align-self: stretch; }
+
+  .why-cedhu__sticky {
     display: block;
     align-self: start;
   }
@@ -130,15 +132,15 @@
   }
 }
 
-/* Keep short viewports in normal flow rather than clipping the introduction.
-   The grid's natural height (set by the list) bounds the sticky travel. */
+/* The outer column stretches to the list's height and bounds the single sticky
+   wrapper containing the heading, introduction, photograph and caption. */
 @media (min-width: 62rem) and (min-height: 44rem) {
-  .why-cedhu__intro {
+  .why-cedhu__sticky {
     position: sticky;
     top: calc(var(--header-desktop-height) + var(--space-md));
   }
 }
 
 @media print {
-  .why-cedhu__intro { position: static; }
+  .why-cedhu__sticky { position: static; }
 }

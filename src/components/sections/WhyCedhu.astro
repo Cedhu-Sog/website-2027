@@ -11,15 +11,17 @@ const content = Astro.props.content ?? await getPageSection('inicio', 'whyCedhu'
 <section class="why-cedhu section section--white" id="por-que-cedhu" aria-labelledby="why-cedhu-title">
   <div class="why-cedhu__layout container">
     <div class="why-cedhu__intro">
-      <header>
-        <p class="eyebrow">{content.eyebrow}</p>
-        <h2 id="why-cedhu-title">{content.titleStart} <em>{content.titleEmphasis}</em></h2>
-        <p class="why-cedhu__description">{content.introduction}</p>
-      </header>
-      <figure class="why-cedhu__photo">
-        <Photo name={content.image} sizes="(min-width: 1440px) 520px, (min-width: 768px) 40vw, 90vw" />
-        <figcaption>{content.photoCaption}</figcaption>
-      </figure>
+      <div class="why-cedhu__sticky">
+        <header>
+          <p class="eyebrow">{content.eyebrow}</p>
+          <h2 id="why-cedhu-title">{content.titleStart} <em>{content.titleEmphasis}</em></h2>
+          <p class="why-cedhu__description">{content.introduction}</p>
+        </header>
+        <figure class="why-cedhu__photo">
+          <Photo name={content.image} sizes="(min-width: 1440px) 520px, (min-width: 768px) 40vw, 90vw" />
+          <figcaption>{content.photoCaption}</figcaption>
+        </figure>
+      </div>
     </div>
     <div class="why-cedhu__experiences">
       <ul class="why-cedhu__list" role="list">
