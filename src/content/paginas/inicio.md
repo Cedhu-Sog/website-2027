@@ -31,6 +31,45 @@ hero:
   footerDescription: Un colegio para crecer en todas las dimensiones.
   discoverLabel: Descubre el CEDHU
   levelsLabel: INICIAL · PRIMARIA · BACHILLERATO
+# Síntesis del Manual de Convivencia, cap. II, apartados 4–10 (pp. 33–37)
+# y anexo 1, Política de Inclusión (pp. 174–179). Son propósitos formativos,
+# no garantías de resultados individuales ni un catálogo de servicios.
+whyCedhu:
+  eyebrow: ¿Por qué elegir el CEDHU?
+  titleStart: Crecer, con todo
+  titleEmphasis: lo que eres.
+  introduction: >-
+    Cada educando puede conocerse, convivir y dar forma a sus ideas,
+    mientras desarrolla habilidades que lo acompañen en la vida.
+  image: educandaAulaCedhu
+  photoCaption: Un educando, muchas posibilidades de crecer.
+  experiences:
+    - title: Aprender con bienestar
+      description: >-
+        Encontrar gusto en aprender, fortalecer sus valores y cuidar la relación
+        consigo mismo y con los demás, buscando bienestar.
+    - title: Crecer en todas sus dimensiones
+      description: >-
+        Desarrollar sus conocimientos, cuidar su cuerpo y comprender sus emociones,
+        sin separar sus vínculos, su pensamiento y su vida espiritual.
+    - title: Preguntar, crear y descubrir
+      description: >-
+        Hacer preguntas e investigar. Desarrollar su pensamiento crítico y su creatividad
+        para analizar situaciones, explorar respuestas y construir soluciones.
+    - title: Convivir desde el respeto
+      description: >-
+        Reconocer sus derechos y los de los demás. Dialogar, mediar y construir acuerdos,
+        con respeto por las diferencias.
+    - title: Decidir y construir su camino
+      description: >-
+        Tomar decisiones, cumplir compromisos y comprender sus consecuencias:
+        pasos para ejercer su libertad con responsabilidad y construir su propio camino.
+    - title: Crecer desde su individualidad
+      description: >-
+        Aprender desde sus capacidades, intereses y necesidades, con apoyos que reconocen
+        su individualidad y favorecen su participación junto a los demás.
+  linkLabel: Conoce la propuesta educativa
+  linkHref: /oferta-educativa/
 humanFormation:
   image: horizonte
   photoCaption: EL SER, EN EL CENTRO.

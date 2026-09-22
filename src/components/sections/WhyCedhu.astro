@@ -1,0 +1,41 @@
+---
+import { getPageSection, type PageSection } from '../../lib/content';
+import Photo from '../common/Photo.astro';
+import Icon from '../common/Icon.astro';
+import '../../styles/components/why-cedhu.css';
+
+interface Props { content?: PageSection<'whyCedhu'>; }
+const content = Astro.props.content ?? await getPageSection('inicio', 'whyCedhu');
+---
+
+<section class="why-cedhu section section--white" id="por-que-cedhu" aria-labelledby="why-cedhu-title">
+  <div class="why-cedhu__layout container">
+    <div class="why-cedhu__intro">
+      <header>
+        <p class="eyebrow">{content.eyebrow}</p>
+        <h2 id="why-cedhu-title">{content.titleStart} <em>{content.titleEmphasis}</em></h2>
+        <p class="why-cedhu__description">{content.introduction}</p>
+      </header>
+      <figure class="why-cedhu__photo">
+        <Photo name={content.image} sizes="(min-width: 1440px) 520px, (min-width: 768px) 40vw, 90vw" />
+        <figcaption>{content.photoCaption}</figcaption>
+      </figure>
+    </div>
+    <div class="why-cedhu__experiences">
+      <ul class="why-cedhu__list" role="list">
+        {content.experiences.map((experience, index) => (
+          <li class="why-cedhu__item">
+            <span class="why-cedhu__number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+            <div>
+              <h3>{experience.title}</h3>
+              <p>{experience.description}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <a class="text-link why-cedhu__link" href={content.linkHref}>
+        {content.linkLabel}<Icon />
+      </a>
+    </div>
+  </div>
+</section>

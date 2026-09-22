@@ -2,6 +2,7 @@ import type { ImageMetadata } from 'astro';
 import type { mediaKeys } from './media-keys';
 import aulaCedhu from '../assets/fotos-cedhu/aprendizaje-en-el-aula.webp';
 import lecturaCedhu from '../assets/fotos-cedhu/lectura-en-primaria.webp';
+import educandaAulaCedhu from '../assets/fotos-cedhu/educanda-aprendiendo-en-el-aula.webp';
 import instalacionesCedhu from '../assets/fotos-cedhu/instalaciones-vista-aerea.webp';
 import comunidadCedhu from '../assets/fotos-cedhu/encuentro-musical-comunidad.webp';
 import encuentroCedhu from '../assets/fotos-cedhu/reconocimiento-institucional.webp';
@@ -36,6 +37,8 @@ export const media = {
   // Selección editorial del lote: docs/FOTOGRAFIAS-CEDHU.md.
   aulaCedhu: { src: aulaCedhu, alt: 'Educandos del CEDHU escriben en sus cuadernos durante una actividad de aula.' },
   lecturaCedhu: { src: lecturaCedhu, alt: 'Un educando del CEDHU trabaja en su libro junto a sus compañeros de primaria.' },
+  // Fotografía facilitada para la sección «¿Por qué elegir el CEDHU?»: IMG_5953.jpg.
+  educandaAulaCedhu: { src: educandaAulaCedhu, alt: 'Una educanda del CEDHU escribe en su libro durante una actividad en el aula.' },
   instalacionesCedhu: { src: instalacionesCedhu, alt: 'Vista aérea del CEDHU en Sogamoso, con la entrada principal, los edificios y el patio central.' },
   comunidadCedhu: { src: comunidadCedhu, alt: 'Una educanda y un adulto interpretan instrumentos de cuerda durante un encuentro del CEDHU.' },
   encuentroCedhu: { src: encuentroCedhu, alt: 'Integrantes de la comunidad del CEDHU reciben menciones de honor en un encuentro institucional.' },

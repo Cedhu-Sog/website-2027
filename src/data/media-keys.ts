@@ -2,6 +2,7 @@
 export const mediaKeys = [
   "aulaCedhu",
   "lecturaCedhu",
+  "educandaAulaCedhu",
   "instalacionesCedhu",
   "comunidadCedhu",
   "encuentroCedhu",

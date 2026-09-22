@@ -2,6 +2,7 @@
 import { getPage } from '../lib/content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/sections/Hero.astro';
+import WhyCedhu from '../components/sections/WhyCedhu.astro';
 import QuickAccess from '../components/sections/QuickAccess.astro';
 import IdentityIntro from '../components/sections/IdentityIntro.astro';
 import EducationalLevels from '../components/sections/EducationalLevels.astro';
@@ -13,5 +14,7 @@ import AdmissionsCTA from '../components/sections/AdmissionsCTA.astro';
 const page = await getPage('inicio');
 ---
 <BaseLayout title={page.title} description={page.description}>
-  <Hero page={page} /><QuickAccess /><IdentityIntro /><EducationalLevels /><Technology /><HumanFormation /><NewsSection /><FAQ compact /><AdmissionsCTA />
+  <Hero page={page} />
+  <WhyCedhu />
+  <QuickAccess /><IdentityIntro /><EducationalLevels /><Technology /><HumanFormation /><NewsSection /><FAQ compact /><AdmissionsCTA />
 </BaseLayout>

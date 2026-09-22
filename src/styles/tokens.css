@@ -37,6 +37,8 @@
   --radius-editorial: clamp(3rem, 7vw, 7rem);
   --radius-pill: 999px;
   --radius-mobile-navigation: 1.25rem;
+  /* Desktop header: utility row (2.15rem), main row (5.45rem), outer border. */
+  --header-desktop-height: calc(7.6rem + 1px);
   --mobile-logo-width: 7.5rem;
   --mobile-logo-height: 3.375rem;
   --mobile-dock-height: calc(4.05rem + env(safe-area-inset-bottom));
