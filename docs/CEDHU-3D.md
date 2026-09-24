@@ -1,5 +1,22 @@
 # Integración de la maqueta CEDHU
 
+## Actualización de logos institucionales — 24 de septiembre de 2026
+
+El recurso `public/models/cedhu/cedhu.glb` incorpora el logo oficial en ambas
+fachadas, el círculo central de la cancha y los dos tableros existentes.
+El póster de respaldo se actualizó con el mismo encuadre. Se conservan los
+recursos anteriores en `assets/3d/cedhu/original/`, junto al nuevo editable y
+exportación versionada en `assets/3d/cedhu/`.
+
+El GLB nuevo pesa 889.256 bytes y contiene una textura PNG compartida,
+19 mallas y 15.614 triángulos. Se verificó en el visor web existente. No se
+modificaron archivos de Astro, CSS ni TypeScript, ni el comportamiento de
+mouse, tacto o scroll. Las cifras de cero texturas de la integración original
+documentada abajo describen la versión anterior.
+
+Los detalles de ubicación, conservación y comprobación están en
+`assets/3d/cedhu/README.md` y los informes y vistas en su carpeta `qa/`.
+
 Integrada el 24 de septiembre de 2026 en el proyecto existente `cedhu-web-2027`.
 La portada incorpora `CampusModel` inmediatamente después de `Hero`. El hero,
 sus fotografías, textos y enlaces se conservan completos. Las rutas, el layout,

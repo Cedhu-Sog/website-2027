@@ -1,0 +1,42 @@
+{
+  "original_bytes": 920120,
+  "new_bytes": 889256,
+  "difference_bytes": -30864,
+  "original_web_nodes_preserved": [
+    "CEDHU | Aluminio | paneles y malla",
+    "CEDHU | Amarillo | identidad",
+    "CEDHU | Cancha | azul",
+    "CEDHU | Cancha | verde",
+    "CEDHU | Carbon | cubierta curva",
+    "CEDHU | Gris | cubiertas",
+    "CEDHU | Ladrillo | junta",
+    "CEDHU | Ladrillo | terracota",
+    "CEDHU | Marfil | muros",
+    "CEDHU | Patio | rojo",
+    "CEDHU | Piedra | base",
+    "CEDHU | Solar | azul",
+    "CEDHU | Suelo | claro",
+    "CEDHU | Tierra",
+    "CEDHU | Vegetacion",
+    "CEDHU | Verde claro | marquesinas",
+    "CEDHU | Verde | institucional",
+    "CEDHU | Vidrio | opaco azulado"
+  ],
+  "same_node_transforms": true,
+  "same_original_materials": true,
+  "same_bounds": [
+    [
+      -27.5,
+      -1.3273835182189941,
+      -22
+    ],
+    [
+      27.5,
+      14.589983940124512,
+      30.751811981201172
+    ]
+  ],
+  "embedded_textures": 1,
+  "triangles": 15614,
+  "meshes": 19
+}

@@ -1,0 +1,59 @@
+00:08.563  blend            | Read blend: "C:\Users\Cedhu IT\Documents\Codex\2026-09-24\quiero-crear-un-modelo-3d-optimizado\outputs\blender\cedhu-estilizado.blend"
+C:\Users\Cedhu IT\Documents\cedhu-web-2027\scripts\blender\add_cedhu_logos.py:49: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  material.use_nodes = True
+Info: Guardado como "cedhu-institucional.blend"
+Advertencia: Ningún dato de malla a unir
+Advertencia: Ningún dato de malla a unir
+INFO Draco is available, use library at C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_draco_bridge.dll
+INFO MeshOptimizer is available, use library at C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_meshopt_bridge.dll
+17:20:40 | INFO: Starting glTF 2.0 export
+17:20:40 | INFO: Extracting primitive: Panel solar | bastidor.020
+17:20:40 | INFO: Primitives created: 1
+17:20:40 | INFO: Extracting primitive: Cinta amarilla frontal.002
+17:20:40 | INFO: Primitives created: 1
+17:20:40 | INFO: Extracting primitive: Cancha azul.001
+17:20:40 | INFO: Primitives created: 1
+17:20:40 | INFO: Extracting primitive: Cancha centro verde.001
+17:20:40 | INFO: Primitives created: 1
+17:20:40 | INFO: Extracting primitive: Membrana negra curva.001
+17:20:40 | INFO: Primitives created: 1
+17:20:40 | INFO: Extracting primitive: Logo | Fachada derecha.001
+17:20:40 | WARNING: More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.
+17:20:40 | INFO: Primitives created: 1
+17:20:40 | INFO: Extracting primitive: Cubierta posterior.002
+17:20:40 | INFO: Primitives created: 1
+17:20:40 | INFO: Extracting primitive: Junta ladrillo fachada.008
+17:20:40 | INFO: Primitives created: 1
+17:20:40 | INFO: Extracting primitive: Volumen de ladrillo.001
+17:20:40 | INFO: Primitives created: 1
+17:20:40 | INFO: Extracting primitive: Piso superior marfil.001
+17:20:40 | INFO: Primitives created: 1
+17:20:40 | INFO: Extracting primitive: Patio rojo.001
+17:20:40 | INFO: Primitives created: 1
+17:20:40 | INFO: Extracting primitive: Plinto | perimetro del campus.001
+17:20:40 | INFO: Primitives created: 1
+17:20:40 | INFO: Extracting primitive: Panel solar | celdas.020
+17:20:40 | INFO: Primitives created: 1
+17:20:40 | INFO: Extracting primitive: Patio de juegos.001
+17:20:40 | INFO: Primitives created: 1
+17:20:40 | INFO: Extracting primitive: Sustrato.019
+17:20:40 | INFO: Primitives created: 1
+17:20:40 | INFO: Extracting primitive: Icosphere.019
+17:20:40 | INFO: Primitives created: 1
+17:20:40 | INFO: Extracting primitive: Marquesina patio.001
+17:20:40 | INFO: Primitives created: 1
+17:20:40 | INFO: Extracting primitive: Zocalo verde.001
+17:20:40 | INFO: Primitives created: 1
+17:20:40 | INFO: Extracting primitive: Ventana de aula | vidrio.002
+17:20:40 | INFO: Primitives created: 1
+17:20:40 | INFO: Finished glTF 2.0 export in 0.40811800956726074 s
+01:00.953  render           | Saved: 'C:\Users\Cedhu IT\Documents\cedhu-web-2027\assets\3d\cedhu\qa\frontal-aerea.png'
+01:35.797  render           | Saved: 'C:\Users\Cedhu IT\Documents\cedhu-web-2027\assets\3d\cedhu\qa\frontal-izquierda.png'
+02:30.266  render           | Saved: 'C:\Users\Cedhu IT\Documents\cedhu-web-2027\assets\3d\cedhu\qa\superior.png'
+03:16.235  render           | Saved: 'C:\Users\Cedhu IT\Documents\cedhu-web-2027\assets\3d\cedhu\qa\detalle-fachadas.png'
+04:18.172  render           | Saved: 'C:\Users\Cedhu IT\Documents\cedhu-web-2027\assets\3d\cedhu\qa\detalle-cancha.png'
+
+CEDHU_LOGOS_COMPLETE {"original_blend_sha256": "f0ac3aa96aae6b41c6b7c40a6c8746687f12eaff3474746b63755ae2696f4697", "preserved_objects": 915, "architecture_unchanged": true, "studio_unchanged": true, "replaced_placeholder_signs": ["Acento rotulo", "CEDHU | rotulo", "Descriptor rotulo", "Identidad pabellon", "Nombre sobre ingreso"], "placements": [{"name": "Logo | Fachada derecha", "center": [21.0, -18.62299919128418, 5.5], "width": 3.0, "height": 1.3867187500000002, "normal": [0.0, -1.0, 0.0], "support": "Fachada blanca pabellon", "surface_gap": 0.003, "verified_corners": 4}, {"name": "Logo | Fachada principal", "center": [-17.0, -18.003000259399414, 10.199999809265137], "width": 2.1, "height": 0.9707031250000001, "normal": [0.0, -1.0, 0.0], "support": "Piso superior marfil", "surface_gap": 0.003, "verified_corners": 4}, {"name": "Logo | Centro cancha", "center": [5.349999904632568, -1.0, 0.28700000047683716], "width": 1.72, "height": 0.7950520833333334, "normal": [0.0, -0.0, 1.0], "support": "Pintura | Circulo blanco central", "surface_gap": 0.002, "verified_corners": 4}, {"name": "Logo | Tablero", "center": [5.349999904632568, -13.267999649047852, 4.114999771118164], "width": 0.53, "height": 0.2449869791666667, "normal": [0.0, 1.0, -0.0], "support": "Tablero", "surface_gap": 0.002, "verified_corners": 4}, {"name": "Logo | Tablero.001", "center": [5.349999904632568, 11.267999649047852, 4.114999771118164], "width": 0.53, "height": 0.2449869791666667, "normal": [0.0, -1.0, 0.0], "support": "Tablero.001", "surface_gap": 0.002, "verified_corners": 4}], "texture_size": [768, 355], "texture_count": 1, "glb_bytes": 889256}
+Blender 5.2.1 LTS (hash 9e2066aef7ef built 2026-08-25 02:38:20)
+
+Blender quit
