@@ -33,8 +33,8 @@ hero:
   levelsLabel: INICIAL · PRIMARIA · BACHILLERATO
 campusModel:
   eyebrow: Nuestros espacios
-  title: El CEDHU, desde otra perspectiva.
-  description: Un espacio donde el crecimiento como persona y ser comienza.
+  title: Espacios para aprender, crear y crecer.
+  description: Un lugar diseñado para acompañar el aprendizaje, la creatividad, la convivencia y el desarrollo de nuestros educandos.
   label: Maqueta ilustrativa del CEDHU con sus edificios, cancha y patio central, vistos desde arriba.
   caption: Maqueta ilustrativa de nuestras instalaciones.
 # Síntesis del Manual de Convivencia, cap. II, apartados 4–10 (pp. 33–37)
