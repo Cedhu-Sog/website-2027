@@ -1,11 +1,11 @@
-/** Pointer gestures share one threshold for rotation and activation. */
+/** Ignore swipes so scrolling or moving the pointer does not open the tour. */
 export function mountCampusTour(host: HTMLElement, signal: AbortSignal, wake: () => void) {
   const trigger = host.querySelector<HTMLButtonElement>('.cedhu-3d__trigger');
   const dialog = host.querySelector<HTMLDialogElement>('dialog');
   const video = dialog?.querySelector('video');
   if (!trigger || !dialog || !video) return;
   const options = { signal };
-  let pointer: { id: number; x: number; y: number; lastX: number; lastY: number } | undefined;
+  let pointer: { id: number; x: number; y: number } | undefined;
   let dragged = false;
   let closing = false;
   let closeVersion = 0;
@@ -14,26 +14,16 @@ export function mountCampusTour(host: HTMLElement, signal: AbortSignal, wake: ()
   const endGesture = () => {
     if (pointer && trigger.hasPointerCapture(pointer.id)) trigger.releasePointerCapture(pointer.id);
     pointer = undefined;
-    host.removeAttribute('data-dragging');
   };
   trigger.addEventListener('pointerdown', event => {
     if (!event.isPrimary || event.button !== 0 || pointer) { dragged = true; return; }
     dragged = false;
-    pointer = { id: event.pointerId, x: event.clientX, y: event.clientY, lastX: event.clientX, lastY: event.clientY };
+    pointer = { id: event.pointerId, x: event.clientX, y: event.clientY };
     trigger.setPointerCapture(event.pointerId);
   }, options);
   trigger.addEventListener('pointermove', event => {
     if (!pointer || event.pointerId !== pointer.id) return;
     if (Math.hypot(event.clientX - pointer.x, event.clientY - pointer.y) > 8) dragged = true;
-    if (dragged) {
-      host.setAttribute('data-dragging', '');
-      host.dispatchEvent(new CustomEvent('campus-rotate', { detail: {
-        x: (event.clientX - pointer.lastX) / trigger.clientWidth,
-        y: (event.clientY - pointer.lastY) / trigger.clientHeight,
-      } }));
-    }
-    pointer.lastX = event.clientX;
-    pointer.lastY = event.clientY;
   }, options);
   trigger.addEventListener('pointerup', event => {
     if (pointer?.id !== event.pointerId) return;

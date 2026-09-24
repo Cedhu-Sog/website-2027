@@ -15,7 +15,7 @@
   border-radius: var(--radius-sm);
   background: transparent;
   cursor: pointer;
-  touch-action: pan-y;
+  touch-action: manipulation;
   user-select: none;
   -webkit-user-select: none;
 }
