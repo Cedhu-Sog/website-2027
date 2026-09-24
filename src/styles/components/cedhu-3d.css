@@ -2,9 +2,77 @@
   position: relative;
   display: block;
   width: 100%;
-  aspect-ratio: 5 / 4;
   isolation: isolate;
 }
+
+.cedhu-3d__trigger {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 5 / 4;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  cursor: pointer;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.cedhu-3d__visual {
+  display: block;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: transform var(--duration-normal) var(--ease-standard), opacity var(--duration-normal) var(--ease-standard), filter var(--duration-normal) var(--ease-standard);
+}
+.cedhu-3d__trigger:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 4px; }
+@media (hover: hover) and (pointer: fine) {
+  .cedhu-3d__trigger:hover .cedhu-3d__visual { transform: scale(1.025); }
+}
+.cedhu-3d[data-tour-open] .cedhu-3d__visual { transform: scale(1.06); opacity: .25; filter: blur(4px); }
+.cedhu-3d__hint {
+  margin: var(--space-xs) 0 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-small);
+  text-align: center;
+  pointer-events: none;
+}
+.cedhu-3d__hint-mouse { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  .cedhu-3d__hint-mouse { display: inline; }
+  .cedhu-3d__hint-touch { display: none; }
+}
+.cedhu-3d__dialog {
+  position: fixed;
+  inset: 0;
+  width: min(64rem, calc(100% - var(--space-sm) * 2));
+  max-width: none;
+  max-height: calc(100dvh - var(--space-sm) * 2);
+  margin: auto;
+  padding: var(--space-sm);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-menu);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.cedhu-3d__dialog[open] { animation: campus-video-enter var(--duration-normal) var(--ease-standard) both; }
+.cedhu-3d__dialog[data-closing] { animation: campus-video-exit var(--duration-normal) var(--ease-standard) both; }
+.cedhu-3d__dialog::backdrop { background: var(--color-mobile-backdrop); backdrop-filter: blur(6px); }
+.cedhu-3d__dialog[open]::backdrop { animation: campus-backdrop-enter var(--duration-normal) var(--ease-standard) both; }
+.cedhu-3d__dialog[data-closing]::backdrop { animation: campus-backdrop-exit var(--duration-normal) var(--ease-standard) both; }
+.cedhu-3d__video-header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); margin-bottom: var(--space-xs); }
+.cedhu-3d__close { min-height: 2.75rem; padding: var(--space-xs) var(--space-sm); border: 0; border-radius: var(--radius-sm); background: var(--color-tint); color: var(--color-text); cursor: pointer; }
+.cedhu-3d__dialog video { display: block; width: 100%; max-height: calc(100dvh - 9rem); border-radius: var(--radius-xs); }
+.cedhu-3d__video-error { margin-top: var(--space-sm); }
+html[data-campus-tour-open], html[data-campus-tour-open] body { overflow: hidden; overscroll-behavior: none; }
+@keyframes campus-video-enter { from { opacity: 0; transform: scale(.96); filter: blur(4px); } to { opacity: 1; transform: scale(1); filter: blur(0); } }
+@keyframes campus-video-exit { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(.96); } }
+@keyframes campus-backdrop-enter { from { opacity: 0; } to { opacity: 1; } }
+@keyframes campus-backdrop-exit { from { opacity: 1; } to { opacity: 0; } }
 
 .cedhu-3d__poster,
 .cedhu-3d__canvas {
@@ -26,6 +94,7 @@
 }
 
 @media print {
+  .cedhu-3d__hint, .cedhu-3d__dialog { display: none !important; }
   .cedhu-3d .cedhu-3d__poster { opacity: 1; }
   .cedhu-3d .cedhu-3d__canvas { display: none; }
 }

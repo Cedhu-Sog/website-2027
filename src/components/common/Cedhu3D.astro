@@ -15,9 +15,28 @@ const {
 } = Astro.props;
 ---
 
-<cedhu-3d class="cedhu-3d" data-model={model} role="img" aria-label={label}>
-  <img class="cedhu-3d__poster" src={poster} alt="" width="1600" height="1280" loading="lazy" decoding="async" />
-  <canvas class="cedhu-3d__canvas" aria-hidden="true"></canvas>
+<cedhu-3d class="cedhu-3d" data-model={model}>
+  <button class="cedhu-3d__trigger" type="button" aria-label={`${label}. Iniciar recorrido institucional`} aria-haspopup="dialog" disabled>
+    <span class="cedhu-3d__visual">
+      <img class="cedhu-3d__poster" src={poster} alt="" width="1600" height="1280" loading="lazy" decoding="async" draggable="false" />
+      <canvas class="cedhu-3d__canvas" aria-hidden="true"></canvas>
+    </span>
+  </button>
+  <p class="cedhu-3d__hint" aria-hidden="true">
+    <span class="cedhu-3d__hint-mouse">↔ Arrastra para explorar · ▶ Haz clic para iniciar el recorrido</span>
+    <span class="cedhu-3d__hint-touch">↔ Arrastra para explorar · ▶ Toca para iniciar el recorrido</span>
+  </p>
+  <noscript><a href={`${base}videos/recorrido-cedhu.mp4`}>Ver recorrido institucional</a></noscript>
+  <dialog class="cedhu-3d__dialog" aria-label="Recorrido institucional del CEDHU">
+    <header class="cedhu-3d__video-header">
+      <p>Recorrido institucional</p>
+      <button type="button" class="cedhu-3d__close" autofocus>Cerrar <span aria-hidden="true">×</span></button>
+    </header>
+    <video controls playsinline preload="none" src={`${base}videos/recorrido-cedhu.mp4`} aria-label="Video del recorrido institucional">
+      <a href={`${base}videos/recorrido-cedhu.mp4`}>Ver el video del recorrido</a>
+    </video>
+    <p class="cedhu-3d__video-error" hidden>No se pudo reproducir el video. <a href={`${base}videos/recorrido-cedhu.mp4`}>Abrir el video directamente</a></p>
+  </dialog>
 </cedhu-3d>
 
 <script>import '../../scripts/animations/cedhu-3d';</script>

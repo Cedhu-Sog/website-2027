@@ -67,6 +67,8 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
   let previous = 0;
   let targetX = 0;
   let targetY = 0;
+  let rotationX = 0;
+  let rotationY = 0;
 
   const stop = () => {
     cancelAnimationFrame(frame);
@@ -96,7 +98,7 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
     if (!frame) frame = requestAnimationFrame(tick);
   };
   const resize = () => {
-    const { width, height } = host.getBoundingClientRect();
+    const { width, height } = canvas.getBoundingClientRect();
     if (width <= 0 || height <= 0) return;
     const aspect = width / height;
     const halfHeight = Math.max(30.4, 38 / aspect);
@@ -110,18 +112,30 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
     wake();
   };
   const move = (event: PointerEvent) => {
-    if (reducedMotion() || !fine.matches || event.pointerType === 'touch') return;
-    const rect = host.getBoundingClientRect();
+    if (!isActive() || event.buttons || reducedMotion() || !fine.matches || event.pointerType === 'touch') return;
+    const rect = canvas.getBoundingClientRect();
     const x = MathUtils.clamp((event.clientX - rect.left) / rect.width * 2 - 1, -1, 1);
     const y = MathUtils.clamp((event.clientY - rect.top) / rect.height * 2 - 1, -1, 1);
-    targetY = x * .1;
-    targetX = y * .035;
+    targetY = rotationY + x * .1;
+    targetX = rotationX + y * .035;
     wake();
   };
-  const reset = () => { targetX = targetY = 0; wake(); };
+  const rotate = (event: Event) => {
+    if (!isActive()) return;
+    const { x, y } = (event as CustomEvent<{ x: number; y: number }>).detail;
+    rotationY += x * Math.PI * 2;
+    rotationX = MathUtils.clamp(rotationX + y, -.3, .3);
+    targetX = rotationX;
+    targetY = rotationY;
+    // Direct manipulation remains available without eased motion.
+    if (reducedMotion()) pivot.rotation.set(targetX, targetY, 0);
+    wake();
+  };
+  const reset = () => { targetX = rotationX; targetY = rotationY; wake(); };
   const motionChange = () => {
-    targetX = targetY = 0;
-    if (reducedMotion() || !fine.matches) pivot.rotation.set(0, 0, 0);
+    targetX = rotationX;
+    targetY = rotationY;
+    if (reducedMotion() || !fine.matches) pivot.rotation.set(targetX, targetY, 0);
     wake();
   };
   const pointerChange = () => { motionChange(); resize(); };
@@ -145,6 +159,7 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
     preferences.disconnect();
     host.removeEventListener('pointermove', move);
     host.removeEventListener('pointerleave', reset);
+    host.removeEventListener('campus-rotate', rotate);
     reduce.removeEventListener('change', motionChange);
     fine.removeEventListener('change', pointerChange);
     document.removeEventListener('visibilitychange', wake);
@@ -164,6 +179,7 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
   preferences.observe(document.documentElement, { attributes: true, attributeFilter: ['data-motion'] });
   host.addEventListener('pointermove', move, { passive: true });
   host.addEventListener('pointerleave', reset);
+  host.addEventListener('campus-rotate', rotate);
   reduce.addEventListener('change', motionChange);
   fine.addEventListener('change', pointerChange);
   document.addEventListener('visibilitychange', wake);
