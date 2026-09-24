@@ -1,29 +1,48 @@
-/** Ignore swipes so scrolling or moving the pointer does not open the tour. */
+/** Share swipe detection between tour activation and the bounded touch parallax. */
 export function mountCampusTour(host: HTMLElement, signal: AbortSignal, wake: () => void) {
   const trigger = host.querySelector<HTMLButtonElement>('.cedhu-3d__trigger');
   const dialog = host.querySelector<HTMLDialogElement>('dialog');
   const video = dialog?.querySelector('video');
   if (!trigger || !dialog || !video) return;
   const options = { signal };
-  let pointer: { id: number; x: number; y: number } | undefined;
+  let pointer: { id: number; x: number; y: number; touch: boolean; intent: 'pending' | 'horizontal' | 'vertical' } | undefined;
   let dragged = false;
   let closing = false;
   let closeVersion = 0;
   trigger.disabled = false;
 
+  const touchOffset = (offset: number) => {
+    host.dispatchEvent(new CustomEvent('campus-touch-offset', { detail: offset }));
+  };
   const endGesture = () => {
+    if (pointer?.touch) touchOffset(0);
     if (pointer && trigger.hasPointerCapture(pointer.id)) trigger.releasePointerCapture(pointer.id);
     pointer = undefined;
   };
   trigger.addEventListener('pointerdown', event => {
-    if (!event.isPrimary || event.button !== 0 || pointer) { dragged = true; return; }
+    if (!event.isPrimary || event.button !== 0 || pointer) {
+      dragged = true;
+      if (event.pointerType === 'touch') endGesture();
+      return;
+    }
     dragged = false;
-    pointer = { id: event.pointerId, x: event.clientX, y: event.clientY };
-    trigger.setPointerCapture(event.pointerId);
+    pointer = { id: event.pointerId, x: event.clientX, y: event.clientY, touch: event.pointerType === 'touch', intent: 'pending' };
+    // Touch uses native implicit capture; pan-y can cancel it to scroll the page.
+    if (!pointer.touch) trigger.setPointerCapture(event.pointerId);
   }, options);
   trigger.addEventListener('pointermove', event => {
     if (!pointer || event.pointerId !== pointer.id) return;
-    if (Math.hypot(event.clientX - pointer.x, event.clientY - pointer.y) > 8) dragged = true;
+    const dx = event.clientX - pointer.x;
+    const dy = event.clientY - pointer.y;
+    if (Math.hypot(dx, dy) > 8) dragged = true;
+    if (!pointer.touch || !dragged) return;
+    // Vertical intent wins permanently for this gesture, including after a turn.
+    if (Math.abs(dy) > Math.abs(dx)) pointer.intent = 'vertical';
+    else if (pointer.intent === 'pending' && Math.abs(dx) > Math.abs(dy) * 1.2) pointer.intent = 'horizontal';
+    const offset = pointer.intent === 'horizontal'
+      ? Math.min(1, Math.max(-1, dx / Math.max(1, trigger.clientWidth / 2)))
+      : 0;
+    touchOffset(offset);
   }, options);
   trigger.addEventListener('pointerup', event => {
     if (pointer?.id !== event.pointerId) return;

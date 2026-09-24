@@ -27,6 +27,9 @@
   transition: transform var(--duration-normal) var(--ease-standard), opacity var(--duration-normal) var(--ease-standard), filter var(--duration-normal) var(--ease-standard);
 }
 .cedhu-3d__trigger:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 4px; }
+@media (pointer: coarse) {
+  .cedhu-3d__trigger { touch-action: pan-y pinch-zoom; }
+}
 @media (hover: hover) and (pointer: fine) {
   .cedhu-3d__trigger:hover .cedhu-3d__visual { transform: scale(1.025); }
 }

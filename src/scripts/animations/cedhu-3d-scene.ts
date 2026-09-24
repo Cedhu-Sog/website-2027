@@ -62,6 +62,7 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
   const interactionPivot = new Group();
   scene.add(interactionPivot);
   const maxScrollAngle = 4 * Math.PI / 180;
+  const maxTouchAngle = 4 * Math.PI / 180;
 
   let model: Group | undefined;
   let ready = false;
@@ -73,6 +74,7 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
   let orientationInitialized = false;
   let mouseX = 0;
   let mouseY = 0;
+  let touchTarget = 0;
 
   const stop = () => {
     cancelAnimationFrame(frame);
@@ -90,12 +92,12 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
   const tick = (time: number) => {
     frame = 0;
     if (!canRender()) return;
-    // A single target and render loop own rotation; the input modes never combine.
+    // One render loop owns rotation. Mobile sums independent scroll and touch targets.
     const mouseEnabled = mouseMotionEnabled();
     const scrollEnabled = scrollMotionEnabled();
     const enabled = mouseEnabled || scrollEnabled;
     const targetX = mouseEnabled ? mouseX : 0;
-    const targetY = mouseEnabled ? mouseY : scrollEnabled ? scrollAngle() : 0;
+    const targetY = mouseEnabled ? mouseY : scrollEnabled ? scrollAngle() + touchTarget : 0;
     const dt = previousTime ? Math.min((time - previousTime) / 1000, .05) : 1 / 60;
     previousTime = time;
     // Restore the original mouse damping; retain the existing scroll smoothing.
@@ -119,6 +121,14 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
     if (!frame) frame = requestAnimationFrame(tick);
   };
   const onScroll = () => { if (scrollMotionEnabled()) wake(); };
+  const onTouchOffset = (event: Event) => {
+    if (!scrollMotionEnabled() || !isActive()) { touchTarget = 0; return; }
+    const offset = (event as CustomEvent<number>).detail;
+    if (!Number.isFinite(offset)) return;
+    touchTarget = Math.min(1, Math.max(-1, offset)) * maxTouchAngle;
+    // The existing damped render loop also eases the return to zero on release.
+    wake();
+  };
   const onPointerMove = (event: PointerEvent) => {
     if (!isActive() || !mouseMotionEnabled() || event.pointerType === 'touch' || event.buttons) return;
     const bounds = canvas.getBoundingClientRect();
@@ -136,6 +146,7 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
   };
   const motionChange = () => {
     mouseX = mouseY = 0;
+    touchTarget = 0;
     // Drop the previous input mode, including when restoring reduced motion.
     orientationInitialized = false;
     wake();
@@ -161,7 +172,7 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
     stop();
   };
   const restored = () => { contextLost = false; resize(); };
-  const hide = () => { pageHidden = true; stop(); };
+  const hide = () => { pageHidden = true; touchTarget = 0; stop(); };
   const show = () => { pageHidden = false; resize(); };
   const ro = new ResizeObserver(resize);
   const preferences = new MutationObserver(motionChange);
@@ -178,6 +189,7 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
     fine.removeEventListener('change', resize);
     host.removeEventListener('pointermove', onPointerMove);
     host.removeEventListener('pointerleave', resetMouse);
+    host.removeEventListener('campus-touch-offset', onTouchOffset);
     window.removeEventListener('scroll', onScroll);
     window.removeEventListener('resize', resize);
     document.removeEventListener('visibilitychange', wake);
@@ -201,6 +213,7 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
   fine.addEventListener('change', resize);
   host.addEventListener('pointermove', onPointerMove, { passive: true });
   host.addEventListener('pointerleave', resetMouse);
+  host.addEventListener('campus-touch-offset', onTouchOffset);
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', resize);
   document.addEventListener('visibilitychange', wake);
