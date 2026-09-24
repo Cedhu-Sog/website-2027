@@ -1,0 +1,23 @@
+---
+import '../../styles/components/cedhu-3d.css';
+
+interface Props {
+  model?: string;
+  poster?: string;
+  label: string;
+}
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const {
+  model = `${base}models/cedhu/cedhu.glb`,
+  poster = `${base}models/cedhu/cedhu-poster.webp`,
+  label,
+} = Astro.props;
+---
+
+<cedhu-3d class="cedhu-3d" data-model={model} role="img" aria-label={label}>
+  <img class="cedhu-3d__poster" src={poster} alt="" width="1600" height="1280" loading="lazy" decoding="async" />
+  <canvas class="cedhu-3d__canvas" aria-hidden="true"></canvas>
+</cedhu-3d>
+
+<script>import '../../scripts/animations/cedhu-3d';</script>

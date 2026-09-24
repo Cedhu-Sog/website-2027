@@ -1,0 +1,31 @@
+.cedhu-3d {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 5 / 4;
+  isolation: isolate;
+}
+
+.cedhu-3d__poster,
+.cedhu-3d__canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: opacity var(--duration-normal) var(--ease-standard);
+}
+
+.cedhu-3d__canvas { opacity: 0; }
+.cedhu-3d[data-ready] .cedhu-3d__poster { opacity: 0; }
+.cedhu-3d[data-ready] .cedhu-3d__canvas { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cedhu-3d__poster, .cedhu-3d__canvas { transition: none; }
+}
+
+@media print {
+  .cedhu-3d .cedhu-3d__poster { opacity: 1; }
+  .cedhu-3d .cedhu-3d__canvas { display: none; }
+}

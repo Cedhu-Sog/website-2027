@@ -31,6 +31,12 @@ hero:
   footerDescription: Un colegio para crecer en todas las dimensiones.
   discoverLabel: Descubre el CEDHU
   levelsLabel: INICIAL · PRIMARIA · BACHILLERATO
+campusModel:
+  eyebrow: Nuestros espacios
+  title: El CEDHU, desde otra perspectiva.
+  description: Un espacio donde el crecimiento como persona y ser comienza.
+  label: Maqueta ilustrativa del CEDHU con sus edificios, cancha y patio central, vistos desde arriba.
+  caption: Maqueta ilustrativa de nuestras instalaciones.
 # Síntesis del Manual de Convivencia, cap. II, apartados 4–10 (pp. 33–37)
 # y anexo 1, Política de Inclusión (pp. 174–179). Son propósitos formativos,
 # no garantías de resultados individuales ni un catálogo de servicios.

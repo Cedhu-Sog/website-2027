@@ -5,6 +5,13 @@ const researchImage = z.object({ image: mediaKey, alt: text, caption: text.optio
 
 // Named sections mirror the existing visual components; all values are editorial.
 export const pageSections = {
+  campusModel: z.object({
+    eyebrow: text,
+    title: text,
+    description: text,
+    label: text,
+    caption: text,
+  }).optional(),
   whyCedhu: z.object({
     eyebrow: text,
     titleStart: text,

@@ -1,0 +1,30 @@
+.campus-model {
+  display: grid;
+  gap: var(--space-md);
+  align-items: center;
+}
+
+.campus-model__copy h2 { max-width: 17ch; }
+
+.campus-model__description {
+  max-width: 38ch;
+  margin-top: var(--space-md);
+  color: var(--color-text-muted);
+  font-size: var(--text-intro);
+  line-height: var(--leading-page-intro);
+}
+
+.campus-model__figure { min-width: 0; }
+
+.campus-model__figure figcaption {
+  margin-top: var(--space-xs);
+  color: var(--color-text-muted);
+  font-size: var(--text-small);
+}
+
+@media (min-width: 48rem) {
+  .campus-model {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+    gap: var(--space-lg);
+  }
+}

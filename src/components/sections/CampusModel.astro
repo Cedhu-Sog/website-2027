@@ -1,0 +1,20 @@
+---
+import { getPageSection, type PageSection } from '../../lib/content';
+import Cedhu3D from '../common/Cedhu3D.astro';
+import '../../styles/components/campus-model.css';
+
+interface Props { content?: PageSection<'campusModel'>; }
+const content = Astro.props.content ?? await getPageSection('inicio', 'campusModel');
+---
+
+<section class="campus-model section container" aria-label={content.eyebrow}>
+  <header class="campus-model__copy">
+    <p class="eyebrow">{content.eyebrow}</p>
+    <h2>{content.title}</h2>
+    <p class="campus-model__description">{content.description}</p>
+  </header>
+  <figure class="campus-model__figure">
+    <Cedhu3D label={content.label} />
+    <figcaption>{content.caption}</figcaption>
+  </figure>
+</section>
