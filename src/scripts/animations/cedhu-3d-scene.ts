@@ -32,9 +32,11 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
   renderer.setClearColor(0x000000, 0);
 
   const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
-  const mobile = window.matchMedia('(width < 48rem) and (pointer: coarse)');
+  const mobile = window.matchMedia('(pointer: coarse)');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const scrollMotionEnabled = () => mobile.matches && !reduce.matches && document.documentElement.dataset.motion !== 'reduced';
+  const motionAllowed = () => !reduce.matches && document.documentElement.dataset.motion !== 'reduced';
+  const mouseMotionEnabled = () => fine.matches && motionAllowed();
+  const scrollMotionEnabled = () => !fine.matches && mobile.matches && motionAllowed();
   // Avoid the additional shadow pass on touch devices.
   renderer.shadowMap.enabled = fine.matches;
   renderer.shadowMap.type = PCFShadowMap;
@@ -57,8 +59,8 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
   camera.position.set(62, 76, 85);
   camera.lookAt(0, 3, 0);
   // An identity parent preserves the asset's position, scale and own orientation.
-  const scrollPivot = new Group();
-  scene.add(scrollPivot);
+  const interactionPivot = new Group();
+  scene.add(interactionPivot);
   const maxScrollAngle = 4 * Math.PI / 180;
 
   let model: Group | undefined;
@@ -69,6 +71,8 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
   let frame = 0;
   let previousTime = 0;
   let orientationInitialized = false;
+  let mouseX = 0;
+  let mouseY = 0;
 
   const stop = () => {
     cancelAnimationFrame(frame);
@@ -86,16 +90,24 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
   const tick = (time: number) => {
     frame = 0;
     if (!canRender()) return;
-    const enabled = scrollMotionEnabled();
-    const target = enabled ? scrollAngle() : 0;
+    // A single target and render loop own rotation; the input modes never combine.
+    const mouseEnabled = mouseMotionEnabled();
+    const scrollEnabled = scrollMotionEnabled();
+    const enabled = mouseEnabled || scrollEnabled;
+    const targetX = mouseEnabled ? mouseX : 0;
+    const targetY = mouseEnabled ? mouseY : scrollEnabled ? scrollAngle() : 0;
     const dt = previousTime ? Math.min((time - previousTime) / 1000, .05) : 1 / 60;
     previousTime = time;
-    // Time-based damping smooths scroll events without overshoot or a free-running loop.
-    if (!orientationInitialized || !enabled) scrollPivot.rotation.y = target;
-    else scrollPivot.rotation.y += (target - scrollPivot.rotation.y) * (1 - Math.exp(-12 * dt));
+    // Restore the original mouse damping; retain the existing scroll smoothing.
+    if (!orientationInitialized || !enabled) interactionPivot.rotation.set(targetX, targetY, 0);
+    else {
+      const alpha = 1 - Math.exp(-(mouseEnabled ? 6 : 12) * dt);
+      interactionPivot.rotation.x += (targetX - interactionPivot.rotation.x) * alpha;
+      interactionPivot.rotation.y += (targetY - interactionPivot.rotation.y) * alpha;
+    }
     orientationInitialized = true;
-    const settling = Math.abs(target - scrollPivot.rotation.y) > .00001;
-    if (!settling) scrollPivot.rotation.y = target;
+    const settling = Math.abs(targetX - interactionPivot.rotation.x) + Math.abs(targetY - interactionPivot.rotation.y) > .00001;
+    if (!settling) interactionPivot.rotation.set(targetX, targetY, 0);
     renderer.render(scene, camera);
     // Reveal only after a successful frame, including after context restoration.
     host.setAttribute('data-ready', '');
@@ -107,6 +119,27 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
     if (!frame) frame = requestAnimationFrame(tick);
   };
   const onScroll = () => { if (scrollMotionEnabled()) wake(); };
+  const onPointerMove = (event: PointerEvent) => {
+    if (!isActive() || !mouseMotionEnabled() || event.pointerType === 'touch' || event.buttons) return;
+    const bounds = canvas.getBoundingClientRect();
+    if (bounds.width <= 0 || bounds.height <= 0) return;
+    const x = Math.min(1, Math.max(-1, (event.clientX - bounds.left) / bounds.width * 2 - 1));
+    const y = Math.min(1, Math.max(-1, (event.clientY - bounds.top) / bounds.height * 2 - 1));
+    // Original limits in radians: yaw ±0.1, pitch ±0.035; no accumulated drag.
+    mouseY = x * .1;
+    mouseX = y * .035;
+    wake();
+  };
+  const resetMouse = () => {
+    mouseX = mouseY = 0;
+    if (mouseMotionEnabled()) wake();
+  };
+  const motionChange = () => {
+    mouseX = mouseY = 0;
+    // Drop the previous input mode, including when restoring reduced motion.
+    orientationInitialized = false;
+    wake();
+  };
   const resize = () => {
     const { width, height } = canvas.getBoundingClientRect();
     if (width <= 0 || height <= 0) return;
@@ -131,7 +164,7 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
   const hide = () => { pageHidden = true; stop(); };
   const show = () => { pageHidden = false; resize(); };
   const ro = new ResizeObserver(resize);
-  const preferences = new MutationObserver(wake);
+  const preferences = new MutationObserver(motionChange);
 
   const cleanup = () => {
     if (disposed) return;
@@ -139,9 +172,12 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
     stop();
     ro.disconnect();
     preferences.disconnect();
-    mobile.removeEventListener('change', wake);
-    reduce.removeEventListener('change', wake);
+    mobile.removeEventListener('change', motionChange);
+    reduce.removeEventListener('change', motionChange);
+    fine.removeEventListener('change', motionChange);
     fine.removeEventListener('change', resize);
+    host.removeEventListener('pointermove', onPointerMove);
+    host.removeEventListener('pointerleave', resetMouse);
     window.removeEventListener('scroll', onScroll);
     window.removeEventListener('resize', resize);
     document.removeEventListener('visibilitychange', wake);
@@ -159,9 +195,12 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
   signal.addEventListener('abort', cleanup, { once: true });
   ro.observe(host);
   preferences.observe(document.documentElement, { attributes: true, attributeFilter: ['data-motion'] });
-  mobile.addEventListener('change', wake);
-  reduce.addEventListener('change', wake);
+  mobile.addEventListener('change', motionChange);
+  reduce.addEventListener('change', motionChange);
+  fine.addEventListener('change', motionChange);
   fine.addEventListener('change', resize);
+  host.addEventListener('pointermove', onPointerMove, { passive: true });
+  host.addEventListener('pointerleave', resetMouse);
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', resize);
   document.addEventListener('visibilitychange', wake);
@@ -185,7 +224,7 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
       const mesh = object as Mesh;
       if (mesh.isMesh) { mesh.castShadow = true; mesh.receiveShadow = true; }
     });
-    scrollPivot.add(model);
+    interactionPivot.add(model);
     ready = true;
     wake();
     return wake;
