@@ -1,9 +1,10 @@
 import {
-  AgXToneMapping, DirectionalLight, Group, HemisphereLight,
+  AgXToneMapping, Box3, DirectionalLight, Group, HemisphereLight, Vector3,
   OrthographicCamera, PCFShadowMap, Scene, SRGBColorSpace, Texture, WebGLRenderer,
   type BufferGeometry, type Material, type Mesh, type Object3D,
 } from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { createCampusEnvironment } from './campus-environment';
 
 // The current GLB shares the logo texture across its surfaces.
 function disposeModel(root: Object3D) {
@@ -59,7 +60,7 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
   key.position.set(-30, 65, 40);
   key.castShadow = true;
   key.shadow.mapSize.set(1024, 1024);
-  Object.assign(key.shadow.camera, { left: -42, right: 42, top: 42, bottom: -42, near: 1, far: 160 });
+  Object.assign(key.shadow.camera, { left: -65, right: 65, top: 65, bottom: -65, near: 1, far: 200 });
   key.shadow.normalBias = .12;
   key.shadow.bias = -.0001;
   scene.add(key);
@@ -89,6 +90,9 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
   let mouseY = 0;
   let touchTarget = 0;
   let entryZoom = 1.32;
+  let frameHalfWidth = 38;
+  let frameHalfHeight = 30.4;
+  const frameCenter = new Vector3();
 
   const stop = () => {
     cancelAnimationFrame(frame);
@@ -182,8 +186,7 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
     wake();
   };
   const resize = () => {
-    // Keep the original content box as the zoom reference and pixel budget.
-    // The mobile visual can extend into the gutters without allocating more pixels.
+    // Measure layout dimensions, excluding hover/tour transforms from the pixel budget.
     const style = getComputedStyle(renderBox);
     const width = parseFloat(style.width);
     const height = parseFloat(style.height);
@@ -192,13 +195,12 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
     // Intentionally crop the lateral corners, with less zoom on small phones.
     entryZoom = 1.30 + .04 * Math.min(1, Math.max(0, (width - 280) / 110));
     const aspect = width / height;
-    const halfHeight = Math.max(30.4, 38 / aspect);
-    // Reveal more at the sides, preserving the original projected model size.
-    // Match the display aspect even though the drawing buffer budget stays fixed.
-    camera.left = -halfHeight * visualWidth / height;
-    camera.right = halfHeight * visualWidth / height;
-    camera.top = halfHeight;
-    camera.bottom = -halfHeight;
+    const halfHeight = Math.max(frameHalfHeight, frameHalfWidth / aspect);
+    // Fit the complete environment and match the visible canvas aspect.
+    camera.left = frameCenter.x - halfHeight * visualWidth / height;
+    camera.right = frameCenter.x + halfHeight * visualWidth / height;
+    camera.top = frameCenter.y + halfHeight;
+    camera.bottom = frameCenter.y - halfHeight;
     camera.updateProjectionMatrix();
     // Retina touch screens need more than DPR 1. Cap at 2 to bound fill rate
     // and framebuffer memory; retain the existing desktop/shadow budget.
@@ -280,12 +282,37 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
     signal.throwIfAborted();
     const gltf = await new GLTFLoader().parseAsync(data, new URL('.', url).href);
     if (signal.aborted) { disposeModel(gltf.scene); signal.throwIfAborted(); }
-    model = gltf.scene;
-    model.traverse(object => {
+    gltf.scene.traverse(object => {
       const mesh = object as Mesh;
       if (mesh.isMesh) { mesh.castShadow = true; mesh.receiveShadow = true; }
     });
+    // Preserve the supplied asset; add the environment as a sibling under one pivot.
+    model = new Group();
+    model.name = 'Conjunto del CEDHU';
+    model.add(gltf.scene);
+    model.add(createCampusEnvironment());
+    const center = new Box3().setFromObject(model).getCenter(new Vector3());
+    model.position.set(-center.x, 0, -center.z);
     interactionPivot.add(model);
+    scene.updateMatrixWorld(true);
+    camera.updateMatrixWorld(true);
+    // Fit the complete scene once after loading, without per-scroll geometry work.
+    const viewBounds = new Box3();
+    const point = new Vector3();
+    model.traverse(object => {
+      const mesh = object as Mesh;
+      if (!mesh.isMesh) return;
+      const positions = mesh.geometry.getAttribute('position');
+      for (let i = 0; i < positions.count; i++) {
+        point.fromBufferAttribute(positions, i).applyMatrix4(mesh.matrixWorld).applyMatrix4(camera.matrixWorldInverse);
+        viewBounds.expandByPoint(point);
+      }
+    });
+    viewBounds.getCenter(frameCenter);
+    const viewSize = viewBounds.getSize(new Vector3());
+    frameHalfWidth = viewSize.x * .6;
+    frameHalfHeight = viewSize.y * .6;
+    resize();
     ready = true;
     wake();
     return wake;

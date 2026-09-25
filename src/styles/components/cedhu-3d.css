@@ -42,6 +42,12 @@
   pointer-events: none;
 }
 .cedhu-3d__hint-mouse { display: none; }
+.cedhu-3d__tour.button {
+  display: flex;
+  width: fit-content;
+  margin: var(--space-xs) auto 0;
+  gap: var(--space-xs);
+}
 @media (hover: hover) and (pointer: fine) {
   .cedhu-3d__hint-mouse { display: inline; }
   .cedhu-3d__hint-touch { display: none; }
@@ -97,7 +103,7 @@ html[data-campus-tour-open], html[data-campus-tour-open] body { overflow: hidden
 }
 
 @media print {
-  .cedhu-3d__hint, .cedhu-3d__dialog { display: none !important; }
+  .cedhu-3d__hint, .cedhu-3d__tour, .cedhu-3d__dialog { display: none !important; }
   .cedhu-3d .cedhu-3d__poster { opacity: 1; }
   .cedhu-3d .cedhu-3d__canvas { display: none; }
 }

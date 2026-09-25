@@ -9,7 +9,14 @@ export function mountCampusTour(host: HTMLElement, signal: AbortSignal, wake: ()
   let dragged = false;
   let closing = false;
   let closeVersion = 0;
+  let returnFocus: HTMLElement = trigger;
   trigger.disabled = false;
+  const tourStart = host.querySelector<HTMLButtonElement>('[data-campus-tour-start]');
+  if (tourStart) {
+    tourStart.disabled = false;
+    // Reuse the same activation path, including keyboard and reduced motion.
+    tourStart.addEventListener('click', () => trigger.click(), options);
+  }
 
   const touchOffset = (offset: number) => {
     host.dispatchEvent(new CustomEvent('campus-touch-offset', { detail: offset }));
@@ -47,7 +54,7 @@ export function mountCampusTour(host: HTMLElement, signal: AbortSignal, wake: ()
   trigger.addEventListener('pointerup', event => {
     if (pointer?.id !== event.pointerId) return;
     dragged ||= Math.hypot(event.clientX - pointer.x, event.clientY - pointer.y) > 8;
-    // The mobile canvas can extend beyond the button's layout box into the gutters.
+    // Use the visible canvas bounds for touch activation.
     const hitArea = pointer.touch ? host.querySelector('canvas') ?? trigger : trigger;
     const bounds = hitArea.getBoundingClientRect();
     dragged ||= event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom;
@@ -65,7 +72,7 @@ export function mountCampusTour(host: HTMLElement, signal: AbortSignal, wake: ()
     dialog.removeAttribute('data-closing');
     host.removeAttribute('data-tour-open');
     delete document.documentElement.dataset.campusTourOpen;
-    if (host.isConnected) trigger.focus({ preventScroll: true });
+    if (host.isConnected) returnFocus.focus({ preventScroll: true });
     wake();
   };
   const close = async () => {
@@ -83,6 +90,7 @@ export function mountCampusTour(host: HTMLElement, signal: AbortSignal, wake: ()
     if (event.detail !== 0 && dragged) { event.preventDefault(); return; }
     if (dialog.open) return;
     endGesture();
+    returnFocus = tourStart && document.activeElement === tourStart ? tourStart : trigger;
     dialog.showModal();
     host.setAttribute('data-tour-open', '');
     document.documentElement.dataset.campusTourOpen = '';

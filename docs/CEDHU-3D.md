@@ -1,5 +1,99 @@
 # Integración de la maqueta CEDHU
 
+## Entorno ampliado — 25 de septiembre de 2026
+
+Esta revisión amplía la escena existente sin modificar `cedhu.glb`, su textura
+de logos ni las dependencias. Los apartados siguientes documentan versiones
+anteriores; las medidas de esta revisión prevalecen para el conjunto ampliado.
+
+### Interpretación de las referencias
+
+- **Vista aerea CEDHU.png**: se siguieron únicamente las letras negras para
+  situar las instalaciones a un lado de la calle, el parqueadero longitudinal
+  enfrente y, detrás de este, juegos y cancha sintética contiguos. No se
+  reprodujeron los colores ni los polígonos de la anotación.
+- **101_0017/PANO0011.DNG**: pavimento cálido del parqueadero, plazas y topes
+  amarillos, vehículos espaciados y seto bajo junto a la vía.
+- **101_0017/PANO0004.DNG**: acceso del edificio, paso peatonal, andén y
+  apertura del seto enfrentada a la entrada.
+- **101_0021/PANO0005.DNG**: relación global edificio–calle–parqueadero–áreas
+  recreativas, terrenos verdes y cerramiento/cubierta azul de la cancha.
+- **101_0016/PANO0009.DNG**: borde del parqueadero, acceso peatonal, seto y
+  relación entre el cerramiento azul y la zona de juegos.
+
+Se revisaron las previsualizaciones JPEG incrustadas de los cuatro DNG,
+sin alterar ni incorporar los originales a la web. La composición es una
+interpretación ilustrativa, no un levantamiento cartográfico. Torre, tobogán
+y columpios son equipamiento esquemático: las referencias no permiten
+reconstruir cada juego con precisión. Se interpreta el cerramiento azul sin
+cubierta opaca para mantener visible el césped sintético.
+
+### Implementación
+
+- `src/scripts/animations/campus-environment.ts` crea una capa estática de
+  entorno, hermana del GLB. Incluye vía, andenes, paso peatonal, estacionamiento,
+  cuatro vehículos, zona de juegos, cancha con líneas y porterías, cerramiento
+  abierto, césped, arbustos y árboles periféricos.
+- El frente original mira a +Z. La calle está centrada en Z=27,8; el parqueadero
+  en Z=38; los juegos en X=-18/Z=56,3 y la cancha en X=16/Z=56,5. La vegetación
+  queda en bordes, lejos de la vía y de las superficies de actividad.
+- La geometría nueva se agrupa por material: 14 mallas adicionales, 6.184
+  triángulos y cero texturas nuevas. Los materiales comparten la iluminación
+  existente; no hay simulaciones ni actualizaciones de geometría por frame.
+- `cedhu-3d-scene.ts` centra el conjunto bajo el pivote existente y calcula su
+  encuadre una sola vez al cargar, proyectando vértices en el espacio de cámara.
+  La dirección de cámara no cambia. El margen base es 20 % sobre la extensión
+  proyectada. Se amplía la cobertura de sombras de escritorio manteniendo su
+  mapa de 1024 px; en móvil continúan desactivadas.
+- Se conservan zoom móvil inicial ≈1,335–1,34 y final 1,14, curva de scroll
+  0,20–0,65, suavizado, giro por scroll ±4° y desplazamiento touch independiente
+  ±4°. No se escala el canvas por CSS para producir el acercamiento.
+- `CampusModel.astro` conserva el texto institucional y separa el área visual
+  del contenedor textual. CSS controla el recorte únicamente en la sección.
+  La escena ocupa todo el ancho móvil y hasta 1280 px en escritorio, con
+  proporciones 5:4 y 16:9 respectivamente. El texto conserva sus márgenes.
+- Se añade el botón «Iniciar recorrido virtual» y una lista discreta de zonas.
+  El botón usa el mismo recorrido existente y recupera el foco al cerrar.
+  No se restaura la leyenda descriptiva retirada anteriormente.
+- `cedhu-poster.webp` se actualiza con un render de la escena completa,
+  transparente, de 1600 × 900 px (112.962 bytes). Se conserva el enlace al
+  vídeo para usuarios sin JavaScript.
+
+### Comprobaciones
+
+Chrome con GPU local, emulación táctil y DPR del dispositivo 2 y 3:
+
+| Ancho CSS | DPR efectivo | Buffer WebGL | scrollWidth / clientWidth |
+| --- | --- | --- | --- |
+| 375 | 2 | 750 × 600 | 375 / 375 |
+| 390 | 2 | 780 × 624 | 390 / 390 |
+| 430 | 2 | 860 × 688 | 430 / 430 |
+
+Se capturaron entrada, transición y encaje final en los tres anchos. Los
+extremos proyectados exceden ambos lados en la entrada (≈6 % por lado) y el
+conjunto ocupa ≈94 % del ancho al encajar. Las zonas de actividad siguen
+visibles. El `body` tampoco aumenta de ancho. No se añade ocultación global.
+
+Pasaron: touch ±4°, giro por scroll, desplazamiento vertical nativo sin abrir
+el vídeo, mouse y hover de escritorio, tap/clic, CTA por teclado, Escape y
+restauración de foco, resize durante el recorrido, nueve cambios repetidos de
+tamaño/orientación en móvil, movimiento reducido del sistema y del sitio,
+pérdida/restauración de WebGL, parada en reposo/fuera de pantalla y limpieza
+al retirar el componente. Veinte resize sin cambios no reescriben el buffer.
+
+Móvil: 33 llamadas de dibujo y 21.798 triángulos por frame, 33 geometrías y
+2 texturas reportadas por el renderer (incluye recursos internos). Los
+contadores no aumentan tras resize; al desmontar quedan cero geometrías y
+una textura interna. En scroll continuo de seis segundos se midieron 60 FPS,
+sin overflow ni cambios del buffer. Escritorio: 55 llamadas con el pase de
+sombras. Estos resultados corresponden a la GPU del equipo, no a un teléfono.
+No se verificaron batería, temperatura ni Safari/iOS físico.
+
+`npm run build` genera 27 páginas; `npm run check:site` valida 3.916 referencias
+y 9 PDF. Continúan los avisos existentes de colecciones vacías y tamaño del
+bundle Three.js. No hay comprobador completo de tipos instalado; no se añadió
+ninguno. El GLB y los manifiestos de dependencias no presentan cambios.
+
 ## Encuadre móvil más cercano y final protagonista — 25 de septiembre de 2026
 
 Se recalibró únicamente el zoom móvil en `cedhu-3d-scene.ts`:

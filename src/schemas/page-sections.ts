@@ -10,6 +10,7 @@ export const pageSections = {
     title: text,
     description: text,
     label: text,
+    areas: z.array(text).min(1),
   }).optional(),
   whyCedhu: z.object({
     eyebrow: text,
