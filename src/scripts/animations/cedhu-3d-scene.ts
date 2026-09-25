@@ -1,24 +1,34 @@
 import {
   AgXToneMapping, DirectionalLight, Group, HemisphereLight,
-  OrthographicCamera, PCFShadowMap, Scene, SRGBColorSpace, WebGLRenderer,
+  OrthographicCamera, PCFShadowMap, Scene, SRGBColorSpace, Texture, WebGLRenderer,
   type BufferGeometry, type Material, type Mesh, type Object3D,
 } from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-// The supplied campus uses uniform materials and has no textures to release.
+// The current GLB shares the logo texture across its surfaces.
 function disposeModel(root: Object3D) {
   const geometries = new Set<BufferGeometry>();
   const materials = new Set<Material>();
+  const textures = new Set<Texture>();
   root.traverse(object => {
     const mesh = object as Mesh;
     if (!mesh.isMesh) return;
     geometries.add(mesh.geometry);
     for (const material of Array.isArray(mesh.material) ? mesh.material : [mesh.material]) {
       materials.add(material);
+      for (const value of Object.values(material)) {
+        if (value instanceof Texture) textures.add(value);
+      }
     }
   });
   geometries.forEach(geometry => geometry.dispose());
   materials.forEach(material => material.dispose());
+  const bitmaps = new Set<ImageBitmap>();
+  textures.forEach(texture => {
+    if (typeof ImageBitmap !== 'undefined' && texture.image instanceof ImageBitmap) bitmaps.add(texture.image);
+    texture.dispose();
+  });
+  bitmaps.forEach(bitmap => bitmap.close());
 }
 
 /** Camera and lighting adapted from the package; lifecycle belongs to this site. */
@@ -152,7 +162,10 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
     wake();
   };
   const resize = () => {
-    const { width, height } = canvas.getBoundingClientRect();
+    // Measure the layout box, excluding the hover/tour transforms on its parent.
+    const style = getComputedStyle(canvas);
+    const width = parseFloat(style.width);
+    const height = parseFloat(style.height);
     if (width <= 0 || height <= 0) return;
     const aspect = width / height;
     const halfHeight = Math.max(30.4, 38 / aspect);
@@ -161,8 +174,15 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
     camera.top = halfHeight;
     camera.bottom = -halfHeight;
     camera.updateProjectionMatrix();
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, fine.matches ? 1.5 : 1));
-    renderer.setSize(width, height, false);
+    // Retina touch screens need more than DPR 1. Cap at 2 to bound fill rate
+    // and framebuffer memory; retain the existing desktop/shadow budget.
+    const pixelRatio = Math.min(window.devicePixelRatio, fine.matches ? 1.5 : 2);
+    if (renderer.getPixelRatio() !== pixelRatio) renderer.setPixelRatio(pixelRatio);
+    // Mobile browser chrome can resize the viewport without resizing the model.
+    // Avoid reallocating the drawing buffer for those repeated notifications.
+    if (canvas.width !== Math.floor(width * pixelRatio) || canvas.height !== Math.floor(height * pixelRatio)) {
+      renderer.setSize(width, height, false);
+    }
     wake();
   };
   const lost = (event: Event) => {
@@ -205,7 +225,7 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
   };
 
   signal.addEventListener('abort', cleanup, { once: true });
-  ro.observe(host);
+  ro.observe(canvas);
   preferences.observe(document.documentElement, { attributes: true, attributeFilter: ['data-motion'] });
   mobile.addEventListener('change', motionChange);
   reduce.addEventListener('change', motionChange);
