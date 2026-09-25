@@ -17,6 +17,5 @@ const content = Astro.props.content ?? await getPageSection('inicio', 'campusMod
   </div>
     <figure class="campus-model__figure">
       <Cedhu3D label={content.label} />
-      <figcaption>{content.caption}</figcaption>
     </figure>
 </section>

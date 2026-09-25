@@ -16,12 +16,6 @@
 
 .campus-model__figure { min-width: 0; }
 
-.campus-model__figure figcaption {
-  margin-top: var(--space-xs);
-  color: var(--color-text-muted);
-  font-size: var(--text-small);
-}
-
 @media (width < 48rem) and (pointer: coarse) {
   /* Only the scene crosses the content gutters; clipping belongs to the section. */
   .campus-model-section { overflow-x: clip; }
