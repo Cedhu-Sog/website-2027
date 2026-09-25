@@ -1,5 +1,58 @@
 # Integración de la maqueta CEDHU
 
+## Encuadre móvil más cercano y final protagonista — 25 de septiembre de 2026
+
+Se recalibró únicamente el zoom móvil en `cedhu-3d-scene.ts`:
+
+- Entrada: `1,30 + 0,04 × clamp((anchoContenido - 280) / 110, 0, 1)`.
+- Encaje final: `mobileFitZoom = 1,14`, en lugar de 1.
+- La curva de scroll, los puntos de transición 0,20–0,65, el suavizado y
+  el giro permanecen iguales. Se usa exclusivamente `camera.zoom`; no se
+  cambian posición, orientación, wrapper, CSS, altura ni escala del canvas.
+- Escritorio y movimiento reducido conservan zoom 1 y su comportamiento.
+
+| Viewport | Zoom inicial anterior → actual | Aumento inicial | Zoom final | Extremo fuera por cada lado, en entrada |
+| --- | --- | --- | --- | --- |
+| 375 px | 1,19 → 1,32 | 10,9 % | 1,14 | 15,8 px |
+| 390 px | 1,198 → 1,325 | 10,6 % | 1,14 | 18,2 px |
+| 430 px | 1,22 → 1,34 | 9,8 % | 1,14 | 25,2 px |
+
+El encuadre final es un 14 % mayor que el anterior y, en la pose de prueba,
+ocupa aproximadamente el 93–95 % del ancho del teléfono. Se revisaron
+capturas de entrada, transición y final. Fachadas, cancha y logos conservan
+su definición; los extremos laterales desaparecen intencionalmente al entrar.
+
+Para comprobar que el recorte es real se proyectaron los vértices de las
+mallas sobre el viewport y se comprobó que sus extremos exceden ambos lados.
+También se verificaron píxeles con opacidad en las columnas izquierda y
+derecha del render inicial. No se dedujo el recorte solo a partir del zoom.
+
+La capa full-bleed y el `overflow-x: clip` de la sección exterior se conservan.
+En 375, 390 y 430 px, tanto el ancho del documento como el del body siguen
+siendo respectivamente 375, 390 y 430 px, iguales al clientWidth. Posición y
+dimensiones de los textos, rectángulo CSS del canvas y buffers coinciden con
+la versión previa: 670 × 536, 700 × 560 y 780 × 624, con DPR configurado 2.
+No se añadieron píxeles, fondos, bordes ni transformaciones CSS.
+
+Validación adicional:
+
+- Giro táctil medido de +4° y −4°, scroll, retorno del gesto, tap/clic y
+  apertura/cierre del recorrido: correctos.
+- Resize, orientación, movimiento reducido, pausa fuera de pantalla/en
+  reposo, recuperación de contexto WebGL y desmontaje: correctos.
+- Escritorio a 1440 px conserva encuadre, tamaño y mouse/hover; se verificaron
+  también sus cambios de tamaño a 768, 1280 y 1920 px.
+- Seis segundos de scroll a 375 px/DPR 3: 361 lecturas sin overflow ni cambio
+  de buffer, aproximadamente 60 FPS en la GPU del equipo; zoom final 1,14.
+- Build correcto (27 páginas), check:site correcto (3.916 referencias,
+  9 PDFs) y diff sin errores de whitespace. Persisten los avisos previos de
+  colecciones vacías y tamaño de módulo diferido.
+
+Archivos modificados: `src/scripts/animations/cedhu-3d-scene.ts` y este
+informe. GLB, dependencias, Astro, CSS, textos y navegación intactos.
+Las pruebas se realizaron en Chromium con emulación móvil, no en un iPhone
+físico. Los apartados siguientes conservan el historial de ajustes.
+
 ## Recorte móvil contra los bordes de pantalla — 25 de septiembre de 2026
 
 El corte anterior era el límite de dibujo del propio canvas: su ancho CSS

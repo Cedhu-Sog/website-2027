@@ -14,9 +14,9 @@ const content = Astro.props.content ?? await getPageSection('inicio', 'campusMod
       <h2>{content.title}</h2>
       <p class="campus-model__description">{content.description}</p>
     </header>
+  </div>
     <figure class="campus-model__figure">
       <Cedhu3D label={content.label} />
       <figcaption>{content.caption}</figcaption>
     </figure>
-  </div>
 </section>

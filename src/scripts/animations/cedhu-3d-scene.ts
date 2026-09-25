@@ -75,6 +75,7 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
   scene.add(interactionPivot);
   const maxScrollAngle = 4 * Math.PI / 180;
   const maxTouchAngle = 4 * Math.PI / 180;
+  const mobileFitZoom = 1.14;
 
   let model: Group | undefined;
   let ready = false;
@@ -87,7 +88,7 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
   let mouseX = 0;
   let mouseY = 0;
   let touchTarget = 0;
-  let entryZoom = 1.2;
+  let entryZoom = 1.32;
 
   const stop = () => {
     cancelAnimationFrame(frame);
@@ -116,7 +117,7 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
     // Hold the close view on entry, then fit before the model leaves the screen.
     const fitProgress = Math.min(1, Math.max(0, (progress - .2) / .45));
     const fit = fitProgress * fitProgress * (3 - 2 * fitProgress);
-    const targetZoom = zoomEnabled ? 1 + (entryZoom - 1) * (1 - fit) : 1;
+    const targetZoom = zoomEnabled ? mobileFitZoom + (entryZoom - mobileFitZoom) * (1 - fit) : 1;
     const dt = previousTime ? Math.min((time - previousTime) / 1000, .05) : 1 / 60;
     previousTime = time;
     // Restore the original mouse damping; retain the existing scroll smoothing.
@@ -188,8 +189,8 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
     const height = parseFloat(style.height);
     const visualWidth = parseFloat(getComputedStyle(canvas).width);
     if (width <= 0 || height <= 0) return;
-    // Less cropping on small phones; at most 1.22 on larger mobile canvases.
-    entryZoom = 1.16 + .06 * Math.min(1, Math.max(0, (width - 280) / 110));
+    // Intentionally crop the lateral corners, with less zoom on small phones.
+    entryZoom = 1.30 + .04 * Math.min(1, Math.max(0, (width - 280) / 110));
     const aspect = width / height;
     const halfHeight = Math.max(30.4, 38 / aspect);
     // Reveal more at the sides, preserving the original projected model size.
