@@ -43,6 +43,7 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
 
   const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
   const mobile = window.matchMedia('(pointer: coarse)');
+  const compact = window.matchMedia('(width < 48rem)');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const motionAllowed = () => !reduce.matches && document.documentElement.dataset.motion !== 'reduced';
   const mouseMotionEnabled = () => fine.matches && motionAllowed();
@@ -85,6 +86,7 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
   let mouseX = 0;
   let mouseY = 0;
   let touchTarget = 0;
+  let entryZoom = 1.2;
 
   const stop = () => {
     cancelAnimationFrame(frame);
@@ -92,12 +94,11 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
     previousTime = 0;
   };
   const canRender = () => ready && !disposed && !contextLost && !pageHidden && isActive() && !document.hidden;
-  const scrollAngle = () => {
+  const scrollProgress = () => {
     const bounds = host.getBoundingClientRect();
     const viewportHeight = document.documentElement.clientHeight;
     // Entry at the viewport bottom → centered → exit at the viewport top.
-    const progress = Math.min(1, Math.max(0, (viewportHeight - bounds.top) / (viewportHeight + bounds.height)));
-    return (progress * 2 - 1) * maxScrollAngle;
+    return Math.min(1, Math.max(0, (viewportHeight - bounds.top) / (viewportHeight + bounds.height)));
   };
   const tick = (time: number) => {
     frame = 0;
@@ -106,8 +107,15 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
     const mouseEnabled = mouseMotionEnabled();
     const scrollEnabled = scrollMotionEnabled();
     const enabled = mouseEnabled || scrollEnabled;
+    // Read scroll geometry once per animation frame, shared by yaw and zoom.
+    const progress = scrollEnabled ? scrollProgress() : 0;
     const targetX = mouseEnabled ? mouseX : 0;
-    const targetY = mouseEnabled ? mouseY : scrollEnabled ? scrollAngle() + touchTarget : 0;
+    const targetY = mouseEnabled ? mouseY : scrollEnabled ? (progress * 2 - 1) * maxScrollAngle + touchTarget : 0;
+    const zoomEnabled = scrollEnabled && compact.matches;
+    // Hold the close view on entry, then fit before the model leaves the screen.
+    const fitProgress = Math.min(1, Math.max(0, (progress - .2) / .45));
+    const fit = fitProgress * fitProgress * (3 - 2 * fitProgress);
+    const targetZoom = zoomEnabled ? 1 + (entryZoom - 1) * (1 - fit) : 1;
     const dt = previousTime ? Math.min((time - previousTime) / 1000, .05) : 1 / 60;
     previousTime = time;
     // Restore the original mouse damping; retain the existing scroll smoothing.
@@ -117,13 +125,23 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
       interactionPivot.rotation.x += (targetX - interactionPivot.rotation.x) * alpha;
       interactionPivot.rotation.y += (targetY - interactionPivot.rotation.y) * alpha;
     }
+    const rotationSettling = Math.abs(targetX - interactionPivot.rotation.x) + Math.abs(targetY - interactionPivot.rotation.y) > .00001;
+    if (!rotationSettling) interactionPivot.rotation.set(targetX, targetY, 0);
+    // Camera zoom composes with the pivot rotation without resampling the canvas.
+    let zoom = !orientationInitialized || !zoomEnabled
+      ? targetZoom
+      : camera.zoom + (targetZoom - camera.zoom) * (1 - Math.exp(-12 * dt));
+    const zoomSettling = Math.abs(targetZoom - zoom) > .00001;
+    if (!zoomSettling) zoom = targetZoom;
+    if (camera.zoom !== zoom) {
+      camera.zoom = zoom;
+      camera.updateProjectionMatrix();
+    }
     orientationInitialized = true;
-    const settling = Math.abs(targetX - interactionPivot.rotation.x) + Math.abs(targetY - interactionPivot.rotation.y) > .00001;
-    if (!settling) interactionPivot.rotation.set(targetX, targetY, 0);
     renderer.render(scene, camera);
     // Reveal only after a successful frame, including after context restoration.
     host.setAttribute('data-ready', '');
-    if (settling) frame = requestAnimationFrame(tick);
+    if (rotationSettling || zoomSettling) frame = requestAnimationFrame(tick);
     else previousTime = 0;
   };
   const wake = () => {
@@ -167,6 +185,8 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
     const width = parseFloat(style.width);
     const height = parseFloat(style.height);
     if (width <= 0 || height <= 0) return;
+    // Less cropping on small phones; at most 1.22 on larger mobile canvases.
+    entryZoom = 1.16 + .06 * Math.min(1, Math.max(0, (width - 280) / 110));
     const aspect = width / height;
     const halfHeight = Math.max(30.4, 38 / aspect);
     camera.left = -halfHeight * aspect;
@@ -204,6 +224,7 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
     ro.disconnect();
     preferences.disconnect();
     mobile.removeEventListener('change', motionChange);
+    compact.removeEventListener('change', motionChange);
     reduce.removeEventListener('change', motionChange);
     fine.removeEventListener('change', motionChange);
     fine.removeEventListener('change', resize);
@@ -228,6 +249,7 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
   ro.observe(canvas);
   preferences.observe(document.documentElement, { attributes: true, attributeFilter: ['data-motion'] });
   mobile.addEventListener('change', motionChange);
+  compact.addEventListener('change', motionChange);
   reduce.addEventListener('change', motionChange);
   fine.addEventListener('change', motionChange);
   fine.addEventListener('change', resize);

@@ -1,5 +1,85 @@
 # Integración de la maqueta CEDHU
 
+## Acercamiento móvil con scroll — 25 de septiembre de 2026
+
+Se añadió exclusivamente a la cámara ortográfica un zoom de entrada que
+regresa a 1 al avanzar el scroll. La geometría sobrepasa lateralmente el
+encuadre inicial y WebGL recorta ese exceso, como una vista tipo cover.
+El canvas no sale físicamente de su caja: no se amplía un bitmap mediante
+CSS ni se ensancha el DOM. No fue necesario añadir `overflow-x: clip` ni
+modificar wrappers, estilos globales, textos o navegación.
+
+El efecto requiere puntero táctil, ausencia de puntero fino, ancho inferior
+a 48rem y movimiento permitido. Escritorio y movimiento reducido mantienen
+zoom 1. La rotación sigue perteneciendo a `interactionPivot`, mientras que
+el acercamiento pertenece a `camera.zoom`; ambas operaciones se componen en
+el mismo render. Se conservan los aportes originales de scroll y touch,
+cada uno limitado a ±4°, incluido su suavizado y retorno táctil.
+
+### Progreso y encaje
+
+- Se reutiliza el progreso del visor, no el del texto que lo precede:
+  `p = clamp((altoViewport - topVisor) / (altoViewport + altoVisor), 0, 1)`.
+- Se mantiene el acercamiento hasta `p = 0,20`. Entre 0,20 y 0,65 se aplica
+  `t = clamp((p - 0,20) / 0,45, 0, 1)` y la curva `t² × (3 - 2t)`.
+- El zoom objetivo interpola entre el acercamiento inicial y 1. El encaje
+  termina mientras el modelo todavía está visible; al subir se invierte.
+- El zoom inicial se calcula al redimensionar, según el ancho CSS del canvas:
+  `1,16 + 0,06 × clamp((ancho - 280) / 110, 0, 1)`.
+- El mismo `requestAnimationFrame` aplica amortiguación exponencial de 12/s.
+  El listener de scroll solo despierta el ciclo. La geometría del visor se
+  consulta una vez por frame y se comparte entre giro y zoom. El ciclo se
+  detiene cuando ambos se estabilizan.
+
+| Viewport vertical | Zoom inicial → final | Buffer con pantalla DPR 2 o 3 |
+| --- | --- | --- |
+| 320 px (prueba adicional DPR 3) | 1,16 → 1 | 560 × 448 |
+| 375 px | 1,19 → 1 | 670 × 536 |
+| 390 px | 1,198 → 1 | 700 × 560 |
+| 430 px | 1,22 → 1 | 780 × 624 |
+
+Se inspeccionaron capturas de entrada, transición y encaje. El recorte se
+limita a los extremos laterales, conservando la cancha y la mayor parte de
+las fachadas; el encuadre final recupera toda la maqueta. El DPR efectivo
+sigue limitado a 2 y las dimensiones del canvas no cambian al hacer zoom.
+
+### Validación de este cambio
+
+Pruebas en Chrome/Chromium sobre Windows, usando Playwright disponible en
+el entorno e instrumentación temporal externa al proyecto:
+
+- Seis combinaciones: 375, 390 y 430 px con pantalla DPR 2 y 3. Se muestrearon
+  seis posiciones de scroll por combinación: zoom decreciente y giro
+  simultáneo, encaje final en 1, ancho de texto constante, buffer constante
+  y cero reasignaciones width/height durante el scroll.
+- Prueba adicional a 320 px/DPR 3: acercamiento limitado a 1,16, encaje en 1,
+  buffer constante y ancho de documento/cuerpo de 320 px.
+- Tanto `document.body.scrollWidth` como `document.documentElement.scrollWidth`
+  permanecieron en 375, 390 o 430 respectivamente, igual que antes de cargar
+  la maqueta. Intentar desplazar horizontalmente la página mantuvo `scrollX = 0`.
+- Barrido continuo de seis segundos a 375 px/DPR 3: 361 comprobaciones,
+  ninguna con overflow ni cambio de buffer; aproximadamente 60 FPS en la GPU
+  del equipo. Terminó con zoom 1. Los conteos de recursos permanecieron en
+  19 geometrías y 2 texturas durante las pruebas móviles.
+- Gestos táctiles nativos simulados: aportes de +4° y −4°, retorno al soltar,
+  scroll vertical sin activar el recorrido, tap para abrir y cierre funcional.
+- Resize y cambios entre vertical y horizontal (844 y 932 px), incluido resize
+  con el recorrido abierto; seguimiento de mouse y hover de escritorio a
+  1440 px, con comprobaciones adicionales de resize a 768, 1280 y 1920 px.
+- Recuperación de contexto WebGL, también estando acercado; pausa fuera de
+  pantalla, en reposo y durante el recorrido. Se conserva el desmontaje.
+- Activar movimiento reducido del sistema o del sitio estando acercado
+  devuelve zoom y giro a su estado neutro; restablecerlo recupera el efecto.
+- `npm run build`: correcto, 27 páginas; `npm run check:site`: correcto,
+  3.916 referencias y 9 PDFs; `git diff --check`: correcto. Persisten los
+  avisos previos de colecciones vacías y tamaño del módulo diferido.
+
+Archivos modificados: `src/scripts/animations/cedhu-3d-scene.ts` y este
+documento. No se añadieron dependencias ni se alteraron GLB, CSS o Astro.
+Estas pruebas emulan dispositivos móviles; no certifican Safari/iOS ni el
+rendimiento térmico de un teléfono físico. Los apartados siguientes conservan
+las verificaciones e implementaciones anteriores.
+
 ## Nitidez Retina y pruebas móviles — 25 de septiembre de 2026
 
 ### Diagnóstico y corrección
