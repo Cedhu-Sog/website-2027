@@ -47,7 +47,9 @@ export function mountCampusTour(host: HTMLElement, signal: AbortSignal, wake: ()
   trigger.addEventListener('pointerup', event => {
     if (pointer?.id !== event.pointerId) return;
     dragged ||= Math.hypot(event.clientX - pointer.x, event.clientY - pointer.y) > 8;
-    const bounds = trigger.getBoundingClientRect();
+    // The mobile canvas can extend beyond the button's layout box into the gutters.
+    const hitArea = pointer.touch ? host.querySelector('canvas') ?? trigger : trigger;
+    const bounds = hitArea.getBoundingClientRect();
     dragged ||= event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom;
     endGesture();
   }, options);

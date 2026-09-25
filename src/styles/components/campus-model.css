@@ -22,6 +22,13 @@
   font-size: var(--text-small);
 }
 
+@media (width < 48rem) and (pointer: coarse) {
+  /* Only the scene crosses the content gutters; clipping belongs to the section. */
+  .campus-model-section { overflow-x: clip; }
+  .campus-model .cedhu-3d__visual { inset-inline: calc(-1 * var(--gutter)); }
+  .campus-model .cedhu-3d__canvas { pointer-events: auto; }
+}
+
 @media (min-width: 48rem) {
   .campus-model {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);

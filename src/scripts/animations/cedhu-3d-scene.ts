@@ -35,6 +35,7 @@ function disposeModel(root: Object3D) {
 export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActive: () => boolean) {
   const canvas = host.querySelector('canvas');
   if (!canvas || !host.dataset.model) throw new Error('Falta el canvas o la ruta del modelo.');
+  const renderBox = host.querySelector('.cedhu-3d__trigger') ?? canvas;
   const renderer = new WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'low-power' });
   renderer.outputColorSpace = SRGBColorSpace;
   renderer.toneMapping = AgXToneMapping;
@@ -180,17 +181,21 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
     wake();
   };
   const resize = () => {
-    // Measure the layout box, excluding the hover/tour transforms on its parent.
-    const style = getComputedStyle(canvas);
+    // Keep the original content box as the zoom reference and pixel budget.
+    // The mobile visual can extend into the gutters without allocating more pixels.
+    const style = getComputedStyle(renderBox);
     const width = parseFloat(style.width);
     const height = parseFloat(style.height);
+    const visualWidth = parseFloat(getComputedStyle(canvas).width);
     if (width <= 0 || height <= 0) return;
     // Less cropping on small phones; at most 1.22 on larger mobile canvases.
     entryZoom = 1.16 + .06 * Math.min(1, Math.max(0, (width - 280) / 110));
     const aspect = width / height;
     const halfHeight = Math.max(30.4, 38 / aspect);
-    camera.left = -halfHeight * aspect;
-    camera.right = halfHeight * aspect;
+    // Reveal more at the sides, preserving the original projected model size.
+    // Match the display aspect even though the drawing buffer budget stays fixed.
+    camera.left = -halfHeight * visualWidth / height;
+    camera.right = halfHeight * visualWidth / height;
     camera.top = halfHeight;
     camera.bottom = -halfHeight;
     camera.updateProjectionMatrix();

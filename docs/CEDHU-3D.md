@@ -1,5 +1,77 @@
 # Integración de la maqueta CEDHU
 
+## Recorte móvil contra los bordes de pantalla — 25 de septiembre de 2026
+
+El corte anterior era el límite de dibujo del propio canvas: su ancho CSS
+coincidía con el `.container` de la sección (335, 350 y 390 px en pantallas
+de 375, 390 y 430 px). No existía un `overflow: hidden/clip` en ese contenedor
+que bastara con retirar. WebGL no puede dibujar fuera de su canvas.
+
+Se separó una sección exterior `.campus-model-section.section` del grid
+interior `.campus-model.container`. El contenedor conserva exactamente sus
+medidas, gutters, textos, pie de figura y altura del botón. Solo en pantallas
+táctiles menores de 48rem, `.cedhu-3d__visual` extiende sus dos lados por el
+valor de `--gutter`, y `overflow-x: clip` se aplica a la sección exterior,
+que ocupa el ancho disponible del viewport. No se añadió overflow global
+ni se introdujo un contenedor desplazable.
+
+El canvas y el póster siguen siendo transparentes; el póster conserva su
+encaje mediante `object-fit: contain`. No se añadió fondo, borde o máscara
+visible. El canvas acepta eventos en la zona lateral expuesta y el controlador
+del recorrido usa sus límites para validar el fin de un tap táctil; el umbral
+de arrastre y el cálculo del giro siguen usando la referencia anterior.
+
+### Conservación del encuadre y presupuesto de render
+
+El botón original sigue siendo la referencia para `entryZoom`, `setSize` y
+la reserva de píxeles. El DPR del renderer sigue limitado a 2. Para revelar
+los laterales sin estirar el edificio ni cambiar su tamaño, solo se amplían
+los límites horizontales de la cámara ortográfica según el ancho visual del
+canvas. Posición, objetivo, zoom, frustum vertical y animación no cambian.
+
+| Pantalla | Canvas CSS anterior → actual | Buffer anterior = actual | scrollWidth = clientWidth |
+| --- | --- | --- | --- |
+| 375 px | 335 × 268 → 375 × 268 | 670 × 536 | 375 = 375 |
+| 390 px | 350 × 280 → 390 × 280 | 700 × 560 | 390 = 390 |
+| 430 px | 390 × 312 → 430 × 312 | 780 × 624 | 430 = 430 |
+
+Se conserva el número de píxeles solicitado, no se incrementa al hacer
+full-bleed. Como consecuencia, esos mismos píxeles cubren un campo horizontal
+mayor: la densidad horizontal efectiva es aproximadamente 1,79–1,81 muestras
+por píxel CSS, aunque el DPR configurado permanece en 2; la vertical sigue
+en 2. Esta distinción evita afirmar que un buffer idéntico y más ancho visual
+tienen simultáneamente la misma densidad horizontal. El tamaño y las
+proporciones proyectadas del modelo sí permanecen iguales.
+
+### Validación
+
+- Comparación antes/después a 375, 390, 430 y 1440 px, en tres posiciones de
+  scroll: mismas coordenadas y dimensiones de todos los textos, mismo zoom,
+  giro, escala proyectada horizontal/vertical y buffer. Escritorio también
+  conserva el rectángulo original del canvas.
+- En móvil, canvas desde x = 0 hasta x = ancho del viewport; revisión visual
+  de acercamiento y encaje, con continuidad del fondo de la página.
+- Seis combinaciones de 375/390/430 px con DPR 2/3: 726 lecturas durante
+  barridos de scroll, sin overflow, desplazamiento horizontal ni cambios de
+  buffer. Tanto `body.scrollWidth` como `documentElement.scrollWidth`
+  coincidieron con `documentElement.clientWidth`.
+- Taps a x = 5 y x = ancho − 5 abren el recorrido en las seis combinaciones;
+  cierre correcto y ausencia de overflow también con el diálogo abierto.
+- Gestos de ±4°, scroll vertical, mouse/hover de escritorio, resize y cambios
+  de orientación, pausa en reposo/fuera de pantalla, movimiento reducido,
+  desmontaje y recuperación de contexto WebGL: correctos.
+- Barrido adicional de seis segundos a 375 px/DPR 3: aproximadamente 60 FPS
+  en el equipo, 361 lecturas sin overflow ni cambios del buffer. Se conserva
+  el render bajo demanda y no se añaden cálculos al listener de scroll.
+- `npm run build`: correcto, 27 páginas. `npm run check:site`: correcto,
+  3.916 referencias y 9 PDFs. `git diff --check`: correcto. Avisos existentes
+  por colecciones vacías y tamaño del módulo diferido, sin ocultarlos.
+
+Archivos modificados: `CampusModel.astro`, `campus-model.css`,
+`cedhu-3d-scene.ts`, `campus-tour.ts` y este informe. GLB, dependencias,
+zoom y curva de animación intactos. Pruebas realizadas en Chromium con
+emulación móvil; no en Safari/iPhone físico.
+
 ## Acercamiento móvil con scroll — 25 de septiembre de 2026
 
 Se añadió exclusivamente a la cámara ortográfica un zoom de entrada que
