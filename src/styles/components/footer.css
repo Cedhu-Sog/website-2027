@@ -1,9 +1,8 @@
 .site-footer { padding-block: var(--space-xl) var(--space-md); background: var(--color-tint); }
 .site-footer__main { display: grid; gap: var(--space-lg); padding-bottom: var(--space-lg); }
-.site-footer__wordmark { font-size: 3.5rem; line-height: 1.1; font-weight: 650; letter-spacing: -.08em; text-decoration: none; }
-.site-footer__wordmark span { color: var(--color-primary); }
+.site-footer__brand { display: block; width: min(100%, var(--footer-logo-width)); margin-bottom: var(--space-sm); }
+.site-footer__brand img { width: 100%; height: auto; }
 .site-footer__identity > p { font-size: .85rem; }
-.site-footer__identity .site-footer__motto { margin-block: .8rem 1.5rem; font-family: var(--font-editorial); font-size: 1.15rem; }
 .site-footer nav, .site-footer__contact { display: flex; flex-direction: column; align-items: flex-start; gap: .3rem; }
 .site-footer h2 { font-size: .85rem; font-weight: 650; letter-spacing: 0; margin-bottom: .65rem; }
 .site-footer nav a, .site-footer__contact > a { display: inline-flex; align-items: center; min-height: 2.3rem; font-size: .85rem; text-decoration: none; }

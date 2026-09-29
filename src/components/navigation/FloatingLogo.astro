@@ -1,9 +1,8 @@
 ---
-import { Image } from 'astro:assets';
 import { media } from '../../data/media';
 import '../../styles/components/floating-logo.css';
 ---
 <a class="floating-logo" href="/" aria-label="CEDHU, ir al inicio" aria-hidden="true" tabindex="-1" inert data-floating-logo>
-  <Image {...media.logo} width={135} height={61} loading="eager" />
+  <img src={media.logo.src.src} alt={media.logo.alt} width={media.logo.src.width} height={media.logo.src.height} loading="eager" />
 </a>
 <script>import '../../scripts/interactions/floating-logo';</script>

@@ -8,7 +8,7 @@ import comunidadCedhu from '../assets/fotos-cedhu/encuentro-musical-comunidad.we
 import encuentroCedhu from '../assets/fotos-cedhu/reconocimiento-institucional.webp';
 import convivenciaCedhu from '../assets/fotos-cedhu/convivencia-juego-respeto.webp';
 import cienciaCedhu from '../assets/fotos-cedhu/feria-cientifica-experimentacion.webp';
-import logo from '../assets/images/logo.avif';
+import logo from '../assets/images/logo-cedhu-oficial.png';
 import inicial from '../assets/images/inicial.jpg';
 import primaria from '../assets/images/primaria.jpg';
 import bachillerato from '../assets/images/bachillerato.webp';

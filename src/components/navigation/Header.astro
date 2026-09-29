@@ -1,5 +1,4 @@
 ---
-import { Image } from 'astro:assets';
 import { media } from '../../data/media';
 import { navigation, site } from '../../data/site';
 import Icon from '../common/Icon.astro';
@@ -14,7 +13,7 @@ const current = Astro.url.pathname;
     <div class="site-header__community"><span>Comunidad CEDHU</span><PlatformLinks /></div>
   </div>
   <div class="site-header__main container">
-    <a class="site-header__brand" href="/" aria-label="CEDHU, ir al inicio"><Image {...media.logo} width={135} height={61} loading="eager" data-floating-logo-trigger /></a>
+    <a class="site-header__brand" href="/" aria-label="CEDHU, ir al inicio"><img src={media.logo.src.src} alt={media.logo.alt} width={media.logo.src.width} height={media.logo.src.height} loading="eager" data-floating-logo-trigger /></a>
     <nav class="desktop-nav" aria-label="Navegación principal">
       <ul>{navigation.map(item => <li>
         {item.children ? <details class="nav-dropdown" data-nav-dropdown>
