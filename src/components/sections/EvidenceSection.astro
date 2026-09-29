@@ -1,0 +1,53 @@
+---
+import { getPageSection, type PageSection } from '../../lib/content';
+import Photo from '../common/Photo.astro';
+import Icon from '../common/Icon.astro';
+import '../../styles/components/evidence.css';
+
+interface Props { content?: PageSection<'evidenceSection'>; }
+const content = Astro.props.content ?? await getPageSection('inicio', 'evidenceSection');
+---
+
+<section class="evidence section" id="evidencia-cedhu" aria-labelledby="evidence-title">
+  <div class="container">
+    <header class="evidence__header">
+      <p class="eyebrow">{content.eyebrow}</p>
+      <h2 id="evidence-title">{content.title}</h2>
+      <p class="evidence__introduction">{content.introduction}</p>
+    </header>
+
+    <div class="evidence__grid">
+      {content.cards.map(card => (
+        <article class={`evidence-card evidence-card--${card.id}`} aria-labelledby={`evidence-${card.id}`}>
+          <div class="evidence-card__photo">
+            <Photo name={card.image} sizes="(min-width: 1440px) 302px, (min-width: 1280px) 22vw, (min-width: 768px) 44vw, 91vw" />
+          </div>
+          <div class="evidence-card__body">
+            <h3 id={`evidence-${card.id}`}>{card.title}</h3>
+            <p class="evidence-card__description">{card.description}</p>
+            {card.evidence.length > 0 && (
+              <ul class="evidence-card__facts" role="list">
+                {card.evidence.map(fact => (
+                  <li>
+                    <strong>{fact.sourceUrl ? <a href={fact.sourceUrl}>{fact.title}</a> : fact.title}</strong>
+                    <span>{fact.detail}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {card.note && <p class="evidence-card__note">{card.note}</p>}
+            {card.action && (
+              <a class="text-link evidence-card__action" href={card.action.href}>
+                {card.action.label}<Icon />
+              </a>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <div class="evidence__footer">
+      <a class="button" href={content.linkHref}>{content.linkLabel}<Icon /></a>
+    </div>
+  </div>
+</section>

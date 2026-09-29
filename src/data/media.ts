@@ -8,6 +8,10 @@ import comunidadCedhu from '../assets/fotos-cedhu/encuentro-musical-comunidad.we
 import encuentroCedhu from '../assets/fotos-cedhu/reconocimiento-institucional.webp';
 import convivenciaCedhu from '../assets/fotos-cedhu/convivencia-juego-respeto.webp';
 import cienciaCedhu from '../assets/fotos-cedhu/feria-cientifica-experimentacion.webp';
+import estudioCedhu from '../assets/fotos-cedhu/educanda-estudiando.jpg';
+import proyectoRoboticaCedhu from '../assets/fotos-cedhu/proyecto-robotica.jpg';
+import talentoDanzaCedhu from '../assets/fotos-cedhu/talento-danza.jpeg';
+import graduacionCedhu from '../assets/fotos-cedhu/graduacion-cedhu.jpg';
 import logo from '../assets/images/logo-cedhu-oficial.png';
 import inicial from '../assets/images/inicial.jpg';
 import primaria from '../assets/images/primaria.jpg';
@@ -44,6 +48,10 @@ export const media = {
   encuentroCedhu: { src: encuentroCedhu, alt: 'Integrantes de la comunidad del CEDHU reciben menciones de honor en un encuentro institucional.' },
   convivenciaCedhu: { src: convivenciaCedhu, alt: 'Educandos del CEDHU forman la palabra respeto con tarjetas de colores durante una actividad de convivencia.' },
   cienciaCedhu: { src: cienciaCedhu, alt: 'Participantes de la feria científica del CEDHU exploran juntos un montaje con tubos en el patio del colegio.' },
+  estudioCedhu: { src: estudioCedhu, alt: 'Una educanda del CEDHU trabaja en su cuaderno en el aula.' },
+  proyectoRoboticaCedhu: { src: proyectoRoboticaCedhu, alt: 'Educandos del CEDHU comparten un proyecto de robótica con sus compañeros.' },
+  talentoDanzaCedhu: { src: talentoDanzaCedhu, alt: 'Seis educandas del CEDHU con vestuario para una presentación de danza.' },
+  graduacionCedhu: { src: graduacionCedhu, alt: 'Promoción del CEDHU reunida en el escenario durante su ceremonia de graduación.' },
   logo: { src: logo, alt: 'CEDHU — Centro de Desarrollo Humano. Orden es Bienestar.' },
   inicial: { src: inicial, alt: 'Educandos de preescolar en una actividad de aula del CEDHU.' },
   primaria: { src: primaria, alt: 'Educandos de primaria trabajando en su salón de clase.' },

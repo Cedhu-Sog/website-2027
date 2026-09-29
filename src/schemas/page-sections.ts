@@ -187,6 +187,31 @@ export const pageSections = {
     supportDescription: text,
     linkLabel: text,
   }).optional(),
+  evidenceSection: z.object({
+    eyebrow: text,
+    title: text,
+    introduction: text,
+    linkLabel: text,
+    linkHref: text,
+    cards: z.array(z.object({
+      id: z.enum(['academicos', 'proyectos', 'talento', 'egresados']),
+      title: text,
+      description: text,
+      image: mediaKey,
+      // Optional links stay absent until a real destination is available.
+      action: z.object({ label: text, href: text }).optional(),
+      note: text.optional(),
+      evidence: z.array(z.object({
+        title: text,
+        detail: text,
+        // Keep provenance with the fact; add a public document when available.
+        source: text,
+        sourceUrl: z.url().optional(),
+      })).default([]),
+    })).length(4).refine(cards => new Set(cards.map(card => card.id)).size === 4, {
+      message: 'Las cuatro categorías de evidencia deben ser distintas.',
+    }),
+  }).optional(),
   identityIntro: z.object({
     linkHref: text,
     eyebrow: text,

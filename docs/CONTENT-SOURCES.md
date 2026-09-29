@@ -16,6 +16,32 @@ Consulta y migración: 7 de septiembre de 2026. Las URLs describen la procedenci
 | [Útiles escolares](https://cedhu.edu.co/utiles-escolares/) | Listas de 2026 y portal externo de compra de textos UNOi |
 | [Colegio Javeriano](https://www.javeriano.edu.co/javerianonew/) | Referencia de organización: servicios, admisiones, actualidad y accesos. No se copiaron su diseño, textos o fotografías |
 
+## Evidencia CEDHU en el Home — 29 de septiembre de 2026
+
+Los resultados de Saber 11° (2025 y 2026), los 55 reconocimientos TOEFL 2025 y los
+reconocimientos de baloncesto, tenis y danza proceden del encargo explícito de CEDHU
+para esta sección. No se han contrastado con certificados ni publicaciones públicas:
+las fotografías de apoyo no certifican esos resultados. Cada evidencia conserva su
+procedencia en `evidenceSection.cards[].evidence[].source`, dentro de `inicio.md`;
+el campo opcional `sourceUrl` permite enlazar un respaldo público cuando se facilite.
+No se atribuyen resultados a personas concretas por aparecer en las fotografías.
+
+Fotografías facilitadas con el encargo:
+
+| Original | Recurso local | Uso |
+| --- | --- | --- |
+| `IMG_5806.jpg` | `src/assets/fotos-cedhu/educanda-estudiando.jpg` | Trabajo académico en el aula |
+| `IMG_5330.JPG` | `src/assets/fotos-cedhu/proyecto-robotica.jpg` | Educandos compartiendo un proyecto |
+| `WhatsApp Image 2026-09-18 at 4.01.32 PM.jpeg` | `src/assets/fotos-cedhu/talento-danza.jpeg` | Danza y formación integral |
+| `IMG_0625.JPG` | `src/assets/fotos-cedhu/graduacion-cedhu.jpg` (ya existente) | Ceremonia de graduación |
+
+La maqueta adjunta se usa solo como referencia de composición. No se reutilizan sus
+fotografías ni sus afirmaciones sobre universidades, finalistas u otros resultados.
+La tarjeta de egresados no incorpora historias sin documentar. FisioTech, olimpiadas
+y ciudadanía pueden añadirse al listado de evidencias cuando exista información
+concreta. Las acciones de tarjeta son opcionales; el CTA de trayectoria utiliza la
+página real `/historia/` y puede cambiarse desde el contenido editorial.
+
 ## Criterios editoriales
 
 1. Misión y visión conservan el contenido oficial. Los demás textos se resumieron para lectura en web, sin añadir rankings, cifras, premios, convenios o testimonios no comprobados.
