@@ -183,9 +183,9 @@ newsSection:
   linkLabel: Ver toda la actualidad
   linkHref: /noticias/
 quickAccess:
-  eyebrow: A un paso
-  titleStart: Tu día a día,
-  titleEnd: más fácil.
+  eyebrow: Tu día a día, a un paso
+  titleStart: Comunidad
+  titleEnd: CEDHUISTA
   links:
     - label: Ingresar a Q10
       detail: Plataforma académica
@@ -199,9 +199,9 @@ quickAccess:
       detail: Talentos en movimiento
       href: /ludicas/
       external: false
-    - label: Hablar con el CEDHU
-      detail: Estamos para orientarte
-      href: /contacto/
+    - label: Servicios en línea
+      detail: UNOi, egresados y trámites
+      href: /servicios-en-linea/
       external: false
 technology:
   eyebrow: Ciencia + tecnología + creatividad

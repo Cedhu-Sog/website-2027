@@ -17,7 +17,17 @@ const services = [
   { id: 'unoi', name: content.unoiName, tagline: content.unoiTitle, description: content.unoiDescription, label: content.unoiLabel, href: site.unoi, image: unoiLogo, alt: 'Logo de UNOi', isLogo: true, primary: false },
   { id: 'egresados', name: content.alumniTitle, tagline: content.alumniEyebrow, description: content.alumniDescription, label: content.alumniLabel, href: content.alumniHref, image: alumniPhoto, alt: 'Egresados del CEDHU con toga, birrete y diplomas durante su ceremonia de graduación.', isLogo: false, primary: false },
 ];
+const shortcuts = [
+  { href: '#service-q10', label: content.q10Name },
+  { href: '#service-unoi', label: content.unoiName },
+  { href: '#service-egresados', label: 'Formulario de egresados' },
+  { href: '#recursos', label: 'Información y documentos' },
+  { href: '#tesoreria', label: content.treasuryEyebrow },
+];
 ---
+<nav class="container service-shortcuts" aria-label="Accesos de la comunidad CEDHUISTA">
+  {shortcuts.map(link => <a href={link.href}>{link.label}<Icon name="chevron" /></a>)}
+</nav>
 <div class="section container service-grid">
 {services.map(service => (
   <section class="service-section" aria-labelledby={`service-${service.id}`}>
@@ -39,5 +49,5 @@ const services = [
   </section>
 ))}
 </div>
-<section class="section section--tint"><div class="container editorial-split"><div><p class="eyebrow">{content.resourcesEyebrow}</p><h2>{content.resourcesTitle}</h2></div><div class="related-links"><a href={content.hoursHref}><span>{content.hoursLabel}</span></a><a href={content.suppliesHref}><span>{content.suppliesLabel}</span></a><a href={content.activitiesHref}><span>{content.activitiesLabel}</span></a><a href={content.documentsHref}><span>{content.documentsLabel}</span></a></div></div></section>
-<section class="section container editorial-split"><div><p class="eyebrow">{content.treasuryEyebrow}</p><h2>{content.treasuryTitle}</h2></div><div class="prose"><h3>{content.paymentsTitle}</h3><p>{content.paymentsDescription}</p><a class="text-link" href={content.treasuryHref}>{content.treasuryLabel}</a><h3>{content.booksTitle}</h3><p>{content.booksDescription}</p><a class="text-link" href={content.booksHref} target="_blank" rel="noopener noreferrer">{content.booksLabel}<span class="sr-only"> (abre en otra pestaña)</span></a></div></section>
+<section class="section section--tint" id="recursos"><div class="container editorial-split"><div><p class="eyebrow">{content.resourcesEyebrow}</p><h2>{content.resourcesTitle}</h2></div><div class="related-links"><a href={content.hoursHref}><span>{content.hoursLabel}</span></a><a href={content.suppliesHref}><span>{content.suppliesLabel}</span></a><a href={content.activitiesHref}><span>{content.activitiesLabel}</span></a><a href={content.documentsHref}><span>{content.documentsLabel}</span></a></div></div></section>
+<section class="section container editorial-split" id="tesoreria"><div><p class="eyebrow">{content.treasuryEyebrow}</p><h2>{content.treasuryTitle}</h2></div><div class="prose"><h3>{content.paymentsTitle}</h3><p>{content.paymentsDescription}</p><a class="text-link" href={content.treasuryHref}>{content.treasuryLabel}</a><h3>{content.booksTitle}</h3><p>{content.booksDescription}</p><a class="text-link" href={content.booksHref} target="_blank" rel="noopener noreferrer">{content.booksLabel}<span class="sr-only"> (abre en otra pestaña)</span></a></div></section>

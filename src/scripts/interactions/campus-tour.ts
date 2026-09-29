@@ -95,6 +95,8 @@ export function mountCampusTour(host: HTMLElement, signal: AbortSignal, wake: ()
     host.setAttribute('data-tour-open', '');
     document.documentElement.dataset.campusTourOpen = '';
     wake();
+    // Attach the heavy resource only after activation, retaining it for reopens.
+    if (!video.hasAttribute('src') && video.dataset.src) video.src = video.dataset.src;
     video.currentTime = 0;
     void video.play().catch(() => { /* Native controls remain available if autoplay is blocked. */ });
   }, options);

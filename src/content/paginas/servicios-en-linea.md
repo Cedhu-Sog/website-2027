@@ -4,9 +4,9 @@ title: Servicios en línea
 description: >-
   Accede a Q10, UNOi, documentos, lúdicas y canales de atención del CEDHU. Enlaces oficiales para
   educandos y familias.
-heroTitle: Menos vueltas. Más cerca.
+heroTitle: Comunidad CEDHUISTA
 heroDescription: Accede a tus plataformas y encuentra la información que necesitas en el día a día.
-heroEyebrow: Tu comunidad, conectada
+heroEyebrow: Servicios en línea
 heroImage: robotica
 services:
   q10Name: Q10

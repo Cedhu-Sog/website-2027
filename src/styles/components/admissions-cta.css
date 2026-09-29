@@ -3,4 +3,9 @@
 .admissions-cta .eyebrow { color: var(--color-primary-dark); }
 .admissions-cta h2 { max-width: 23ch; }
 .admissions-cta__inner > div:last-child p { max-width: 29rem; margin-bottom: var(--space-md); }
+.admissions-cta__actions { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-sm); }
+.admissions-cta__actions .button { width: 100%; font-size: var(--text-body); }
+.admissions-cta__actions svg { flex-shrink: 0; }
+.admissions-cta__actions .text-link { color: var(--color-primary-dark); }
+@media (min-width: 48rem) { .admissions-cta__actions .button { width: fit-content; } }
 @media (min-width: 48rem) { .admissions-cta__inner { grid-template-columns: 1.5fr 1fr; gap: var(--space-xl); } }

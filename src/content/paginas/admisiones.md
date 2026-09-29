@@ -14,8 +14,8 @@ admissionsCta:
   eyebrow: El siguiente paso, en familia
   titleStart: Conocernos puede ser
   titleEnd: el comienzo de algo grande.
-  description: Descubre nuestros espacios, nuestra propuesta y la comunidad que te acompaña.
-  linkLabel: Hablemos de admisiones
+  description: Escríbenos al WhatsApp institucional para coordinar una visita en familia con Admisiones y confirmar la disponibilidad de fecha y hora.
+  linkLabel: Agenda una visita
   linkHref: /admisiones/
 admissionsProcess:
   eyebrow: Antes de comenzar

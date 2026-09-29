@@ -76,7 +76,7 @@
 .cedhu-3d__dialog[data-closing]::backdrop { animation: campus-backdrop-exit var(--duration-normal) var(--ease-standard) both; }
 .cedhu-3d__video-header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); margin-bottom: var(--space-xs); }
 .cedhu-3d__close { min-height: 2.75rem; padding: var(--space-xs) var(--space-sm); border: 0; border-radius: var(--radius-sm); background: var(--color-tint); color: var(--color-text); cursor: pointer; }
-.cedhu-3d__dialog video { display: block; width: 100%; max-height: calc(100dvh - 9rem); border-radius: var(--radius-xs); }
+.cedhu-3d__dialog video { display: block; width: 100%; height: auto; aspect-ratio: 53 / 30; object-fit: contain; max-height: calc(100dvh - 9rem); border-radius: var(--radius-xs); }
 .cedhu-3d__video-error { margin-top: var(--space-sm); }
 html[data-campus-tour-open], html[data-campus-tour-open] body { overflow: hidden; overscroll-behavior: none; }
 @keyframes campus-video-enter { from { opacity: 0; transform: scale(.96); filter: blur(4px); } to { opacity: 1; transform: scale(1); filter: blur(0); } }
@@ -101,7 +101,9 @@ html[data-campus-tour-open], html[data-campus-tour-open] body { overflow: hidden
 
 @media (prefers-reduced-motion: reduce) {
   .cedhu-3d__poster, .cedhu-3d__canvas { transition: none; }
+  .cedhu-3d .cedhu-3d__trigger .cedhu-3d__visual { transform: none; }
 }
+html[data-motion="reduced"] .cedhu-3d .cedhu-3d__visual { transform: none; }
 
 @media print {
   .cedhu-3d__hint, .cedhu-3d__tour, .cedhu-3d__dialog { display: none !important; }

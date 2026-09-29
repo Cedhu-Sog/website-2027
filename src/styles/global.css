@@ -1,4 +1,4 @@
-html { background: var(--color-background); scroll-behavior: smooth; scroll-padding-top: 7rem; }
+html { background: var(--color-background); scroll-behavior: smooth; scroll-padding-top: calc(var(--header-desktop-height) + var(--space-sm)); }
 body { background: var(--color-background); color: var(--color-text); font-family: var(--font-sans); font-size: var(--text-body); line-height: 1.7; text-rendering: optimizeLegibility; overflow-wrap: break-word; }
 main { min-height: 60vh; }
 @media (width < 48rem) {
@@ -13,6 +13,9 @@ p { text-wrap: pretty; }
 a { text-underline-offset: .22em; }
 button, a, summary { -webkit-tap-highlight-color: transparent; }
 :focus-visible { outline: 3px solid var(--color-primary); outline-offset: 5px; }
+/* Keep the focused target clear of fixed navigation, including the tablet dock. */
+:where(a, button, summary, input, select, textarea):focus-visible { scroll-margin-block: var(--space-sm); }
+@media (min-width: 48rem) and (width < 62rem) { html { scroll-padding-bottom: calc(var(--mobile-dock-height) + var(--space-sm)); } }
 ::selection { background: var(--color-accent); color: var(--color-text); }
 .container { width: min(calc(100% - var(--gutter) * 2), var(--container)); margin-inline: auto; }
 .section { padding-block: var(--space-xl); }

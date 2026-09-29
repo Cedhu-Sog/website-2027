@@ -29,7 +29,7 @@ summary::-webkit-details-marker { display: none; }
   .mobile-menu > summary { min-height: 2.75rem; }
 }
 @media (min-width: 62rem) {
-  .site-header__utility { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 2.15rem; border-bottom: 1px solid var(--color-line); font-size: .75rem; color: var(--color-text-muted); }
+  .site-header__utility { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 2.15rem; border-bottom: 1px solid var(--color-line); font-size: var(--text-detail); color: var(--color-text-muted); }
   .site-header__main { min-height: 5.45rem; }
   .site-header__community { display: flex; align-items: center; gap: var(--space-xs); }
   .site-header__community .platform-links { gap: var(--space-xs); }
@@ -39,11 +39,11 @@ summary::-webkit-details-marker { display: none; }
   .mobile-menu { display: none; }
   .desktop-nav { display: block; }
   .desktop-nav > ul { display: flex; align-items: center; gap: clamp(.75rem, 1.5vw, 1.5rem); list-style: none; }
-  .desktop-nav > ul > li > a, .nav-dropdown > summary { display: flex; align-items: center; gap: .35rem; min-height: 3rem; font-size: .85rem; font-weight: 500; text-decoration: none; list-style: none; }
+  .desktop-nav > ul > li > a, .nav-dropdown > summary { display: flex; align-items: center; gap: .35rem; min-height: 3rem; font-size: var(--text-detail); font-weight: 500; text-decoration: none; list-style: none; }
   .nav-dropdown { position: relative; }
   .nav-dropdown > summary svg { width: .8rem; height: .8rem; }
   .nav-dropdown[open] > summary svg { transform: rotate(180deg); }
-  .nav-dropdown__panel { position: absolute; top: calc(100% + .55rem); left: -1.25rem; min-width: 18rem; padding: .75rem; border: 1px solid var(--color-line); background: var(--color-surface); box-shadow: var(--shadow-menu); list-style: none; }
+  .nav-dropdown__panel { position: absolute; top: calc(100% + .55rem); left: -1.25rem; min-width: 18rem; max-height: calc(100dvh - var(--header-desktop-height) - var(--space-sm)); overflow-y: auto; padding: .75rem; border: 1px solid var(--color-line); background: var(--color-surface); box-shadow: var(--shadow-menu); list-style: none; }
   .nav-dropdown__panel a { display: block; padding: .65rem .75rem; font-size: .9rem; text-decoration: none; }
   .nav-dropdown__panel a:hover, .nav-dropdown__panel [aria-current] { background: var(--color-tint); }
   .desktop-nav [aria-current], .desktop-nav .is-active { color: var(--color-primary); }

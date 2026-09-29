@@ -48,7 +48,7 @@
   --footer-logo-width: clamp(12rem, 20vw, 17rem);
   --mobile-logo-height: 3.375rem;
   --mobile-dock-height: calc(4.05rem + env(safe-area-inset-bottom));
-  --text-mobile-dock: clamp(.6875rem, 3vw, .75rem);
+  --text-mobile-dock: .875rem;
   --shadow-mobile-logo: 0 2px 8px #103e2e0a;
   --floating-logo-width: 8.5rem;
   --floating-logo-height: 3rem;

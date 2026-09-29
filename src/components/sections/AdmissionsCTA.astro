@@ -1,8 +1,25 @@
 ---
 import { getPageSection, type PageSection } from '../../lib/content';
 import Icon from '../common/Icon.astro';
+import { site } from '../../data/site';
 import '../../styles/components/admissions-cta.css';
 const content = Astro.props.content ?? await getPageSection('admisiones', 'admissionsCta');
 interface Props { content?: PageSection<'admissionsCta'>; }
 ---
-<section class="admissions-cta"><div class="container admissions-cta__inner"><div><p class="eyebrow">{content.eyebrow}</p><h2>{content.titleStart}<br />{content.titleEnd}</h2></div><div><p>{content.description}</p><a class="button" href={content.linkHref}>{content.linkLabel} <Icon /></a></div></div></section>
+<section class="admissions-cta" aria-labelledby="admissions-cta-title">
+  <div class="container admissions-cta__inner">
+    <div>
+      <p class="eyebrow">{content.eyebrow}</p>
+      <h2 id="admissions-cta-title">{content.titleStart}<br />{content.titleEnd}</h2>
+    </div>
+    <div>
+      <p>{content.description}</p>
+      <div class="admissions-cta__actions">
+        <a class="button" href={site.whatsapp} target="_blank" rel="noopener noreferrer">
+          <Icon name="calendar" />{content.linkLabel}<span class="sr-only"> por WhatsApp (abre en otra pestaña)</span>
+        </a>
+        <a class="text-link" href={content.linkHref}>Conocer el proceso de admisión <Icon /></a>
+      </div>
+    </div>
+  </div>
+</section>
