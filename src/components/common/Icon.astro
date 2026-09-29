@@ -1,7 +1,8 @@
 ---
-interface Props { name?: 'arrow' | 'external' | 'menu' | 'home' | 'book' | 'phone' | 'close' | 'chevron' | 'graduation'; }
+interface Props { name?: 'arrow' | 'external' | 'menu' | 'home' | 'book' | 'phone' | 'close' | 'chevron' | 'graduation' | 'play'; }
 const { name = 'arrow' } = Astro.props;
 const paths = {
+  play: 'm8 5 11 7-11 7V5Z',
   arrow: 'M4 12h15M13 5l7 7-7 7', external: 'M7 17 18 6M6 6h12v12',
   menu: 'M4 7h16M4 12h16M4 17h16', home: 'm3 11 9-8 9 8M5 10v11h14V10M9 21v-8h6v8',
   book: 'M12 6C9 3 5 3 2 4v15c4-1 7-1 10 2 3-3 6-3 10-2V4c-3-1-7-1-10 2Zm0 0v15',

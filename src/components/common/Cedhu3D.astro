@@ -1,4 +1,5 @@
 ---
+import Icon from './Icon.astro';
 import '../../styles/components/cedhu-3d.css';
 
 interface Props {
@@ -23,7 +24,7 @@ const {
     </span>
   </button>
   <button class="cedhu-3d__tour button" data-campus-tour-start type="button" aria-haspopup="dialog" disabled>
-    <span aria-hidden="true">▶</span> Iniciar recorrido virtual
+    <Icon name="play" /> Iniciar recorrido virtual
   </button>
   <p class="cedhu-3d__hint" aria-hidden="true">
     <span class="cedhu-3d__hint-mouse">Mueve el cursor sobre la maqueta para explorar</span>

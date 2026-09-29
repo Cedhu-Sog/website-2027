@@ -48,6 +48,7 @@
   margin: var(--space-xs) auto 0;
   gap: var(--space-xs);
 }
+.cedhu-3d__tour > svg { flex-shrink: 0; }
 @media (hover: hover) and (pointer: fine) {
   .cedhu-3d__hint-mouse { display: inline; }
   .cedhu-3d__hint-touch { display: none; }

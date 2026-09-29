@@ -9,7 +9,7 @@ const current = Astro.url.pathname;
 const items = secondaryOnly ? navigation.filter(item => item.href !== '/contacto/') : navigation;
 ---
 <div class="menu-links">
-  <div class="menu-links__platforms"><PlatformLinks showNames /></div>
+  <div class="menu-links__platforms"><PlatformLinks showNames={!secondaryOnly} /></div>
   {!secondaryOnly && <a href="/" aria-current={current === '/' ? 'page' : undefined}>Inicio</a>}
   {items.map(item => item.children ? <details>
     <summary>{item.label}<Icon name="chevron" /></summary>

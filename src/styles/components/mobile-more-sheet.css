@@ -12,6 +12,8 @@
 .mobile-more-sheet__close:hover { background: var(--color-tint); }
 .mobile-more-sheet :focus-visible { outline-offset: -3px; }
 .mobile-more-fallback { padding-block: var(--space-md); }
+:is(.mobile-more-sheet, .mobile-more-fallback) .menu-links__platforms { padding-block: var(--space-sm); }
+:is(.mobile-more-sheet, .mobile-more-fallback) .platform-links { display: flex; justify-content: center; align-items: center; gap: calc(var(--space-sm) * 2); }
 html[data-mobile-sheet-open], html[data-mobile-sheet-open] body { overflow: hidden; overscroll-behavior: none; }
 @keyframes mobile-sheet-enter { from { opacity: 0; transform: translateY(2rem); } to { opacity: 1; transform: translateY(0); } }
 @keyframes mobile-sheet-exit { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(2rem); } }
