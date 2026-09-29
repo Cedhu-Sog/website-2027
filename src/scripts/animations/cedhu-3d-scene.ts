@@ -194,8 +194,13 @@ export async function mountCampus(host: HTMLElement, signal: AbortSignal, isActi
     if (width <= 0 || height <= 0) return;
     // Intentionally crop the lateral corners, with less zoom on small phones.
     entryZoom = 1.30 + .04 * Math.min(1, Math.max(0, (width - 280) / 110));
-    const aspect = width / height;
-    const halfHeight = Math.max(frameHalfHeight, frameHalfWidth / aspect);
+    // Preserve the former 16:9 framing scale on wider screens while trimming
+    // vertical space. Mobile keeps its existing fit and projection.
+    const framingHeight = window.matchMedia('(min-width: 768px)').matches
+      ? width * 9 / 16
+      : height;
+    const aspect = width / framingHeight;
+    const halfHeight = Math.max(frameHalfHeight, frameHalfWidth / aspect) * height / framingHeight;
     // Fit the complete environment and match the visible canvas aspect.
     camera.left = frameCenter.x - halfHeight * visualWidth / height;
     camera.right = frameCenter.x + halfHeight * visualWidth / height;
