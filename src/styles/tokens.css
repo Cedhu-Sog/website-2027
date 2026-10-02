@@ -41,8 +41,25 @@
   --radius-editorial: clamp(3rem, 7vw, 7rem);
   --radius-pill: 999px;
   --radius-mobile-navigation: 1.25rem;
-  /* Desktop header: utility row (2.15rem), main row (5.45rem), outer border. */
-  --header-desktop-height: calc(7.6rem + 1px);
+  --header-utility-height: 2.15rem;
+  --header-main-height: 5.45rem;
+  --header-admissions-height: 2.9rem;
+  --header-admissions-padding: .7rem;
+  /* Shared by sticky offsets, dropdowns and the Hero viewport calculation. */
+  --header-desktop-height: calc(var(--header-utility-height) + var(--header-main-height) + 1px);
+  --header-visible-height: var(--header-desktop-height);
+  --header-compact-height: 3.5rem;
+  --header-compact-logo-width: 5.5rem;
+  --header-compact-admissions-height: 2.75rem;
+  --header-floating-offset: .75rem;
+  --header-floating-inset: var(--space-md);
+  /* Two 44px platform targets with the existing 8px gap. */
+  --header-compact-platform-width: 6rem;
+  --header-scroll-restore: 3.75rem;
+  --header-scroll-compact: 5rem;
+  --color-header-glass: rgba(255, 255, 255, .94);
+  --blur-header: 8px;
+  --shadow-header: 0 2px 12px #103e2e0a;
   --mobile-logo-width: 7.5rem;
   --header-logo-width: 8.5rem;
   --footer-logo-width: clamp(12rem, 20vw, 17rem);
@@ -67,4 +84,16 @@
   --layer-navigation: 20;
   --layer-overlay: 30;
   --layer-focus: 40;
+}
+/* Preserve institutional presence at the top; touch layouts remain unchanged. */
+@media (min-width: 62rem) and (hover: hover) and (pointer: fine) {
+  :root { --header-main-height: 5.25rem; }
+}
+@media (min-width: 62rem) and (max-width: 90rem) and (hover: hover) and (pointer: fine),
+       (min-width: 62rem) and (max-height: 47.5rem) and (hover: hover) and (pointer: fine) {
+  :root {
+    --header-utility-height: 2rem;
+    --header-main-height: 4.75rem;
+    --header-logo-width: 8rem;
+  }
 }

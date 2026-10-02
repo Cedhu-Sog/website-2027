@@ -1,4 +1,4 @@
-html { background: var(--color-background); scroll-behavior: smooth; scroll-padding-top: calc(var(--header-desktop-height) + var(--space-sm)); }
+html { background: var(--color-background); scroll-behavior: smooth; scroll-padding-top: calc(var(--header-visible-height) + var(--space-sm)); }
 body { background: var(--color-background); color: var(--color-text); font-family: var(--font-sans); font-size: var(--text-body); line-height: 1.7; text-rendering: optimizeLegibility; overflow-wrap: break-word; }
 main { min-height: 60vh; }
 @media (width < 48rem) {

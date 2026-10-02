@@ -96,7 +96,7 @@
   .why-cedhu__sticky {
     /* The stretched outer column bounds the entire block's sticky travel. */
     position: sticky;
-    top: calc(var(--header-desktop-height) + var(--space-md));
+    top: calc(var(--header-visible-height) + var(--space-md));
     display: block;
     align-self: start;
   }

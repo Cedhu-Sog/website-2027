@@ -33,9 +33,13 @@
   .hero__foot > span { font-size: .75rem; }
 }
 @media (min-width: 75rem) {
-  .hero { min-height: min(49rem, calc(100svh - 7.6rem)); padding-top: 2.7rem; row-gap: 2.5rem; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+  .hero { min-height: min(49rem, calc(100svh - var(--header-desktop-height))); padding-top: 2.7rem; row-gap: 2.5rem; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
   .hero__visual { padding: 4rem 1rem 0 0; }
   .hero__inset { right: -.5rem; width: 10.5rem; }
+}
+/* Avoid empty space above the message when browser chrome leaves a short viewport. */
+@media (min-width: 62rem) and (max-height: 47.5rem) and (hover: hover) and (pointer: fine) {
+  .hero { align-items: start; }
 }
 @media (min-width: 62rem) and (max-height: 50rem) {
   .hero { min-height: auto; padding-top: 1.75rem; gap: 1.5rem 3rem; }
