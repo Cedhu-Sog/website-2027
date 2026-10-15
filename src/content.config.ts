@@ -1,12 +1,13 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { editorialGlob } from './lib/content-loader.mjs';
 import { z } from 'astro/zod';
 import { pageSections } from './schemas/page-sections';
-import { assetPath, cleanContent, date, mediaKey, seo, text } from './schemas/shared';
+import { assetPath, cleanContent, date, datetime, mediaKey, seo, text } from './schemas/shared';
 import { staffCategoryIds, staffGroupIds } from './data/personal';
 
 const paginas = defineCollection({
-  loader: glob({ base: './src/content/paginas', pattern: '**/*.md' }),
+  loader: editorialGlob({ base: './src/content/paginas', pattern: '**/*.md' }),
   schema: z.preprocess(cleanContent, z.object({
     route: z.string().regex(/^\/(?:[a-z0-9-]+\/)*$/),
     title: text,
@@ -48,7 +49,7 @@ const publication = {
 };
 
 const noticias = defineCollection({
-  loader: glob({ base: './src/content/noticias', pattern: '**/*.md' }),
+  loader: editorialGlob({ base: './src/content/noticias', pattern: '**/*.md' }),
   schema: z.preprocess(cleanContent, z.object({
     ...publication,
     seo,
@@ -67,7 +68,7 @@ const noticias = defineCollection({
 });
 
 const reconocimientos = defineCollection({
-  loader: glob({ base: './src/content/reconocimientos', pattern: '**/*.md' }),
+  loader: editorialGlob({ base: './src/content/reconocimientos', pattern: '**/*.md' }),
   schema: z.preprocess(cleanContent, z.object({
     ...publication,
     category: z.enum(['academico', 'deportivo', 'cientifico', 'cultural', 'egresados']),
@@ -81,12 +82,12 @@ const reconocimientos = defineCollection({
 });
 
 const eventos = defineCollection({
-  loader: glob({ base: './src/content/eventos', pattern: '**/*.md' }),
+  loader: editorialGlob({ base: './src/content/eventos', pattern: '**/*.md' }),
   schema: z.preprocess(cleanContent, z.object({
     title: text,
     description: text,
-    startDate: z.iso.datetime({ offset: true }),
-    endDate: z.iso.datetime({ offset: true }).optional(),
+    startDate: datetime,
+    endDate: datetime.optional(),
     location: text,
     image: mediaKey.optional(),
     additionalInfo: text.optional(),

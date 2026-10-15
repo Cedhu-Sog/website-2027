@@ -14,7 +14,7 @@
     "astro": "astro",
     "check:site": "node scripts/check-site.mjs",
     "check:cms": "node scripts/cms/check-config.mjs",
-    "test:cms": "node --test scripts/cms/oauth.test.mjs"
+    "test:cms": "node --test scripts/cms/*.test.mjs"
   },
   "dependencies": {
     "astro": "^7.2.3",
