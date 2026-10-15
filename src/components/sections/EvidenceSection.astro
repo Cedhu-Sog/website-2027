@@ -1,11 +1,12 @@
 ---
-import { getPageSection, type PageSection } from '../../lib/content';
+import { getPageSection, getRecognitions, type PageSection } from '../../lib/content';
 import Photo from '../common/Photo.astro';
 import Icon from '../common/Icon.astro';
 import '../../styles/components/evidence.css';
 
 interface Props { content?: PageSection<'evidenceSection'>; }
 const content = Astro.props.content ?? await getPageSection('inicio', 'evidenceSection');
+const recognitions = await getRecognitions();
 ---
 
 <section class="evidence section" id="evidencia-cedhu" aria-labelledby="evidence-title">
@@ -25,12 +26,16 @@ const content = Astro.props.content ?? await getPageSection('inicio', 'evidenceS
           <div class="evidence-card__body">
             <h3 id={`evidence-${card.id}`}>{card.title}</h3>
             <p class="evidence-card__description">{card.description}</p>
-            {card.evidence.length > 0 && (
+            {recognitions.some(item => item.card === card.id) && (
               <ul class="evidence-card__facts" role="list">
-                {card.evidence.map(fact => (
+                {recognitions.filter(item => item.card === card.id).map(fact => (
                   <li>
+                    {fact.image && <Photo name={fact.image} sizes="(min-width: 768px) 22vw, 90vw" />}
                     <strong>{fact.sourceUrl ? <a href={fact.sourceUrl}>{fact.title}</a> : fact.title}</strong>
-                    <span>{fact.detail}</span>
+                    <span>{fact.description}</span>
+                    {fact.educandos && <span>Educandos: {fact.educandos}</span>}
+                    {fact.organizer && <span>{fact.organizer}</span>}
+                    {fact.date && <time datetime={fact.date}>{new Intl.DateTimeFormat('es-CO', { dateStyle: 'long', timeZone: 'UTC' }).format(new Date(`${fact.date}T00:00:00Z`))}</time>}
                   </li>
                 ))}
               </ul>

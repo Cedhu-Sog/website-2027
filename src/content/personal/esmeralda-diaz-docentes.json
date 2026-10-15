@@ -1,0 +1,26 @@
+{
+  "id": "esmeralda-diaz-docentes",
+  "personId": "esmeralda-diaz",
+  "name": "Esmeralda Díaz",
+  "category": "docentes",
+  "role": "Sistemas / Robótica",
+  "order": 48,
+  "group": "sistemas-robotica",
+  "officeHours": "viernes de 7:30 a 8:30 a. m.",
+  "assignments": [
+    {
+      "subject": "Sistemas",
+      "grades": "8° a 11°"
+    },
+    {
+      "subject": "Robótica",
+      "grades": "8° a 11°"
+    },
+    {
+      "subject": "Robótica",
+      "grades": "7° A, B y C"
+    }
+  ],
+  "photo": "/src/assets/fotos-cedhu/personal/esmeralda-diaz.avif",
+  "visible": true
+}

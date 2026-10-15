@@ -1,0 +1,12 @@
+{
+  "id": "maria-paulina-leal-moreno-docentes",
+  "personId": "maria-paulina-leal-moreno",
+  "name": "María Paulina Leal Moreno",
+  "category": "docentes",
+  "role": "Transición A",
+  "order": 11,
+  "group": "preescolar",
+  "officeHours": "martes de 8:00 a 9:00 a. m.",
+  "photo": "/src/assets/fotos-cedhu/personal/maria-paulina-leal-moreno.webp",
+  "visible": true
+}

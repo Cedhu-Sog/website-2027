@@ -44,7 +44,7 @@ El componente importa `src/styles/components/floating-logo.css` y el controlador
 
 ## Rutas
 
-El build incluye 27 páginas HTML (22 páginas editoriales, cuatro noticias y la página 404), además de `sitemap.xml` y `robots.txt`.
+El build incluye 28 páginas HTML (22 páginas editoriales, cuatro noticias, la página 404 y el panel de administración), además de `sitemap.xml` y `robots.txt`.
 
 | Área | Rutas |
 | --- | --- |
@@ -59,7 +59,7 @@ El build incluye 27 páginas HTML (22 páginas editoriales, cuatro noticias y la
 
 Editar los Markdown de `src/content/paginas/` y `src/content/noticias/`. Por ejemplo, `src/content/paginas/investigacion.md` controla los metadatos, hero y textos de `/oferta-educativa/investigacion/`. Los párrafos de las noticias están en el cuerpo Markdown; las páginas institucionales usan frontmatter estructurado para mantener sus diseños particulares.
 
-Las colecciones de reconocimientos y eventos están preparadas sin publicaciones ficticias. Las imágenes conservan el registro de `src/data/media.ts` y su optimización. La [guía de Content Collections](docs/CONTENT-COLLECTIONS.md) explica todos los campos, archivos, contenido compartido, borradores y el punto de integración para un CMS futuro.
+Decap CMS permite editar el contenido existente desde `/admin/`, mediante GitHub y revisión editorial. Incluye fotografías optimizadas, perfiles individuales, los siete reconocimientos originales y una agenda inicialmente vacía integrada en lúdicas. La activación OAuth y las reglas de GitHub/Vercel requieren configuración del responsable: ver [Administración de contenidos](docs/DECAPCMS_ADMINISTRACION.md). La [guía de Content Collections](docs/CONTENT-COLLECTIONS.md) describe los contratos de contenido.
 
 Los formularios se abren en los servicios oficiales externos. Este sitio no almacena inscripciones ni procesa pagos. Las preferencias de accesibilidad se guardan solo en el navegador y funcionan aunque el almacenamiento no esté disponible. Los menús y preguntas frecuentes usan HTML nativo; las noticias permanecen disponibles si JavaScript está deshabilitado.
 
@@ -73,4 +73,4 @@ Los datos publicados de admisiones, lúdicas y documentos corresponden principal
 
 ## Publicación
 
-La URL canónica está configurada como `https://cedhu.edu.co`. El entregable actual es local: no se ha desplegado. Al publicar, servir `dist/` con soporte para directorios con `index.html`, las barras finales y la página `404.html`; comprobar los portales externos y actualizar los documentos del periodo. El recorrido MP4 se descarga únicamente al abrir su enlace y no se reproduce automáticamente.
+La URL canónica está configurada como `https://cedhu.edu.co`. El repositorio tiene una integración existente con Vercel en `https://website-2027-bay.vercel.app`; estos cambios de CMS no se han subido ni desplegado. Al publicar, servir `dist/` con soporte para directorios con `index.html`, las barras finales y la página `404.html`; comprobar los portales externos y actualizar los documentos del periodo. El recorrido MP4 se descarga únicamente al abrir su enlace y no se reproduce automáticamente.

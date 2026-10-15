@@ -1,0 +1,10 @@
+{
+  "id": "estela-alarcon-servicios-generales",
+  "personId": "estela-alarcon",
+  "name": "Estela Alarcón",
+  "category": "servicios-generales",
+  "role": "Auxiliar de servicios generales",
+  "order": 57,
+  "photo": "/src/assets/fotos-cedhu/personal/estela-alarcon.jpg",
+  "visible": true
+}

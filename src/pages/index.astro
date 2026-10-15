@@ -15,7 +15,7 @@ import FAQ from '../components/sections/FAQ.astro';
 import AdmissionsCTA from '../components/sections/AdmissionsCTA.astro';
 const page = await getPage('inicio');
 ---
-<BaseLayout title={page.title} description={page.description}>
+<BaseLayout title={page.title} description={page.description} seo={page.seo}>
   <Hero page={page} />
   <CampusModel content={page.campusModel} />
   <WhyCedhu />

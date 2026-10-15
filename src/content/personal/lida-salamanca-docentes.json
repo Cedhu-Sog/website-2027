@@ -1,0 +1,22 @@
+{
+  "id": "lida-salamanca-docentes",
+  "personId": "lida-salamanca",
+  "name": "Lida Salamanca",
+  "category": "docentes",
+  "role": "Inglés",
+  "order": 24,
+  "group": "ingles",
+  "officeHours": "viernes de 7:30 a 8:30 a. m.",
+  "assignments": [
+    {
+      "subject": "Inglés",
+      "grades": "10° y 11°"
+    },
+    {
+      "subject": "Conversacional",
+      "grades": "7° a 9°"
+    }
+  ],
+  "photo": "/src/assets/fotos-cedhu/personal/lida-salamanca.jpg",
+  "visible": true
+}

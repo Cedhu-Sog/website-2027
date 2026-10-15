@@ -1,0 +1,19 @@
+{
+  "id": "ferney-gonzalez-docentes",
+  "personId": "ferney-gonzalez",
+  "name": "Ferney González",
+  "category": "docentes",
+  "role": "Química",
+  "order": 36,
+  "group": "ciencias-naturales",
+  "officeHours": "viernes de 11:10 a. m. a 12:00 m.",
+  "assignments": [
+    {
+      "subject": "Química",
+      "grades": "5° a 11°"
+    }
+  ],
+  "groupLeadership": "9° C",
+  "photo": "/src/assets/fotos-cedhu/personal/ferney-gonzalez.jpg",
+  "visible": true
+}

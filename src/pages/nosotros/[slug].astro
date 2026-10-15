@@ -17,7 +17,7 @@ export async function getStaticPaths() {
 interface Props { page: PageData; id: string; }
 const { page, id } = Astro.props;
 ---
-<BaseLayout title={page.title} description={page.description}><Breadcrumb label={page.title} parent={{label:'CEDHU',href:'/nosotros/'}} /><PageHero image={page.heroImage} eyebrow={page.heroEyebrow} title={page.heroTitle} intro={page.heroDescription} theme={id === 'pedagogia-de-la-felicidad' ? 'warm' : 'green'} />
+<BaseLayout title={page.title} description={page.description} seo={page.seo}><Breadcrumb label={page.title} parent={{label:'CEDHU',href:'/nosotros/'}} /><PageHero image={page.heroImage} eyebrow={page.heroEyebrow} title={page.heroTitle} intro={page.heroDescription} theme={id === 'pedagogia-de-la-felicidad' ? 'warm' : 'green'} />
   {id === 'identidad' && <InstitutionIdentity content={page.institutionIdentity} />}
   {id === 'pedagogia-de-la-felicidad' && <Pedagogy content={page.pedagogy} />}
   {id === 'espacios' && <SchoolSpaces content={page.schoolSpaces} />}

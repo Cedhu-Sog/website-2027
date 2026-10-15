@@ -7,6 +7,8 @@
 .resource-list h3 a { text-decoration: none; }
 .resource-list h3 a:hover { text-decoration: underline; }
 .resource-list p { margin-top: .75rem; font-size: var(--text-detail); color: var(--color-text-muted); }
+.resource-list__photo { flex: 0 1 16rem; }
+.resource-list__photo img { width: 100%; height: auto; }
 .resource-list__download { display: inline-flex; align-items: center; gap: .5rem; min-height: 2.75rem; padding: .5rem .7rem; border: 1px solid var(--color-line); font-size: var(--text-detail); text-decoration: none; flex-shrink: 0; }
 .resource-list__download:hover { background: var(--color-tint); }
 .service-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-xl) var(--space-lg); }

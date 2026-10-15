@@ -1,0 +1,32 @@
+{
+  "id": "jenny-moreno-docentes",
+  "personId": "jenny-moreno",
+  "name": "Jenny Moreno",
+  "category": "docentes",
+  "role": "Ciencias Naturales",
+  "order": 31,
+  "group": "ciencias-naturales",
+  "officeHours": "miércoles de 7:30 a 8:30 a. m.",
+  "assignments": [
+    {
+      "subject": "Ciencias Naturales",
+      "grades": "3° y 4°"
+    },
+    {
+      "subject": "Química",
+      "grades": "3° y 4°"
+    },
+    {
+      "subject": "Biología",
+      "grades": "5°"
+    },
+    {
+      "subject": "Física",
+      "grades": "3°"
+    }
+  ],
+  "groupLeadership": "4° A",
+  "research": "4° A",
+  "photo": "/src/assets/fotos-cedhu/personal/jenny-moreno.jpg",
+  "visible": true
+}

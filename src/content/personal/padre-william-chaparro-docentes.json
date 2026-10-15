@@ -1,0 +1,18 @@
+{
+  "id": "padre-william-chaparro-docentes",
+  "personId": "padre-william-chaparro",
+  "name": "Padre William Chaparro",
+  "category": "docentes",
+  "role": "Educación Emocional",
+  "order": 40,
+  "group": "religion-educacion-emocional",
+  "officeHours": "lunes y martes de 10:30 a 11:00 a. m.",
+  "assignments": [
+    {
+      "subject": "Desarrollo Emocional",
+      "grades": "6° a 11°"
+    }
+  ],
+  "photo": "/src/assets/fotos-cedhu/personal/padre-william-chaparro.jpg",
+  "visible": true
+}

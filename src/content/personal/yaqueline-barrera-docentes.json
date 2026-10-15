@@ -1,0 +1,28 @@
+{
+  "id": "yaqueline-barrera-docentes",
+  "personId": "yaqueline-barrera",
+  "name": "Yaqueline Barrera",
+  "category": "docentes",
+  "role": "Educación Física",
+  "order": 43,
+  "group": "educacion-fisica",
+  "officeHours": "miércoles de 10:00 a 11:00 a. m.",
+  "assignments": [
+    {
+      "subject": "Desarrollo Psicomotor",
+      "grades": "Preescolar"
+    },
+    {
+      "subject": "Educación Física",
+      "grades": "1° y 2°"
+    },
+    {
+      "subject": "Religión",
+      "grades": "1° B"
+    }
+  ],
+  "groupLeadership": "1° B",
+  "research": "1° B",
+  "photo": "/src/assets/fotos-cedhu/personal/yaqueline-barrera.jpg",
+  "visible": true
+}

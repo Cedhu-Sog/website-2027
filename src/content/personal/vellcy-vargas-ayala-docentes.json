@@ -1,0 +1,12 @@
+{
+  "id": "vellcy-vargas-ayala-docentes",
+  "personId": "vellcy-vargas-ayala",
+  "name": "Vellcy Vargas Ayala",
+  "category": "docentes",
+  "role": "Párvulos",
+  "order": 8,
+  "group": "preescolar",
+  "officeHours": "lunes de 10:00 a 11:00 a. m.",
+  "photo": "/src/assets/fotos-cedhu/personal/vellcy-vargas-ayala.jpg",
+  "visible": true
+}

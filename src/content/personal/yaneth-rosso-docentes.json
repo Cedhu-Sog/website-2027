@@ -1,0 +1,27 @@
+{
+  "id": "yaneth-rosso-docentes",
+  "personId": "yaneth-rosso",
+  "name": "Yaneth Rosso",
+  "category": "docentes",
+  "role": "Lengua Castellana",
+  "order": 14,
+  "group": "lengua-castellana",
+  "officeHours": "lunes de 4:10 a 5:00 p. m.",
+  "assignments": [
+    {
+      "subject": "Lengua Castellana",
+      "grades": "3°, 4° y 5°"
+    },
+    {
+      "subject": "Lectura Crítica",
+      "grades": "3°, 4° y 5°"
+    }
+  ],
+  "groupLeadership": "5° A",
+  "research": "5° A",
+  "responsibilities": [
+    "Lúdicas"
+  ],
+  "photo": "/src/assets/fotos-cedhu/personal/yaneth-rosso.jpg",
+  "visible": true
+}

@@ -1,0 +1,18 @@
+{
+  "id": "gladys-yadira-africano-docentes",
+  "personId": "gladys-yadira-africano",
+  "name": "Yadira Africano",
+  "category": "docentes",
+  "role": "Biología",
+  "order": 32,
+  "group": "ciencias-naturales",
+  "officeHours": "miércoles de 9:30 a 10:30 a. m.",
+  "assignments": [
+    {
+      "subject": "Biología",
+      "grades": "6°, 7° y 8°"
+    }
+  ],
+  "photo": "/src/assets/fotos-cedhu/personal/yadira-africano.avif",
+  "visible": true
+}

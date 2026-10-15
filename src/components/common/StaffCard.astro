@@ -12,7 +12,7 @@ const detailId = `personal-info-${id}`;
   <div class:list={['staff-card__portrait', person.photoUnavailable && 'staff-card__portrait--placeholder']}>
     <Photo
       image={person.photo}
-      alt={person.photoUnavailable ? `Emblema del CEDHU. Fotografía de ${person.name} pendiente.` : `Retrato de ${person.name}, ${person.role} del CEDHU.`}
+      alt={person.photoAlt ?? (person.photoUnavailable ? `Emblema del CEDHU. Fotografía de ${person.name} pendiente.` : `Retrato de ${person.name}, ${person.role} del CEDHU.`)}
       widths={[280, 400, 640]}
       sizes="(min-width: 1440px) 231px, (min-width: 1300px) 18vw, (min-width: 1036px) 23vw, (min-width: 775px) 30vw, (min-width: 600px) 45vw, 91vw"
     />

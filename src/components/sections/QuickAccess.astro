@@ -1,6 +1,7 @@
 ---
 import { getPageSection, type PageSection } from '../../lib/content';
 import Icon from '../common/Icon.astro';
+import { site } from '../../data/site';
 import '../../styles/components/quick-access.css';
 const content = Astro.props.content ?? await getPageSection('inicio', 'quickAccess');
 const links = content.links;
@@ -11,7 +12,7 @@ interface Props { content?: PageSection<'quickAccess'>; }
     <div><p class="eyebrow">{content.eyebrow}</p><h2 id="quick-title">{content.titleStart}<br />{content.titleEnd}</h2></div>
     <nav class="quick-access__links" aria-label="Accesos de la comunidad CEDHUISTA">
       {links.map(link => (
-        <a href={link.href} target={link.external ? '_blank' : undefined} rel={link.external ? 'noopener noreferrer' : undefined}>
+        <a href={link.platform ? site[link.platform] : link.href} target={link.external ? '_blank' : undefined} rel={link.external ? 'noopener noreferrer' : undefined}>
           <span><strong>{link.label}</strong><span>{link.detail}</span></span>
           <Icon name={link.external ? 'external' : 'arrow'} />
           {link.external && <span class="sr-only"> (abre en otra pestaña)</span>}

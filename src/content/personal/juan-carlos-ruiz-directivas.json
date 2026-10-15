@@ -1,0 +1,11 @@
+{
+  "id": "juan-carlos-ruiz-directivas",
+  "personId": "juan-carlos-ruiz",
+  "name": "Dr. Juan Carlos Ruiz",
+  "category": "directivas",
+  "role": "Director General",
+  "order": 1,
+  "description": "Líder visionario que impulsa innovación y bienestar con su “Metodología de la Felicidad”, transformando el desarrollo humano en la organización.",
+  "photo": "/src/assets/images/director.avif",
+  "visible": true
+}

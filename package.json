@@ -7,10 +7,14 @@
   },
   "scripts": {
     "dev": "astro dev",
+    "prebuild": "npm run check:cms",
     "build": "astro build",
+    "postbuild": "npm run check:site",
     "preview": "astro preview",
     "astro": "astro",
-    "check:site": "node scripts/check-site.mjs"
+    "check:site": "node scripts/check-site.mjs",
+    "check:cms": "node scripts/cms/check-config.mjs",
+    "test:cms": "node --test scripts/cms/oauth.test.mjs"
   },
   "dependencies": {
     "astro": "^7.2.3",

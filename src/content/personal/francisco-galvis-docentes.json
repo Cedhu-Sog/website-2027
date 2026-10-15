@@ -1,0 +1,19 @@
+{
+  "id": "francisco-galvis-docentes",
+  "personId": "francisco-galvis",
+  "name": "Francisco Galvis",
+  "category": "docentes",
+  "role": "Educación Física",
+  "order": 45,
+  "group": "educacion-fisica",
+  "officeHours": "jueves de 2:00 a 2:50 p. m.",
+  "assignments": [
+    {
+      "subject": "Educación Física",
+      "grades": "8° a 11°"
+    }
+  ],
+  "groupLeadership": "9° C",
+  "photo": "/src/assets/fotos-cedhu/personal/francisco-galvis.jpg",
+  "visible": true
+}

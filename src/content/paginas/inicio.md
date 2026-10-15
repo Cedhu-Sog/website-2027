@@ -130,26 +130,12 @@ evidenceSection:
         Resultados y reconocimientos que reflejan el compromiso, la disciplina y el proceso
         formativo de nuestros educandos.
       image: estudioCedhu
-      evidence:
-        - title: 1.er puesto en Sogamoso
-          detail: Puesto 14 en Boyacá · ICFES Saber 11° 2025
-          source: Datos facilitados por CEDHU en el encargo del 29/09/2026.
-        - title: 55 reconocimientos TOEFL
-          detail: Inglés · 2025
-          source: Datos facilitados por CEDHU en el encargo del 29/09/2026.
-        - title: 455, 412 y 412 puntos
-          detail: Resultados individuales destacados · ICFES Saber 11° 2026
-          source: Datos facilitados por CEDHU en el encargo del 29/09/2026.
     - id: proyectos
       title: Proyectos que trascienden el aula
       description: >-
         Ciencia, tecnología, investigación y creatividad aplicadas a situaciones reales,
         fortaleciendo el pensamiento crítico y la solución de problemas.
       image: proyectoRoboticaCedhu
-      evidence:
-        - title: Robótica en comunidad
-          detail: Proyectos tecnológicos que se construyen y se comparten.
-          source: Fotografía IMG_5330.JPG facilitada por CEDHU para esta sección.
       action:
         label: Conoce la investigación
         href: /oferta-educativa/investigacion/
@@ -159,16 +145,6 @@ evidenceSection:
         Reconocimientos en escenarios deportivos, culturales y ciudadanos que fortalecen
         habilidades, valores, liderazgo y trabajo en equipo.
       image: talentoDanzaCedhu
-      evidence:
-        - title: Oro · Baloncesto 3x3
-          detail: Intercolegiados · 2026
-          source: Datos facilitados por CEDHU en el encargo del 29/09/2026.
-        - title: Oro · Tenis de campo
-          detail: Prejuvenil · 2026
-          source: Datos facilitados por CEDHU en el encargo del 29/09/2026.
-        - title: 1.er lugar · Danza infantil
-          detail: Talent Show Colegio Humboldt
-          source: Datos facilitados por CEDHU en el encargo del 29/09/2026.
     - id: egresados
       title: Egresados que inspiran
       description: >-
@@ -176,7 +152,6 @@ evidenceSection:
         proyectos, emprendimientos y diferentes campos profesionales.
       image: graduacionCedhu
       note: Próximamente, sus historias.
-      evidence: []
 newsSection:
   eyebrow: Pasa en el CEDHU
   title: Una comunidad que se vive.
@@ -189,7 +164,7 @@ quickAccess:
   links:
     - label: Ingresar a Q10
       detail: Plataforma académica
-      href: https://site2.q10.com/login?ReturnUrl=%2F&aplentId=04dd32ac-1f6a-46d0-b388-df88d12b739d
+      platform: q10
       external: true
     - label: Consultar documentos
       detail: Información para familias

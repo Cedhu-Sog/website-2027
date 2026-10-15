@@ -1,0 +1,12 @@
+{
+  "id": "luz-mary-barrera-gil-administrativos",
+  "personId": "luz-mary-barrera-gil",
+  "name": "Luz Mary Barrera Gil",
+  "category": "administrativos",
+  "role": "Tesorera",
+  "order": 51,
+  "description": "Responsable del área de tesorería institucional, encargada de apoyar los procesos administrativos y financieros del CEDHU.",
+  "officeHours": "lunes a viernes de 10:00 a 11:00 a. m. y de 3:00 a 4:00 p. m.",
+  "photo": "/src/assets/fotos-cedhu/personal/luz-mary-barrera-gil.jpg",
+  "visible": true
+}

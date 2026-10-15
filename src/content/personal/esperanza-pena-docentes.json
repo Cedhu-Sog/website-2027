@@ -1,0 +1,28 @@
+{
+  "id": "esperanza-pena-docentes",
+  "personId": "esperanza-pena",
+  "name": "Esperanza Peña",
+  "category": "docentes",
+  "role": "Educación Emocional",
+  "order": 41,
+  "group": "religion-educacion-emocional",
+  "officeHours": "miércoles de 2:00 a 2:50 p. m.",
+  "assignments": [
+    {
+      "subject": "Desarrollo Emocional",
+      "grades": "1° a 5°"
+    },
+    {
+      "subject": "Artística",
+      "grades": "3° a 5°"
+    },
+    {
+      "subject": "Expresión Teatral",
+      "grades": "Preescolar, 1° y 2°"
+    }
+  ],
+  "groupLeadership": "3° A",
+  "research": "3° A",
+  "photo": "/src/assets/fotos-cedhu/personal/esperanza-pena.jpg",
+  "visible": true
+}

@@ -1,0 +1,14 @@
+{
+  "id": "nancy-liliana-camargo-coordinadores",
+  "personId": "nancy-liliana-camargo",
+  "name": "Nancy Liliana Camargo",
+  "category": "coordinadores",
+  "role": "Coordinadora de Calidad",
+  "order": 5,
+  "responsibilities": [
+    "Coordinadora Académica de Primaria",
+    "Coordinadora Académica de Preescolar"
+  ],
+  "photo": "/src/assets/fotos-cedhu/personal/nancy-liliana-camargo.avif",
+  "visible": true
+}

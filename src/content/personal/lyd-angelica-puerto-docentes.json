@@ -1,0 +1,27 @@
+{
+  "id": "lyd-angelica-puerto-docentes",
+  "personId": "lyd-angelica-puerto",
+  "name": "Lyd Angélica Puerto",
+  "category": "docentes",
+  "role": "Matemáticas",
+  "order": 27,
+  "group": "matematicas",
+  "officeHours": "martes de 8:30 a 9:30 a. m.",
+  "assignments": [
+    {
+      "subject": "Matemáticas",
+      "grades": "6° y 7°"
+    },
+    {
+      "subject": "Geometría",
+      "grades": "6° y 7°"
+    },
+    {
+      "subject": "Estadística",
+      "grades": "7°"
+    }
+  ],
+  "groupLeadership": "7° B",
+  "photo": "/src/assets/fotos-cedhu/personal/lyd-angelica-puerto.jpg",
+  "visible": true
+}

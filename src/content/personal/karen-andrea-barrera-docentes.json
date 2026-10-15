@@ -1,0 +1,26 @@
+{
+  "id": "karen-andrea-barrera-docentes",
+  "personId": "karen-andrea-barrera",
+  "name": "Karen Andrea Barrera",
+  "category": "docentes",
+  "role": "Matemáticas",
+  "order": 25,
+  "group": "matematicas",
+  "officeHours": "lunes de 7:30 a 8:30 a. m.",
+  "assignments": [
+    {
+      "subject": "Matemáticas",
+      "grades": "1°, 2° y 3°"
+    },
+    {
+      "subject": "Geometría",
+      "grades": "1°, 2° y 3°"
+    },
+    {
+      "subject": "Estadística",
+      "grades": "1° y 2°"
+    }
+  ],
+  "photo": "/src/assets/fotos-cedhu/personal/karen-andrea-barrera.jpg",
+  "visible": true
+}

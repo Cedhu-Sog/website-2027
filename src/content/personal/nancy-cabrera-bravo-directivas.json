@@ -1,0 +1,11 @@
+{
+  "id": "nancy-cabrera-bravo-directivas",
+  "personId": "nancy-cabrera-bravo",
+  "name": "Mg. Nancy Cabrera Bravo",
+  "category": "directivas",
+  "role": "Rectora del CEDHU",
+  "order": 3,
+  "description": "Su gestión se enfocará en fortalecer la calidad académica, fomentar un ambiente inclusivo y actualizar los procesos pedagógicos y tecnológicos para preparar a los educandos ante los retos del futuro.",
+  "photo": "/src/assets/images/rectora.jpg",
+  "visible": true
+}

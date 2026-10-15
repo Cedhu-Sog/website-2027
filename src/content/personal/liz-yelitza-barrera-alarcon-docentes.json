@@ -1,0 +1,28 @@
+{
+  "id": "liz-yelitza-barrera-alarcon-docentes",
+  "personId": "liz-yelitza-barrera-alarcon",
+  "name": "Liz Yelitza Barrera Alarcón",
+  "category": "docentes",
+  "role": "Lengua Castellana",
+  "order": 13,
+  "group": "lengua-castellana",
+  "officeHours": "martes de 7:30 a 8:30 a. m.",
+  "assignments": [
+    {
+      "subject": "Lengua Castellana",
+      "grades": "1° y 2°"
+    },
+    {
+      "subject": "Lectura Crítica",
+      "grades": "1° y 2°"
+    },
+    {
+      "subject": "Artística",
+      "grades": "1° y 2°"
+    }
+  ],
+  "groupLeadership": "2° A",
+  "research": "2° A",
+  "photo": "/src/assets/fotos-cedhu/personal/liz-yelitza-barrera-alarcon.jpg",
+  "visible": true
+}

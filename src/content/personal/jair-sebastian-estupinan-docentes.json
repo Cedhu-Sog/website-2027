@@ -1,0 +1,23 @@
+{
+  "id": "jair-sebastian-estupinan-docentes",
+  "personId": "jair-sebastian-estupinan",
+  "name": "Jair Sebastián Estupiñán",
+  "category": "docentes",
+  "role": "Sistemas / Robótica",
+  "order": 46,
+  "group": "sistemas-robotica",
+  "officeHours": "lunes de 7:30 a 8:30 a. m.",
+  "assignments": [
+    {
+      "subject": "Sistemas",
+      "grades": "2° a 6° y 7° A, B y C"
+    },
+    {
+      "subject": "Robótica",
+      "grades": "2° a 6°"
+    }
+  ],
+  "groupLeadership": "6° C",
+  "photo": "/src/assets/fotos-cedhu/personal/jair-sebastian-estupinan.jpg",
+  "visible": true
+}

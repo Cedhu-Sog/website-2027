@@ -1,0 +1,12 @@
+{
+  "id": "laura-estefania-barrera-docentes",
+  "personId": "laura-estefania-barrera",
+  "name": "Laura Estefanía Barrera",
+  "category": "docentes",
+  "role": "Prejardín",
+  "order": 9,
+  "group": "preescolar",
+  "officeHours": "miércoles de 10:00 a 11:00 a. m.",
+  "photo": "/src/assets/fotos-cedhu/personal/laura-estefania-barrera.jpg",
+  "visible": true
+}

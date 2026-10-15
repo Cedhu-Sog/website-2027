@@ -2,8 +2,7 @@
 route: /contacto/
 title: Contacto
 description: >-
-  Contacta al CEDHU en Sogamoso: Calle 28 # 8–50, teléfonos (608) 770 0320 y 770 0316, WhatsApp y
-  cedhu@cedhu.edu.co.
+  Contacta al CEDHU en Sogamoso: consulta nuestros teléfonos, WhatsApp, correo electrónico, ubicación y horarios de atención.
 heroTitle: Hablemos.
 heroDescription: Admisiones, atención a familias y preguntas del día a día. Estamos para orientarte.
 heroEyebrow: Sogamoso, Boyacá · Estamos cerca
@@ -13,7 +12,6 @@ secondaryActionLabel: Llamar al CEDHU
 contactDetails:
   emailEyebrow: Escríbenos
   emailTitle: Empecemos una conversación.
-  whatsappLabel: WhatsApp · 316 877 9094
   phoneEyebrow: Llámanos
   visitEyebrow: Ven a conocernos
   neighborhood: Barrio El Recreo
@@ -48,6 +46,7 @@ contact:
       href: tel:+576087700320
     - label: (608) 770 0316
       href: tel:+576087700316
+  whatsappLabel: WhatsApp · 316 877 9094
   whatsapp: https://api.whatsapp.com/send/?phone=573168779094&text&type=phone_number&app_absent=0
   q10: https://site2.q10.com/login?ReturnUrl=%2F&aplentId=04dd32ac-1f6a-46d0-b388-df88d12b739d
   unoi: https://edi-unoi-co.stn-neds.com/ts/view/access

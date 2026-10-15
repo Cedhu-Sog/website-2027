@@ -1,0 +1,12 @@
+{
+  "id": "hugo-ernesto-ruiz-fajardo-administrativos",
+  "personId": "hugo-ernesto-ruiz-fajardo",
+  "name": "Hugo Ernesto Ruiz Fajardo",
+  "category": "administrativos",
+  "role": "Coordinador SG-SST",
+  "order": 50,
+  "description": "Coordinador del Sistema de Gestión de Seguridad y Salud en el Trabajo, encargado de promover condiciones seguras y adecuadas para la comunidad educativa.",
+  "officeHours": "lunes a viernes de 10:00 a 11:00 a. m. y de 3:00 a 4:00 p. m.",
+  "photo": "/src/assets/fotos-cedhu/personal/hugo-ernesto-ruiz-fajardo.avif",
+  "visible": true
+}

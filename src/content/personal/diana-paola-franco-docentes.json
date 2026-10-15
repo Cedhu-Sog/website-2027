@@ -1,0 +1,23 @@
+{
+  "id": "diana-paola-franco-docentes",
+  "personId": "diana-paola-franco",
+  "name": "Diana Paola Franco",
+  "category": "docentes",
+  "role": "Lengua Castellana",
+  "order": 16,
+  "group": "lengua-castellana",
+  "officeHours": "miércoles de 7:30 a 8:30 a. m.",
+  "assignments": [
+    {
+      "subject": "Lengua Castellana",
+      "grades": "8° y 9°"
+    },
+    {
+      "subject": "Lectura Crítica",
+      "grades": "8° y 9°"
+    }
+  ],
+  "groupLeadership": "9° A",
+  "photo": "/src/assets/fotos-cedhu/personal/diana-paola-franco.jpg",
+  "visible": true
+}

@@ -1,0 +1,10 @@
+{
+  "id": "angela-patricia-perez-perez-servicios-generales",
+  "personId": "angela-patricia-perez-perez",
+  "name": "Angela Patricia Pérez Pérez",
+  "category": "servicios-generales",
+  "role": "Auxiliar de servicios generales",
+  "order": 56,
+  "photo": "/src/assets/fotos-cedhu/personal/angela-patricia-perez-perez.jpg",
+  "visible": true
+}

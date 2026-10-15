@@ -44,11 +44,11 @@ activities:
         - Ajedrez
   forms:
     - label: Preescolar
-      id: 1FAIpQLSfhESS_cY47SUzBEl30EG20ZpXkuJ60HBkcdKaAEsE4qXa-Bg
+      href: https://docs.google.com/forms/d/e/1FAIpQLSfhESS_cY47SUzBEl30EG20ZpXkuJ60HBkcdKaAEsE4qXa-Bg/viewform?usp=header
     - label: Grados 1.º y 2.º
-      id: 1FAIpQLScSJ4B967onsaAWy_uujPfKh9NA538cqexIr63gI7jVUe7wBA
+      href: https://docs.google.com/forms/d/e/1FAIpQLScSJ4B967onsaAWy_uujPfKh9NA538cqexIr63gI7jVUe7wBA/viewform?usp=header
     - label: Grados 3.º, 4.º y 5.º
-      id: 1FAIpQLSeeXJ1oi42tnLlw64c94tmjmNxGEnb9se2WlvOys6reX_g7UA
+      href: https://docs.google.com/forms/d/e/1FAIpQLSeeXJ1oi42tnLlw64c94tmjmNxGEnb9se2WlvOys6reX_g7UA/viewform?usp=header
     - label: Grados 6.º a 9.º
-      id: 1FAIpQLSdMW4tLnd9U99G1oV5jPHYnnL3vTlpKenejeddLs69c5lMDIg
+      href: https://docs.google.com/forms/d/e/1FAIpQLSdMW4tLnd9U99G1oV5jPHYnnL3vTlpKenejeddLs69c5lMDIg/viewform?usp=header
 ---

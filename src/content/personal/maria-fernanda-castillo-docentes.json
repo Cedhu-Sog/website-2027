@@ -1,0 +1,27 @@
+{
+  "id": "maria-fernanda-castillo-docentes",
+  "personId": "maria-fernanda-castillo",
+  "name": "María Fernanda Castillo",
+  "category": "docentes",
+  "role": "Matemáticas",
+  "order": 28,
+  "group": "matematicas",
+  "officeHours": "jueves de 11:10 a. m. a 12:00 m.",
+  "assignments": [
+    {
+      "subject": "Matemáticas",
+      "grades": "8° y 9°"
+    },
+    {
+      "subject": "Geometría",
+      "grades": "8° y 9°"
+    },
+    {
+      "subject": "Estadística",
+      "grades": "8°"
+    }
+  ],
+  "groupLeadership": "8° C",
+  "photo": "/src/assets/fotos-cedhu/personal/maria-fernanda-castillo.jpg",
+  "visible": true
+}

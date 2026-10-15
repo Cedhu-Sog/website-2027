@@ -1,0 +1,17 @@
+{
+  "id": "nelson-omar-camargo-docentes",
+  "personId": "nelson-omar-camargo",
+  "name": "Nelson Omar Camargo",
+  "category": "docentes",
+  "role": "Lenguaje Técnico",
+  "order": 18,
+  "group": "lengua-castellana",
+  "assignments": [
+    {
+      "subject": "Lenguaje Técnico",
+      "grades": "9° a 11°"
+    }
+  ],
+  "photo": "/src/assets/fotos-cedhu/personal/nelson-omar-camargo.jpg",
+  "visible": true
+}

@@ -1,0 +1,20 @@
+{
+  "id": "angela-patricia-rocha-a-docentes",
+  "personId": "angela-patricia-rocha-a",
+  "name": "Ángela Patricia Rocha A",
+  "category": "docentes",
+  "role": "Inglés",
+  "order": 20,
+  "group": "ingles",
+  "officeHours": "miércoles de 3:20 a 4:10 p. m.",
+  "assignments": [
+    {
+      "subject": "Inglés",
+      "grades": "2°, 3° y 4°"
+    }
+  ],
+  "groupLeadership": "2° B",
+  "research": "2° B",
+  "photo": "/src/assets/fotos-cedhu/personal/angela-patricia-rocha-a.jpg",
+  "visible": true
+}

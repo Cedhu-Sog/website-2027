@@ -1,0 +1,22 @@
+{
+  "id": "jairo-sandoval-docentes",
+  "personId": "jairo-sandoval",
+  "name": "Jairo Sandoval",
+  "category": "docentes",
+  "role": "Música",
+  "order": 49,
+  "group": "musica",
+  "officeHours": "martes de 3:20 a 4:10 p. m.",
+  "assignments": [
+    {
+      "subject": "Música",
+      "grades": "Preescolar"
+    },
+    {
+      "subject": "Música",
+      "grades": "1° a 5°"
+    }
+  ],
+  "photo": "/src/assets/fotos-cedhu/personal/jairo-sandoval.jpg",
+  "visible": true
+}

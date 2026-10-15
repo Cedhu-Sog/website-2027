@@ -1,0 +1,11 @@
+{
+  "id": "celia-elena-fajardo-garavito-directivas",
+  "personId": "celia-elena-fajardo-garavito",
+  "name": "Sra. Celia Elena Fajardo Garavito",
+  "category": "directivas",
+  "role": "Administradora del CEDHU",
+  "order": 2,
+  "description": "Administradora del CEDHU. Lidera procesos administrativos eficientes que fortalecen la institución y fomentan la excelencia académica, el desarrollo integral y la colaboración entre toda la comunidad educativa.",
+  "photo": "/src/assets/images/administradora.avif",
+  "visible": true
+}

@@ -1,0 +1,10 @@
+{
+  "id": "hector-horacio-perez-diaz-servicios-generales",
+  "personId": "hector-horacio-perez-diaz",
+  "name": "Héctor Horacio Pérez Díaz",
+  "category": "servicios-generales",
+  "role": "Auxiliar de servicios generales / Mantenimiento",
+  "order": 61,
+  "photo": "/src/assets/fotos-cedhu/personal/hector-horacio-perez-diaz.jpg",
+  "visible": true
+}

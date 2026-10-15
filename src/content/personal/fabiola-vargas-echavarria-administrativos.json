@@ -1,0 +1,12 @@
+{
+  "id": "fabiola-vargas-echavarria-administrativos",
+  "personId": "fabiola-vargas-echavarria",
+  "name": "Fabiola Vargas Echavarría",
+  "category": "administrativos",
+  "role": "Enfermera",
+  "order": 54,
+  "description": "Encargada de brindar apoyo en primeros auxilios y acompañamiento básico en salud a los educandos y a la comunidad educativa.",
+  "officeHours": "lunes a viernes de 10:00 a 11:00 a. m. y de 3:00 a 4:00 p. m.",
+  "photo": "/src/assets/fotos-cedhu/personal/fabiola-vargas-echavarria.jpg",
+  "visible": true
+}

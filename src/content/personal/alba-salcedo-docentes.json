@@ -1,0 +1,32 @@
+{
+  "id": "alba-salcedo-docentes",
+  "personId": "alba-salcedo",
+  "name": "Alba Salcedo",
+  "category": "docentes",
+  "role": "Ciencias Naturales",
+  "order": 30,
+  "group": "ciencias-naturales",
+  "officeHours": "lunes de 3:20 a 4:00 p. m.",
+  "assignments": [
+    {
+      "subject": "Explorando, mi ambiente",
+      "grades": "Preescolar"
+    },
+    {
+      "subject": "Imagin-Arte",
+      "grades": "Preescolar"
+    },
+    {
+      "subject": "Ciencias Naturales",
+      "grades": "1° y 2°"
+    },
+    {
+      "subject": "Religión",
+      "grades": "1° A, 2° y 3°"
+    }
+  ],
+  "groupLeadership": "1° A",
+  "research": "1° A",
+  "photo": "/src/assets/fotos-cedhu/personal/alba-salcedo.jpg",
+  "visible": true
+}

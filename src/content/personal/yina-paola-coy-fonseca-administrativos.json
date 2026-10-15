@@ -1,0 +1,12 @@
+{
+  "id": "yina-paola-coy-fonseca-administrativos",
+  "personId": "yina-paola-coy-fonseca",
+  "name": "Yina Paola Coy Fonseca",
+  "category": "administrativos",
+  "role": "Auxiliar Contable",
+  "order": 53,
+  "description": "Apoya los procesos contables y administrativos de la institución, contribuyendo al orden y seguimiento de la información financiera.",
+  "officeHours": "lunes a viernes de 10:00 a 11:00 a. m. y de 3:00 a 4:00 p. m.",
+  "photo": "/src/assets/fotos-cedhu/personal/yina-paola-coy-fonseca.jpg",
+  "visible": true
+}

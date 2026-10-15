@@ -1,0 +1,19 @@
+{
+  "id": "enrique-diaz-docentes",
+  "personId": "enrique-diaz",
+  "name": "Enrique Díaz",
+  "category": "docentes",
+  "role": "Educación Física",
+  "order": 44,
+  "group": "educacion-fisica",
+  "officeHours": "martes de 2:00 a 2:50 p. m.",
+  "assignments": [
+    {
+      "subject": "Educación Física",
+      "grades": "3° a 7°"
+    }
+  ],
+  "groupLeadership": "6° A",
+  "photo": "/src/assets/fotos-cedhu/personal/enrique-diaz.jpg",
+  "visible": true
+}

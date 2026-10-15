@@ -7,4 +7,4 @@ import HistoryTimeline from '../components/sections/HistoryTimeline.astro';
 import AdmissionsCTA from '../components/sections/AdmissionsCTA.astro';
 const page = await getPage('historia');
 ---
-<BaseLayout title={page.title} description={page.description}><Breadcrumb label="Nuestra historia" parent={{label:'CEDHU',href:'/nosotros/'}} /><PageHero imageCaption={page.heroImageCaption} image={page.heroImage} eyebrow={page.heroEyebrow} title={page.heroTitle} intro={page.heroDescription} /><HistoryTimeline /><AdmissionsCTA /></BaseLayout>
+<BaseLayout title={page.title} description={page.description} seo={page.seo}><Breadcrumb label="Nuestra historia" parent={{label:'CEDHU',href:'/nosotros/'}} /><PageHero imageCaption={page.heroImageCaption} image={page.heroImage} eyebrow={page.heroEyebrow} title={page.heroTitle} intro={page.heroDescription} /><HistoryTimeline /><AdmissionsCTA /></BaseLayout>

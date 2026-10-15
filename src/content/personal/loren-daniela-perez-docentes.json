@@ -1,0 +1,23 @@
+{
+  "id": "loren-daniela-perez-docentes",
+  "personId": "loren-daniela-perez",
+  "name": "Loren Daniela Pérez",
+  "category": "docentes",
+  "role": "Ciencias Sociales",
+  "order": 38,
+  "group": "ciencias-sociales",
+  "officeHours": "jueves de 7:30 a 8:30 a. m.",
+  "assignments": [
+    {
+      "subject": "Ciencias Sociales",
+      "grades": "7° a 11°"
+    },
+    {
+      "subject": "Competencias Ciudadanas",
+      "grades": "7° a 11°"
+    }
+  ],
+  "groupLeadership": "11° C",
+  "photo": "/src/assets/fotos-cedhu/personal/loren-daniela-perez.jpg",
+  "visible": true
+}

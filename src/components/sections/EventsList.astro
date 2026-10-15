@@ -1,0 +1,24 @@
+---
+import { getEvents } from '../../lib/content';
+import Photo from '../common/Photo.astro';
+import '../../styles/components/resources.css';
+const events = await getEvents();
+const format = (value: string) => new Intl.DateTimeFormat('es-CO', {
+  dateStyle: 'long', timeStyle: 'short', timeZone: 'America/Bogota',
+}).format(new Date(value));
+---
+{events.length > 0 && <section class="section container" aria-labelledby="agenda-title">
+  <h2 id="agenda-title">Agenda institucional</h2>
+  <div class="resource-list">
+    {events.map(event => <article id={`evento-${event.id}`}>
+      <div>
+        <h3>{event.title}</h3>
+        <p><time datetime={event.startDate}>{format(event.startDate)}</time>{event.endDate && <> — <time datetime={event.endDate}>{format(event.endDate)}</time></>}</p>
+        <p>{event.location}</p>
+        <p>{event.description}</p>
+        {event.additionalInfo && <p>{event.additionalInfo}</p>}
+      </div>
+      {event.image && <figure class="resource-list__photo"><Photo name={event.image} widths={[240, 400, 640]} sizes="(min-width: 768px) 20vw, 90vw" /></figure>}
+    </article>)}
+  </div>
+</section>}

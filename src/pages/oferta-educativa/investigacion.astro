@@ -6,7 +6,7 @@ import PageHero from '../../components/sections/PageHero.astro';
 import ResearchProjects from '../../components/sections/ResearchProjects.astro';
 const page = await getPage('investigacion');
 ---
-<BaseLayout title={page.title} description={page.description}>
+<BaseLayout title={page.title} description={page.description} seo={page.seo}>
   <Breadcrumb label="Investigación" parent={{ label: 'Educación', href: '/oferta-educativa/' }} />
   <PageHero eyebrow={page.heroEyebrow} title={page.heroTitle} intro={page.heroDescription} image={page.heroImage} imageCaption={page.heroImageCaption} theme="warm">
     <div class="actions"><a class="text-link" href="#proyectos">{page.primaryActionLabel}</a></div>

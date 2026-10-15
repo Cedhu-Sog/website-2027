@@ -1,0 +1,24 @@
+{
+  "id": "nydia-gomez-docentes",
+  "personId": "nydia-gomez",
+  "name": "Nydia Gómez",
+  "category": "docentes",
+  "role": "Biología / Ecología",
+  "order": 33,
+  "group": "ciencias-naturales",
+  "officeHours": "miércoles de 7:30 a 8:30 a. m.",
+  "assignments": [
+    {
+      "subject": "Biología",
+      "grades": "9° a 11°"
+    },
+    {
+      "subject": "Ecología",
+      "grades": "8°, 9°, 10° y 11°"
+    }
+  ],
+  "groupLeadership": "10° B",
+  "research": "9°, 10° y 11°",
+  "photo": "/src/assets/fotos-cedhu/personal/nydia-gomez.jpg",
+  "visible": true
+}

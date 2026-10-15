@@ -1,0 +1,23 @@
+{
+  "id": "isabel-cristina-gomez-docentes",
+  "personId": "isabel-cristina-gomez",
+  "name": "Isabel Cristina Gómez",
+  "category": "docentes",
+  "role": "Inglés",
+  "order": 22,
+  "group": "ingles",
+  "officeHours": "lunes y martes de 10:30 a 11:00 a. m.",
+  "assignments": [
+    {
+      "subject": "Inglés",
+      "grades": "6° y 7°"
+    },
+    {
+      "subject": "Lenguaje Técnico",
+      "grades": "7°"
+    }
+  ],
+  "groupLeadership": "6° B",
+  "photo": "/src/assets/fotos-cedhu/personal/isabel-cristina-gomez.jpg",
+  "visible": true
+}

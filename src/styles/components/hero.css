@@ -1,17 +1,18 @@
-.hero { display: grid; grid-template-columns: minmax(0, 1fr); padding-top: var(--space-lg); padding-bottom: var(--space-md); gap: var(--space-lg); }
+.hero { position: relative; isolation: isolate; display: grid; grid-template-columns: minmax(0, 1fr); padding-top: var(--space-lg); padding-bottom: var(--space-md); gap: var(--space-lg); }
 @media (width < 48rem) { .hero { padding-top: var(--space-sm); } }
 .hero__copy .eyebrow { display: flex; align-items: center; gap: .6rem; font-size: .75rem; }
 .hero__point { display: inline-block; width: .55rem; height: .55rem; border-radius: 50%; background: var(--color-primary); flex-shrink: 0; }
 .hero h1 { font-size: var(--text-hero-title); font-weight: 550; line-height: var(--leading-hero-title); letter-spacing: -.065em; }
-.hero h1 > span { color: var(--color-primary); }
+.hero h1 > span { position: relative; display: inline-block; color: var(--color-primary); }
 .hero__description { margin-top: var(--space-md); font-size: var(--text-intro); line-height: 1.55; }
 .hero__context { max-width: 29rem; margin-top: var(--space-sm); color: var(--color-text-muted); font-size: var(--text-intro); line-height: 1.6; }
 .hero__copy .actions { margin-top: var(--space-lg); gap: .8rem 1.5rem; }
 .hero__copy .button { font-size: .85rem; }
-.hero__visual { position: relative; padding-top: 4rem; min-width: 0; }
+.hero__visual { position: relative; isolation: isolate; padding-top: 4rem; min-width: 0; }
+.hero__photo { position: relative; }
 .hero__caption-top { display: flex; justify-content: space-between; align-items: center; max-width: 55%; padding: 0 0 .6rem; font-size: .75rem; font-weight: 600; letter-spacing: .12em; }
-.hero__photo > img { width: 100%; aspect-ratio: 1.65; object-fit: cover; object-position: 50% 55%; border-radius: var(--radius-editorial) var(--radius-sm) 0 0; }
-.hero__photo figcaption { display: flex; align-items: center; justify-content: space-between; padding: .75rem 1rem; background: var(--color-accent); font-size: .9rem; line-height: 1.45; }
+.hero__photo > img { width: 100%; aspect-ratio: 1.65; object-fit: cover; object-position: 50% 55%; border-radius: var(--radius-editorial) var(--radius-sm) var(--radius-sm) var(--radius-sm); box-shadow: var(--shadow-menu); }
+.hero__photo figcaption { position: relative; display: flex; align-items: center; justify-content: space-between; width: calc(100% - var(--space-sm)); margin: -.6rem 0 0 auto; padding: .75rem 1rem; background: linear-gradient(105deg, var(--color-accent), color-mix(in srgb, var(--color-accent) 78%, var(--color-surface))); border-radius: var(--space-md) var(--radius-sm) var(--space-md) var(--space-md); box-shadow: var(--shadow-menu); font-size: .9rem; line-height: 1.45; }
 .hero__photo figcaption strong { font-weight: 600; }
 .hero__moments { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-sm); margin-top: var(--space-sm); }
 .hero__moments img { width: 100%; aspect-ratio: 1.65; object-fit: cover; border-radius: var(--radius-sm); }
@@ -26,6 +27,37 @@
 .hero__foot p { display: none; color: var(--color-text-muted); }
 .hero__foot a { display: inline-flex; align-items: center; gap: var(--space-md); min-height: 2.75rem; text-decoration: none; }
 .hero__foot > span { font-size: .75rem; letter-spacing: .08em; }
+/* Static rules above remain the fallback. Translate composes with the
+   Polaroid's existing rotation and its hover/focus transition. */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="reduced"]) .hero__copy > :is(.eyebrow, h1, .hero__description, .hero__context, .actions) {
+    animation: hero-copy-enter var(--duration-hero-copy) var(--ease-standard) backwards;
+  }
+  html:not([data-motion="reduced"]) .hero__copy > h1 { animation-delay: var(--duration-hero-stagger); }
+  html:not([data-motion="reduced"]) .hero__copy > :is(.hero__description, .hero__context) { animation-delay: calc(var(--duration-hero-stagger) * 2); }
+  html:not([data-motion="reduced"]) .hero__copy > .actions { animation-delay: calc(var(--duration-hero-stagger) * 3); }
+  html:not([data-motion="reduced"]) .hero__photo > img { animation: hero-photo-enter var(--duration-hero-photo) var(--ease-standard) backwards; }
+  html:not([data-motion="reduced"]) .hero__photo > figcaption { animation: hero-copy-enter var(--duration-hero-ribbon) var(--ease-standard) var(--duration-hero-stagger) backwards; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="reduced"]) .hero__inset { --hero-polaroid-travel: -3px; animation: hero-polaroid-float var(--duration-hero-polaroid) ease-in-out -2s infinite; }
+  html:not([data-motion="reduced"]) .hero__inset:is(:hover, :focus-visible) { animation-play-state: paused; }
+}
+@media (prefers-reduced-motion: no-preference) and (min-width: 48rem) {
+  html:not([data-motion="reduced"]) .hero__inset { --hero-polaroid-travel: -8px; }
+}
+@keyframes hero-copy-enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes hero-photo-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes hero-polaroid-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 var(--hero-polaroid-travel); }
+}
 @media (min-width: 48rem) {
   .hero { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); column-gap: 3rem; align-items: center; padding-top: 3rem; }
   .hero__foot { grid-column: 1 / -1; }

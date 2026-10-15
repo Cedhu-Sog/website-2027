@@ -1,0 +1,143 @@
+/* Static layers share the collage's bounds, leaving content and faces unobstructed. */
+.hero-decor { position: absolute; pointer-events: none; user-select: none; }
+.hero-decor--background {
+  inset: 0 calc(-1 * var(--gutter));
+  z-index: -1;
+  overflow: hidden;
+  overflow: clip;
+  background:
+    radial-gradient(ellipse at 8% 32%, var(--color-surface), color-mix(in srgb, var(--color-surface) 55%, transparent) 35%, transparent 72%),
+    radial-gradient(ellipse at 83% 22%, color-mix(in srgb, var(--color-accent) 13%, var(--color-warm)), transparent 63%),
+    linear-gradient(125deg, var(--color-surface), var(--color-background) 43%, var(--color-warm) 75%, var(--color-background));
+}
+.hero-decor--underline { width: 84%; height: .23em; inset-inline-start: 12%; bottom: -.13em; fill: var(--color-accent); }
+.hero-decor--photo { inset: 0; z-index: -1; }
+.hero-decor__bands { position: absolute; width: 110%; max-width: none; height: 92%; left: -5%; top: 0; }
+.hero-decor__bands path { stroke-linecap: butt; }
+.hero-decor__band-warm { stroke: var(--color-warm); stroke-width: 52; }
+.hero-decor__band-green { stroke: var(--color-primary); stroke-width: 18; opacity: .8; }
+.hero-decor__band-yellow { stroke: var(--color-accent); stroke-width: 8; }
+.hero-decor__band-tint { stroke: var(--color-tint); stroke-width: 30; }
+/* A single idea accent sits above the caption, clear of the floating Polaroid. */
+.hero-decor__bulb { position: absolute; width: 2.25rem; height: 2.8125rem; left: 35%; top: .4rem; color: var(--color-accent); }
+.hero-decor__bulb path { stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+/* The tiny glow is blurred once; only its opacity changes, never the filter.
+   Fully lit static values also serve reduced-motion and no-animation states. */
+.hero-decor__bulb-glow { fill: currentColor; opacity: .18; filter: blur(3px); }
+.hero-decor__bulb-ray--top { --ray-x: 0px; --ray-y: -1.5px; }
+.hero-decor__bulb-ray--left { --ray-x: -1px; --ray-y: -1px; }
+.hero-decor__bulb-ray--right { --ray-x: 1px; --ray-y: -1px; }
+.hero-decor--ribbon path { stroke: currentColor; stroke-width: 3; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.hero-decor__dots { display: none; position: absolute; width: 3rem; right: 4%; bottom: -1.5rem; fill: var(--color-primary); opacity: .45; }
+.hero-decor--ribbon { position: relative; flex: 0 0 3rem; width: 3rem; height: 2rem; color: var(--color-primary-dark); opacity: .4; margin-inline-start: var(--space-sm); }
+@media (min-width: 48rem) {
+  .hero-decor__bands { width: 116%; left: -8%; height: 96%; top: -1%; }
+  .hero-decor--ribbon { flex-basis: 4.5rem; width: 4.5rem; }
+}
+@media (min-width: 75rem) {
+  .hero-decor__bands { width: 119%; left: -10%; top: -2%; }
+  .hero-decor__dots { display: block; }
+}
+@media (width < 48rem) {
+  .hero-decor--background { background: radial-gradient(ellipse at 100% 65%, var(--color-warm), transparent 65%), linear-gradient(135deg, var(--color-surface), var(--color-background)); }
+  .hero-decor__band-warm, .hero-decor__band-tint { display: none; }
+  .hero-decor__band-green { stroke-width: 12; }
+  .hero-decor__band-yellow { stroke-width: 6; }
+}
+@media (min-width: 75rem) {
+  .hero-decor__bulb { left: 43%; width: 2.5rem; height: 3.125rem; }
+}
+@media (max-width: 22rem), (min-width: 48rem) and (max-width: 61.99rem) {
+  .hero-decor--ribbon { display: none; }
+}
+@media (min-width: 62rem) and (max-height: 50rem) {
+  .hero-decor__dots { display: none; }
+  .hero-decor__bands { height: 94%; top: -1%; }
+}
+@media (forced-colors: active), print { .hero-decor { display: none; } }
+/* Reveal the existing filled underline without changing its shape or bounds. */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="reduced"]) .hero-decor--underline {
+    animation: hero-underline-reveal var(--duration-hero-underline) var(--ease-standard) var(--duration-hero-stagger) backwards;
+  }
+}
+/* A duration includes the complete outward and return journey. Negative
+   delays keep the independent loops in different phases from first paint. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-decor--photo { --hero-float-scale: .45; }
+  .hero-decor__bands path { transform-box: fill-box; transform-origin: center; }
+  html:not([data-motion="reduced"]) .hero-decor__bulb {
+    --bulb-travel: -3px;
+    animation: hero-bulb-float var(--duration-hero-bulb-float) ease-in-out -2s infinite;
+  }
+  html:not([data-motion="reduced"]) .hero-decor__bulb-body {
+    animation: hero-bulb-light var(--duration-hero-bulb-light) ease-in-out infinite;
+  }
+  html:not([data-motion="reduced"]) .hero-decor__bulb-glow {
+    animation: hero-bulb-glow var(--duration-hero-bulb-light) ease-in-out infinite;
+  }
+  html:not([data-motion="reduced"]) .hero-decor__bulb-ray {
+    animation: hero-bulb-ray var(--duration-hero-bulb-light) ease-in-out infinite;
+  }
+  html:not([data-motion="reduced"]) .hero-decor__bulb-ray--left { animation-delay: -.4s; }
+  html:not([data-motion="reduced"]) .hero-decor__bulb-ray--right { animation-delay: -.8s; }
+  html:not([data-motion="reduced"]) .hero-decor__band-green {
+    animation: hero-arc-green-float var(--duration-hero-arc-green) ease-in-out -1s infinite;
+  }
+  html:not([data-motion="reduced"]) .hero-decor__band-yellow {
+    animation: hero-arc-yellow-float var(--duration-hero-arc-yellow) ease-in-out -4s infinite;
+  }
+  html:not([data-motion="reduced"]) .hero-decor__band-warm {
+    animation: hero-arc-warm-float var(--duration-hero-arc-warm) ease-in-out -3s infinite;
+  }
+  html:not([data-motion="reduced"]) .hero-decor__band-tint {
+    animation: hero-arc-tint-float var(--duration-hero-arc-tint) ease-in-out -6s infinite;
+  }
+  html:not([data-motion="reduced"]) .hero-decor__dots {
+    animation: hero-accent-float var(--duration-hero-accent) ease-in-out -4s infinite;
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (min-width: 48rem) {
+  .hero-decor--photo { --hero-float-scale: 1; }
+  html:not([data-motion="reduced"]) .hero-decor__bulb { --bulb-travel: -6px; }
+}
+@keyframes hero-underline-reveal {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0); }
+}
+@keyframes hero-arc-green-float {
+  0%, 100% { transform: translate(0, 0) rotate(0); }
+  50% { transform: translate(calc(6px * var(--hero-float-scale)), calc(-10px * var(--hero-float-scale))) rotate(calc(1deg * var(--hero-float-scale))); }
+}
+@keyframes hero-arc-yellow-float {
+  0%, 100% { transform: translate(0, 0) rotate(0); }
+  50% { transform: translate(calc(-9px * var(--hero-float-scale)), calc(8px * var(--hero-float-scale))) rotate(calc(-1deg * var(--hero-float-scale))); }
+}
+@keyframes hero-accent-float {
+  0%, 100% { transform: translate(0, 0) rotate(0); }
+  50% { transform: translate(3px, -6px) rotate(1deg); }
+}
+@keyframes hero-bulb-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(var(--bulb-travel)); }
+}
+@keyframes hero-bulb-light {
+  0%, 100% { opacity: .78; }
+  50% { opacity: 1; }
+}
+@keyframes hero-bulb-glow {
+  0%, 100% { opacity: .04; }
+  50% { opacity: .18; }
+}
+@keyframes hero-bulb-ray {
+  0%, 100% { opacity: .55; transform: translate(0, 0); }
+  50% { opacity: 1; transform: translate(var(--ray-x), var(--ray-y)); }
+}
+@keyframes hero-arc-warm-float {
+  0%, 100% { transform: translate(0, 0) rotate(0); }
+  50% { transform: translate(calc(8px * var(--hero-float-scale)), calc(-8px * var(--hero-float-scale))) rotate(calc(-1deg * var(--hero-float-scale))); }
+}
+@keyframes hero-arc-tint-float {
+  0%, 100% { transform: translate(0, 0) rotate(0); }
+  50% { transform: translate(calc(-6px * var(--hero-float-scale)), calc(8px * var(--hero-float-scale))) rotate(calc(1deg * var(--hero-float-scale))); }
+}

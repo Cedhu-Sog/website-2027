@@ -1,0 +1,12 @@
+{
+  "id": "laura-guatavita-docentes",
+  "personId": "laura-guatavita",
+  "name": "Laura Guatavita",
+  "category": "docentes",
+  "role": "Transición B",
+  "order": 12,
+  "group": "preescolar",
+  "officeHours": "lunes de 10:00 a 11:00 a. m.",
+  "photo": "/src/assets/fotos-cedhu/personal/laura-guatavita.jpg",
+  "visible": true
+}

@@ -1,0 +1,10 @@
+{
+  "id": "carlos-julio-novoa-guevara-servicios-generales",
+  "personId": "carlos-julio-novoa-guevara",
+  "name": "Carlos Julio Novoa Guevara",
+  "category": "servicios-generales",
+  "role": "Auxiliar de servicios generales / Mantenimiento",
+  "order": 64,
+  "photo": "/src/assets/fotos-cedhu/personal/carlos-julio-novoa-guevara.jpg",
+  "visible": true
+}

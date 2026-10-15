@@ -9,7 +9,8 @@ async function walk(directory) {
     ? walk(path.join(directory, entry.name)) : [path.join(directory, entry.name)]))).flat();
 }
 const files = await walk(root);
-const htmlFiles = files.filter(file => file.endsWith('.html'));
+// Decap is an independent application; check:cms validates its entry point.
+const htmlFiles = files.filter(file => file.endsWith('.html') && !path.relative(root, file).startsWith('admin' + path.sep));
 const pages = new Map();
 const errors = [];
 const titles = new Set();
@@ -45,7 +46,7 @@ let references = 0;
 for (const [route, page] of pages) {
   const directReferences = [...page.html.matchAll(/\b(?:href|src)="([^"]*)"/g)].map(match => match[1]);
   const responsiveImages = [...page.html.matchAll(/\bsrcset="([^"]*)"/g)]
-    .flatMap(match => match[1].split(',').map(candidate => candidate.trim().split(/\s+/)[0]));
+    .flatMap(match => match[1].split(',').map(candidate => candidate.trim()).filter(Boolean).map(candidate => candidate.split(/\s+/)[0]));
   for (const reference of [...directReferences, ...responsiveImages]) {
     const value = decode(reference);
     if (!value || value === '#' || value.startsWith('javascript:')) { errors.push(`${route}: inactive link ${value}`); continue; }

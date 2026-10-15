@@ -1,5 +1,5 @@
 import { z } from 'astro/zod';
-import { date, mediaKey, text } from './shared';
+import { date, link, mediaKey, text } from './shared';
 
 const researchImage = z.object({ image: mediaKey, alt: text, caption: text.optional() });
 
@@ -24,7 +24,7 @@ export const pageSections = {
       description: text,
     })).min(5).max(6),
     linkLabel: text,
-    linkHref: text,
+    linkHref: link,
   }).optional(),
   educationInterface: z.object({
     methodologyEyebrow: text,
@@ -44,11 +44,11 @@ export const pageSections = {
     })),
     forms: z.array(z.object({
       label: text,
-      id: text,
+      href: link,
     })),
   }).optional(),
   admissionsCta: z.object({
-    linkHref: text,
+    linkHref: link,
     eyebrow: text,
     titleStart: text,
     titleEnd: text,
@@ -56,7 +56,7 @@ export const pageSections = {
     linkLabel: text,
   }).optional(),
   admissionsProcess: z.object({
-    documentsLinkHref: text,
+    documentsLinkHref: link,
     eyebrow: text,
     titleStart: text,
     titleEnd: text,
@@ -76,15 +76,14 @@ export const pageSections = {
     steps: z.array(z.object({
       title: text,
       text: text,
-      href: text.optional(),
+      href: link.optional(),
       label: text.optional(),
     })),
   }).optional(),
   contactDetails: z.object({
-    hoursLinkHref: text,
+    hoursLinkHref: link,
     emailEyebrow: text,
     emailTitle: text,
-    whatsappLabel: text,
     phoneEyebrow: text,
     visitEyebrow: text,
     neighborhood: text,
@@ -106,7 +105,7 @@ export const pageSections = {
     mapLinkLabel: text,
   }).optional(),
   documentsList: z.object({
-    linkHref: text,
+    linkHref: link,
     eyebrow: text,
     title: text,
     description: text,
@@ -121,14 +120,14 @@ export const pageSections = {
     })),
   }).optional(),
   educationalLevels: z.object({
-    linkHref: text,
+    linkHref: link,
     eyebrow: text,
     title: text,
     linkLabel: text,
   }).optional(),
   educationOverview: z.object({
-    pedagogyLinkHref: text,
-    researchLinkHref: text,
+    pedagogyLinkHref: link,
+    researchLinkHref: link,
     eyebrow: text,
     title: text,
     introduction: text,
@@ -140,7 +139,7 @@ export const pageSections = {
     image: mediaKey,
   }).optional(),
   faq: z.object({
-    linkHref: text,
+    linkHref: link,
     eyebrow: text,
     titleStart: text,
     titleEnd: text,
@@ -176,7 +175,7 @@ export const pageSections = {
     })),
   }).optional(),
   humanFormation: z.object({
-    linkHref: text,
+    linkHref: link,
     image: mediaKey,
     photoCaption: text,
     eyebrow: text,
@@ -192,28 +191,21 @@ export const pageSections = {
     title: text,
     introduction: text,
     linkLabel: text,
-    linkHref: text,
+    linkHref: link,
     cards: z.array(z.object({
       id: z.enum(['academicos', 'proyectos', 'talento', 'egresados']),
       title: text,
       description: text,
       image: mediaKey,
       // Optional links stay absent until a real destination is available.
-      action: z.object({ label: text, href: text }).optional(),
+      action: z.object({ label: text, href: link }).optional(),
       note: text.optional(),
-      evidence: z.array(z.object({
-        title: text,
-        detail: text,
-        // Keep provenance with the fact; add a public document when available.
-        source: text,
-        sourceUrl: z.url().optional(),
-      })).default([]),
     })).length(4).refine(cards => new Set(cards.map(card => card.id)).size === 4, {
       message: 'Las cuatro categorías de evidencia deben ser distintas.',
     }),
   }).optional(),
   identityIntro: z.object({
-    linkHref: text,
+    linkHref: link,
     eyebrow: text,
     titleStart: text,
     titleEnd: text,
@@ -226,7 +218,7 @@ export const pageSections = {
     communityPillar: text,
   }).optional(),
   institutionIdentity: z.object({
-    documentsLinkHref: text,
+    documentsLinkHref: link,
     principlesEyebrow: text,
     principlesTitle: text,
     valuesEyebrow: text,
@@ -256,12 +248,12 @@ export const pageSections = {
     })),
   }).optional(),
   institutionOverview: z.object({
-    historyLinkHref: text,
-    principlesLinkHref: text,
-    pedagogyLinkHref: text,
-    spacesLinkHref: text,
-    teamLinkHref: text,
-    documentsLinkHref: text,
+    historyLinkHref: link,
+    principlesLinkHref: link,
+    pedagogyLinkHref: link,
+    spacesLinkHref: link,
+    teamLinkHref: link,
+    documentsLinkHref: link,
     eyebrow: text,
     title: text,
     introduction: text,
@@ -284,8 +276,8 @@ export const pageSections = {
     vision: text,
   }).optional(),
   institutionTeam: z.object({
-    contactHref: text,
-    hoursHref: text,
+    contactHref: link,
+    hoursHref: link,
     eyebrow: text,
     title: text,
     introduction: text,
@@ -294,13 +286,13 @@ export const pageSections = {
     hoursLabel: text,
   }).optional(),
   newsSection: z.object({
-    linkHref: text,
+    linkHref: link,
     eyebrow: text,
     title: text,
     linkLabel: text,
   }).optional(),
   pedagogy: z.object({
-    contactHref: text,
+    contactHref: link,
     quote: text,
     quoteAttribution: text,
     title: text,
@@ -326,9 +318,10 @@ export const pageSections = {
     links: z.array(z.object({
       label: text,
       detail: text,
-      href: text,
+      href: link.optional(),
+      platform: z.enum(['q10', 'unoi', 'preinscripcion']).optional(),
       external: z.boolean(),
-    })),
+    }).refine(item => Boolean(item.platform || item.href), 'Cada acceso necesita un destino.')),
   }).optional(),
   researchProjects: z.object({
     projects: z.array(z.object({
@@ -350,7 +343,7 @@ export const pageSections = {
       featured: z.boolean().default(false),
       draft: z.boolean().default(false),
     })),
-    educationLinkHref: text,
+    educationLinkHref: link,
     eyebrow: text,
     title: text,
     introduction: text,
@@ -363,7 +356,7 @@ export const pageSections = {
   }).optional(),
   schoolSpaces: z.object({
     tourHref: text,
-    visitHref: text,
+    visitHref: link,
     eyebrow: text,
     image: mediaKey,
     tourEyebrow: text,
@@ -378,13 +371,13 @@ export const pageSections = {
     })),
   }).optional(),
   services: z.object({
-    hoursHref: text,
-    suppliesHref: text,
-    activitiesHref: text,
-    documentsHref: text,
-    treasuryHref: text,
-    booksHref: text,
-    alumniHref: text,
+    hoursHref: link,
+    suppliesHref: link,
+    activitiesHref: link,
+    documentsHref: link,
+    treasuryHref: link,
+    booksHref: link,
+    alumniHref: link,
     q10Name: text,
     q10Title: text,
     q10Description: text,
@@ -413,7 +406,7 @@ export const pageSections = {
     alumniLabel: text,
   }).optional(),
   technology: z.object({
-    linkHref: text,
+    linkHref: link,
     eyebrow: text,
     titleStart: text,
     titleEnd: text,
@@ -426,30 +419,31 @@ export const pageSections = {
     areas: z.array(z.object({
       name: text,
       description: text,
-      href: text,
+      href: link,
     })),
   }).optional(),
   contact: z.object({
     motto: text,
     name: text,
     fullName: text,
-    url: text,
-    email: text,
+    url: z.url(),
+    email: z.email(),
     address: text,
     city: text,
     phones: z.array(z.object({
       label: text,
-      href: text,
+      href: link,
     })),
-    whatsapp: text,
-    q10: text,
-    unoi: text,
-    preinscripcion: text,
-    maps: text,
-    mapEmbed: text,
+    whatsapp: z.url(),
+    whatsappLabel: text,
+    q10: z.url(),
+    unoi: z.url(),
+    preinscripcion: z.url(),
+    maps: z.url(),
+    mapEmbed: z.url(),
     socials: z.array(z.object({
       label: text,
-      href: text,
+      href: link,
     })),
   }).optional(),
 };

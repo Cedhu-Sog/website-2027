@@ -1,0 +1,23 @@
+{
+  "id": "diego-bernal-docentes",
+  "personId": "diego-bernal",
+  "name": "Diego Bernal",
+  "category": "docentes",
+  "role": "Dibujo Técnico",
+  "order": 34,
+  "group": "ciencias-naturales",
+  "officeHours": "martes de 11:10 a. m. a 12:00 m.",
+  "assignments": [
+    {
+      "subject": "Dibujo Técnico",
+      "grades": "6° a 11°"
+    }
+  ],
+  "groupLeadership": "8° B",
+  "research": "6°, 7° y 8°",
+  "responsibilities": [
+    "Lúdicas"
+  ],
+  "photo": "/src/assets/fotos-cedhu/personal/diego-bernal.jpg",
+  "visible": true
+}

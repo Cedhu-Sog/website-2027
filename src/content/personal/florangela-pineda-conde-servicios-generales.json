@@ -1,0 +1,10 @@
+{
+  "id": "florangela-pineda-conde-servicios-generales",
+  "personId": "florangela-pineda-conde",
+  "name": "Florangela Pineda Conde",
+  "category": "servicios-generales",
+  "role": "Auxiliar de servicios generales",
+  "order": 60,
+  "photo": "/src/assets/fotos-cedhu/personal/florangela-pineda-conde.jpg",
+  "visible": true
+}

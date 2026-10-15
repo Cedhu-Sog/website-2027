@@ -4,11 +4,13 @@ El directorio amplía la ruta existente `/nosotros/equipo/`, enlazada desde Noso
 
 ## Edición
 
-- `src/content/personal.json`: fuente editorial de los 64 registros (63 personas; Yadira Africano figura en coordinación y docencia). Los textos, cargos, horarios y responsabilidades proceden del listado proporcionado para esta implementación, no del sitio anterior.
-- La colección `personal` utiliza `file()` e `image()` en `src/content.config.ts`. Astro valida campos, categorías, áreas docentes e imágenes locales durante el build.
+El personal autorizado puede editar los perfiles desde Decap; ver [Administración de contenidos](DECAPCMS_ADMINISTRACION.md). `photoAlt` permite una alternativa accesible personalizada y `visible` controla su publicación.
+
+- `src/content/personal/*.json`: fuente editorial de los 63 cargos actuales (62 personas; Yadira Africano figura en coordinación y docencia), migrados a fichas individuales para Decap. Los textos, cargos, horarios y responsabilidades proceden del listado proporcionado para esta implementación, no del sitio anterior.
+- La colección `personal` utiliza `glob()` en `src/content.config.ts`. Astro valida campos, categorías y áreas; el adaptador `asset-images.ts` resuelve los retratos locales para conservar su optimización.
 - `personId` identifica a una persona; `id` distingue sus funciones. Reutilizar `photo` cuando la misma persona aparece en varias categorías. `order` conserva el orden editorial.
 - `role` es el cargo, área o curso visible. Los campos opcionales `description`, `officeHours`, `assignments`, `groupLeadership`, `research` y `responsibilities` contienen los detalles. Omitir los campos no proporcionados; no agregar horarios inferidos. Cada asignatura lleva `subject` y `grades`.
-- `src/data/personal.ts`: orden y etiquetas de categorías y áreas. `src/lib/personal.ts`: consulta tipada, agrupación y validación de la fotografía compartida.
+- `src/data/personal.ts`: orden y etiquetas de categorías y áreas. `src/lib/personal.ts`: consulta tipada, agrupación, orden y filtrado de perfiles ocultos.
 - `src/content/paginas/equipo.md`: mantiene únicamente los textos editoriales de la página y la sección de contacto; el antiguo arreglo de tres directivas se sustituyó por la colección completa.
 
 ## Imágenes
@@ -17,7 +19,7 @@ La página `https://cedhu.edu.co/nosotros/` se utilizó exclusivamente para asoc
 
 Se recuperaron 62 retratos únicos. Las tres imágenes de las directivas ya existían en `src/assets/images/` y coinciden exactamente con los originales (SHA-256); se reutilizan. Los otros 59 archivos están en `src/assets/fotos-cedhu/personal/`. Gladys Yadira Africano y Yadira Africano usan el mismo archivo.
 
-La URL publicada de Jorge Fabio Rusinque Bustos devuelve HTTP 404. Su registro usa el logo local existente y `photoUnavailable: true`. Al obtener su retrato confirmado, actualizar `photo`, retirar esta propiedad y actualizar la auditoría. No asociar otro retrato por semejanza del nombre de archivo.
+La auditoría histórica documentó una fotografía no disponible de Jorge Fabio Rusinque Bustos. Ese registro ya no estaba en el listado actual al integrar Decap; se conservó la auditoría sin reincorporarlo. La propiedad `photoUnavailable` permite usar el emblema cuando una fotografía esté pendiente. Al obtener un retrato confirmado, actualizar `photo`, retirar esa propiedad y actualizar la auditoría cuando corresponda. No asociar otro retrato por semejanza del nombre de archivo.
 
 `StaffCard.astro` reutiliza `Photo.astro`, que importa `Image` de `astro:assets`. Genera WebP con `srcset`, limita los tamaños a la resolución original, incluye dimensiones y carga diferida. La fotografía usa proporción cuadrada, `object-fit: cover` y alineación superior; el logo utiliza `contain`.
 

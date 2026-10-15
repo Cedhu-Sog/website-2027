@@ -1,0 +1,10 @@
+{
+  "id": "maria-eugenia-murillo-patino-servicios-generales",
+  "personId": "maria-eugenia-murillo-patino",
+  "name": "María Eugenia Murillo Patiño",
+  "category": "servicios-generales",
+  "role": "Auxiliar de servicios generales",
+  "order": 58,
+  "photo": "/src/assets/fotos-cedhu/personal/maria-eugenia-murillo-patino.jpg",
+  "visible": true
+}

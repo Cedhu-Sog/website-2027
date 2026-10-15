@@ -1,0 +1,27 @@
+{
+  "id": "diego-salcedo-docentes",
+  "personId": "diego-salcedo",
+  "name": "Diego Salcedo",
+  "category": "docentes",
+  "role": "Filosofía",
+  "order": 39,
+  "group": "ciencias-sociales",
+  "officeHours": "martes de 7:30 a 8:30 a. m.",
+  "assignments": [
+    {
+      "subject": "Filosofía",
+      "grades": "6° a 11°"
+    },
+    {
+      "subject": "Competencias C",
+      "grades": "6°"
+    },
+    {
+      "subject": "Ciencias Sociales",
+      "grades": "6° ABC"
+    }
+  ],
+  "groupLeadership": "7° C",
+  "photo": "/src/assets/fotos-cedhu/personal/diego-salcedo.jpg",
+  "visible": true
+}

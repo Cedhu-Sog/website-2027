@@ -1,0 +1,27 @@
+{
+  "id": "huber-suarez-docentes",
+  "personId": "huber-suarez",
+  "name": "Huber Suárez",
+  "category": "docentes",
+  "role": "Matemáticas",
+  "order": 29,
+  "group": "matematicas",
+  "officeHours": "viernes de 11:10 a. m. a 12:00 m.",
+  "assignments": [
+    {
+      "subject": "Matemáticas",
+      "grades": "10° y 11°"
+    },
+    {
+      "subject": "Geometría",
+      "grades": "10° y 11°"
+    },
+    {
+      "subject": "Estadística",
+      "grades": "9°, 10° y 11°"
+    }
+  ],
+  "groupLeadership": "11° A",
+  "photo": "/src/assets/fotos-cedhu/personal/huber-suarez.jpg",
+  "visible": true
+}

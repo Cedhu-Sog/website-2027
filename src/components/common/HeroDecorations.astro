@@ -1,0 +1,25 @@
+---
+import '../../styles/components/hero-decorations.css';
+interface Props { variant: 'background' | 'underline' | 'photo' | 'ribbon'; }
+const { variant } = Astro.props;
+---
+{variant === 'background' && <div class="hero-decor hero-decor--background" aria-hidden="true" />}
+{variant === 'underline' && <svg class="hero-decor hero-decor--underline" viewBox="0 0 360 20" preserveAspectRatio="none" focusable="false" aria-hidden="true"><path d="M5 15Q170 -3 355 14Q178 7 5 19Z" /></svg>}
+{variant === 'photo' && <div class="hero-decor hero-decor--photo" aria-hidden="true">
+  <svg class="hero-decor__bands" viewBox="0 0 600 640" fill="none" preserveAspectRatio="none" focusable="false" aria-hidden="true">
+    <path class="hero-decor__band-warm" d="M86 136A210 210 0 0 1 493 215V330" />
+    <path class="hero-decor__band-green" d="M360 109A211 211 0 0 1 360 531" />
+    <path class="hero-decor__band-yellow" d="M400 175A158 158 0 0 1 400 491" />
+    <path class="hero-decor__band-tint" d="M141 471A132 132 0 0 1 45 289" />
+  </svg>
+  <svg class="hero-decor__bulb" viewBox="0 0 64 80" fill="none" focusable="false" aria-hidden="true">
+    <ellipse class="hero-decor__bulb-glow" cx="32" cy="34" rx="18" ry="19" />
+    <path class="hero-decor__bulb-body" d="M23 54C23 46 16 45 16 34A16 16 0 0 1 48 34C48 45 41 46 41 54ZM24 61H40M27 68H37M32 54V40M26 35L32 40L38 35" />
+    <path class="hero-decor__bulb-ray hero-decor__bulb-ray--top" d="M32 5V11" />
+    <path class="hero-decor__bulb-ray hero-decor__bulb-ray--left" d="M10 13L15 18" />
+    <path class="hero-decor__bulb-ray hero-decor__bulb-ray--right" d="M54 13L49 18" />
+  </svg>
+  <svg class="hero-decor__dots" viewBox="0 0 56 20" focusable="false" aria-hidden="true"><circle cx="6" cy="10" r="3" /><circle cx="27" cy="10" r="3" /><circle cx="48" cy="10" r="3" /></svg>
+</div>}
+{variant === 'ribbon' && <svg class="hero-decor hero-decor--ribbon" viewBox="0 0 120 56" fill="none" focusable="false" aria-hidden="true"><path d="M4 49C35 45 66 17 51 10C31 0 30 42 66 32Q92 26 115 6" /></svg>}
+

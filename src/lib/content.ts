@@ -61,6 +61,19 @@ export async function getNews() {
 
 export type NewsItem = Awaited<ReturnType<typeof getNews>>[number];
 
+export async function getRecognitions() {
+  const cards = { academico: 'academicos', cientifico: 'proyectos', deportivo: 'talento', cultural: 'talento', egresados: 'egresados' } as const;
+  return (await getCollection('reconocimientos', ({ data }) => !data.draft))
+    .map(entry => ({ ...entry.data, card: cards[entry.data.category] }))
+    .sort((a, b) => Number(b.featured) - Number(a.featured) || a.order - b.order);
+}
+
+export async function getEvents() {
+  return (await getCollection('eventos', ({ data }) => !data.draft))
+    .map(entry => ({ ...entry.data, id: entry.id }))
+    .sort((a, b) => Date.parse(a.startDate) - Date.parse(b.startDate));
+}
+
 /** Resolve editorial image identifiers through the same asset pipeline as Photo. */
 export function getResearchProjects(projects: PageSection<'researchProjects'>['projects']) {
   type Photo = NonNullable<(typeof projects)[number]['coverImage']>;

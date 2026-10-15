@@ -7,4 +7,4 @@ import InstitutionOverview from '../../components/sections/InstitutionOverview.a
 import AdmissionsCTA from '../../components/sections/AdmissionsCTA.astro';
 const page = await getPage('nosotros');
 ---
-<BaseLayout title={page.title} description={page.description}><Breadcrumb label="Nosotros" /><PageHero eyebrow={page.heroEyebrow} title={page.heroTitle} intro={page.heroDescription} image={page.heroImage} /><InstitutionOverview /><AdmissionsCTA /></BaseLayout>
+<BaseLayout title={page.title} description={page.description} seo={page.seo}><Breadcrumb label="Nosotros" /><PageHero eyebrow={page.heroEyebrow} title={page.heroTitle} intro={page.heroDescription} image={page.heroImage} /><InstitutionOverview /><AdmissionsCTA /></BaseLayout>

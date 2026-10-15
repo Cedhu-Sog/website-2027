@@ -8,4 +8,4 @@ import EducationalLevels from '../../components/sections/EducationalLevels.astro
 import AdmissionsCTA from '../../components/sections/AdmissionsCTA.astro';
 const page = await getPage('oferta-educativa');
 ---
-<BaseLayout title={page.title} description={page.description}><Breadcrumb label="Educación" /><PageHero image={page.heroImage} eyebrow={page.heroEyebrow} title={page.heroTitle} intro={page.heroDescription} /><EducationalLevels /><EducationOverview /><AdmissionsCTA /></BaseLayout>
+<BaseLayout title={page.title} description={page.description} seo={page.seo}><Breadcrumb label="Educación" /><PageHero image={page.heroImage} eyebrow={page.heroEyebrow} title={page.heroTitle} intro={page.heroDescription} /><EducationalLevels /><EducationOverview /><AdmissionsCTA /></BaseLayout>

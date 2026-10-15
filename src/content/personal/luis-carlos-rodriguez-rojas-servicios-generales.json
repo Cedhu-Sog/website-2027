@@ -1,0 +1,10 @@
+{
+  "id": "luis-carlos-rodriguez-rojas-servicios-generales",
+  "personId": "luis-carlos-rodriguez-rojas",
+  "name": "Luis Carlos Rodríguez Rojas",
+  "category": "servicios-generales",
+  "role": "Auxiliar de servicios generales / Mantenimiento",
+  "order": 63,
+  "photo": "/src/assets/fotos-cedhu/personal/luis-carlos-rodriguez-rojas.jpg",
+  "visible": true
+}

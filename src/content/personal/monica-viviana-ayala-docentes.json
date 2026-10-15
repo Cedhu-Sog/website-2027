@@ -1,0 +1,23 @@
+{
+  "id": "monica-viviana-ayala-docentes",
+  "personId": "monica-viviana-ayala",
+  "name": "Mónica Viviana Ayala",
+  "category": "docentes",
+  "role": "Lengua Castellana",
+  "order": 17,
+  "group": "lengua-castellana",
+  "officeHours": "miércoles de 2:00 a 2:50 p. m.",
+  "assignments": [
+    {
+      "subject": "Lengua Castellana",
+      "grades": "10° y 11°"
+    },
+    {
+      "subject": "Lectura Crítica",
+      "grades": "10° y 11°"
+    }
+  ],
+  "groupLeadership": "11° B",
+  "photo": "/src/assets/fotos-cedhu/personal/monica-viviana-ayala.jpg",
+  "visible": true
+}

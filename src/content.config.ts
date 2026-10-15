@@ -1,16 +1,17 @@
 import { defineCollection } from 'astro:content';
-import { file, glob } from 'astro/loaders';
+import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { pageSections } from './schemas/page-sections';
-import { date, mediaKey, text } from './schemas/shared';
+import { assetPath, cleanContent, date, mediaKey, seo, text } from './schemas/shared';
 import { staffCategoryIds, staffGroupIds } from './data/personal';
 
 const paginas = defineCollection({
   loader: glob({ base: './src/content/paginas', pattern: '**/*.md' }),
-  schema: z.object({
+  schema: z.preprocess(cleanContent, z.object({
     route: z.string().regex(/^\/(?:[a-z0-9-]+\/)*$/),
     title: text,
     description: text,
+    seo,
     heroTitle: text,
     heroDescription: text,
     heroEyebrow: text,
@@ -34,7 +35,7 @@ const paginas = defineCollection({
       linkLabel: text,
     }).optional(),
     ...pageSections,
-  }),
+  })),
 });
 
 const publication = {
@@ -48,54 +49,66 @@ const publication = {
 
 const noticias = defineCollection({
   loader: glob({ base: './src/content/noticias', pattern: '**/*.md' }),
-  schema: z.object({
+  schema: z.preprocess(cleanContent, z.object({
     ...publication,
+    seo,
     image: mediaKey,
-    poster: mediaKey,
+    poster: mediaKey.optional(),
     // An original institutional notice has no confirmed date; never invent one.
     undatedLabel: text.optional(),
-    source: z.url(),
+    source: z.url().optional(),
     archived: z.boolean().default(false),
     archiveNotice: text.optional(),
-    imageCaption: text,
+    imageCaption: text.optional(),
     order: z.number().int().nonnegative().default(100),
     featuredOrder: z.number().int().nonnegative().default(100),
     draft: z.boolean().default(false),
-  }),
+  })),
 });
 
 const reconocimientos = defineCollection({
   loader: glob({ base: './src/content/reconocimientos', pattern: '**/*.md' }),
-  schema: z.object({ ...publication, date }),
+  schema: z.preprocess(cleanContent, z.object({
+    ...publication,
+    category: z.enum(['academico', 'deportivo', 'cientifico', 'cultural', 'egresados']),
+    educandos: text.optional(),
+    organizer: text.optional(),
+    source: text.optional(),
+    sourceUrl: z.url().optional(),
+    order: z.number().int().nonnegative(),
+    draft: z.boolean().default(true),
+  })),
 });
 
 const eventos = defineCollection({
   loader: glob({ base: './src/content/eventos', pattern: '**/*.md' }),
-  schema: z.object({
+  schema: z.preprocess(cleanContent, z.object({
     title: text,
     description: text,
-    startDate: date,
-    endDate: date.optional(),
+    startDate: z.iso.datetime({ offset: true }),
+    endDate: z.iso.datetime({ offset: true }).optional(),
     location: text,
     image: mediaKey.optional(),
-    category: text,
-    featured: z.boolean().default(false),
-  }).refine(event => !event.endDate || event.endDate >= event.startDate, {
+    additionalInfo: text.optional(),
+    draft: z.boolean().default(true),
+  }).refine(event => !event.endDate || Date.parse(event.endDate) >= Date.parse(event.startDate), {
     message: 'endDate debe ser igual o posterior a startDate.',
     path: ['endDate'],
-  }),
+  })),
 });
 
 const personal = defineCollection({
-  loader: file('./src/content/personal.json'),
-  schema: ({ image }) => z.object({
+  loader: glob({ base: './src/content/personal', pattern: '*.json' }),
+  schema: z.preprocess(cleanContent, z.object({
     personId: text,
     name: text,
     category: z.enum(staffCategoryIds),
     group: z.enum(staffGroupIds).optional(),
     role: text,
     order: z.number().int().positive(),
-    photo: image(),
+    photo: assetPath,
+    photoAlt: text.optional(),
+    visible: z.boolean().default(true),
     photoUnavailable: z.boolean().optional(),
     description: text.optional(),
     officeHours: text.optional(),
@@ -106,7 +119,12 @@ const personal = defineCollection({
   }).refine(person => (person.category === 'docentes') === Boolean(person.group), {
     message: 'Cada docente debe pertenecer a un área; las demás categorías no llevan área docente.',
     path: ['group'],
-  }),
+  })),
 });
 
-export const collections = { paginas, noticias, reconocimientos, eventos, personal };
+const medios = defineCollection({
+  loader: glob({ base: './src/content/medios', pattern: '*.json' }),
+  schema: z.object({ title: text, image: assetPath, alt: text }),
+});
+
+export const collections = { paginas, noticias, reconocimientos, eventos, personal, medios };

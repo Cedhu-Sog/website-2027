@@ -1,0 +1,23 @@
+{
+  "id": "elizabeth-albarracin-docentes",
+  "personId": "elizabeth-albarracin",
+  "name": "Elizabeth Albarracín",
+  "category": "docentes",
+  "role": "Lengua Castellana",
+  "order": 15,
+  "group": "lengua-castellana",
+  "officeHours": "martes de 7:30 a 8:30 a. m.",
+  "assignments": [
+    {
+      "subject": "Lengua Castellana",
+      "grades": "6° y 7°"
+    },
+    {
+      "subject": "Lectura Crítica",
+      "grades": "6° y 7°"
+    }
+  ],
+  "groupLeadership": "7° A",
+  "photo": "/src/assets/fotos-cedhu/personal/elizabeth-albarracin.jpg",
+  "visible": true
+}

@@ -1,0 +1,10 @@
+{
+  "id": "jorge-fabio-rusinque-bustos-servicios-generales",
+  "personId": "jorge-fabio-rusinque-bustos",
+  "name": "Jorge Fabio Rusinque Bustos",
+  "category": "servicios-generales",
+  "role": "Auxiliar de servicios generales / Mantenimiento",
+  "order": 62,
+  "photo": "/src/assets/fotos-cedhu/personal/jorge-fabio-rusinque-bustos.webp",
+  "visible": true
+}

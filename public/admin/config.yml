@@ -1,0 +1,2836 @@
+# Configuración estándar de Decap CMS. Ver docs/DECAPCMS_ADMINISTRACION.md.
+# Los alias YAML reutilizan campos idénticos entre páginas.
+backend:
+  name: github
+  repo: Cedhu-Sog/website-2027
+  branch: master
+  base_url: https://website-2027-bay.vercel.app
+  auth_endpoint: api/cms/auth
+  auth_scope: public_repo
+  preview_context: Vercel
+  commit_messages:
+    create: "contenido: crear {{collection}} «{{slug}}»"
+    update: "contenido: actualizar {{collection}} «{{slug}}»"
+    delete: "contenido: retirar {{collection}} «{{slug}}»"
+    uploadMedia: "medios: cargar «{{path}}»"
+    deleteMedia: "medios: retirar «{{path}}»"
+locale: es
+publish_mode: editorial_workflow
+site_url: https://website-2027-bay.vercel.app
+display_url: https://website-2027-bay.vercel.app
+logo_url: /favicon.ico
+media_folder: src/assets/uploads
+public_folder: /src/assets/uploads
+slug:
+  encoding: ascii
+  clean_accents: true
+  sanitize_replacement: "-"
+collections:
+  - name: noticias
+    label: Noticias
+    label_singular: Noticias
+    folder: src/content/noticias
+    create: true
+    delete: false
+    slug: "{{slug}}"
+    extension: md
+    format: frontmatter
+    editor:
+      preview: false
+    fields:
+      - &ref_0
+        name: title
+        label: Título
+        required: true
+        widget: string
+        pattern:
+          - .*\S.*
+          - Este campo no puede quedar vacío.
+      - &ref_1
+        name: description
+        label: Descripción
+        required: true
+        widget: text
+        pattern:
+          - .*\S.*
+          - Este campo no puede quedar vacío.
+      - &ref_32
+        name: date
+        label: Fecha de publicación confirmada
+        required: false
+        widget: datetime
+        format: YYYY-MM-DD
+        date_format: DD/MM/YYYY
+        time_format: false
+        picker_utc: false
+        default: ""
+        hint: Usa únicamente una fecha confirmada. La fecha no programa un despliegue automático.
+      - &ref_22
+        name: image
+        label: Fotografía
+        required: true
+        widget: relation
+        collection: medios
+        value_field: "{{slug}}"
+        search_fields:
+          - title
+          - alt
+        display_fields:
+          - title
+        options_length: 100
+        hint: >-
+          Selecciona una fotografía de la biblioteca. Para agregar una, crea primero su ficha en
+          «Fotografías». Las referencias nuevas se seleccionan después de aprobar esa ficha.
+      - &ref_21
+        name: category
+        label: Categoría
+        required: true
+        widget: string
+        pattern:
+          - .*\S.*
+          - Este campo no puede quedar vacío.
+      - &ref_35
+        name: featured
+        label: Destacar en el sitio
+        required: false
+        widget: boolean
+        default: false
+      - &ref_8
+        name: seo
+        label: Opciones para buscadores y redes sociales
+        required: false
+        widget: object
+        collapsed: true
+        fields:
+          - name: title
+            label: Título
+            required: false
+            widget: string
+          - name: description
+            label: Descripción
+            required: false
+            widget: text
+            pattern:
+              - ^[\s\S]{1,180}$
+              - Máximo 180 caracteres.
+          - &ref_23
+            name: image
+            label: Fotografía
+            required: false
+            widget: relation
+            collection: medios
+            value_field: "{{slug}}"
+            search_fields:
+              - title
+              - alt
+            display_fields:
+              - title
+            options_length: 100
+            hint: >-
+              Selecciona una fotografía de la biblioteca. Para agregar una, crea primero su ficha en
+              «Fotografías». Las referencias nuevas se seleccionan después de aprobar esa ficha.
+      - name: poster
+        label: Comunicado original (fotografía)
+        required: false
+        widget: relation
+        collection: medios
+        value_field: "{{slug}}"
+        search_fields:
+          - title
+          - alt
+        display_fields:
+          - title
+        options_length: 100
+        hint: >-
+          Selecciona una fotografía de la biblioteca. Para agregar una, crea primero su ficha en
+          «Fotografías». Las referencias nuevas se seleccionan después de aprobar esa ficha.
+      - name: undatedLabel
+        label: Texto cuando no se conoce la fecha
+        required: false
+        widget: string
+      - &ref_49
+        name: source
+        widget: hidden
+        required: false
+      - name: archived
+        label: Mostrar aviso de publicación histórica
+        required: false
+        widget: boolean
+        default: false
+      - name: archiveNotice
+        label: Aviso de publicación histórica
+        required: false
+        widget: text
+      - name: imageCaption
+        label: Pie del comunicado o fotografía
+        required: false
+        widget: string
+      - &ref_13
+        name: order
+        label: Orden de presentación
+        required: true
+        widget: number
+        value_type: int
+        min: 0
+        default: 100
+      - name: featuredOrder
+        label: Orden entre las noticias destacadas
+        required: true
+        widget: number
+        value_type: int
+        min: 0
+        default: 100
+      - &ref_36
+        name: draft
+        label: Retirar u ocultar del sitio público
+        required: false
+        widget: boolean
+        default: false
+        hint: >-
+          Este interruptor oculta el contenido incluso después de aprobarlo. Para publicarlo, desactívalo y
+          completa la revisión editorial. Guardar un borrador del flujo editorial no cambia producción.
+      - name: body
+        label: Contenido completo
+        widget: markdown
+        required: true
+        modes:
+          - rich_text
+        sanitize_preview: true
+        buttons:
+          - bold
+          - italic
+          - link
+          - heading-two
+          - heading-three
+          - quote
+          - bulleted-list
+          - numbered-list
+        editor_components:
+          - image
+        hint: Usa encabezados de nivel 2 o 3. Cada fotografía del contenido necesita texto alternativo.
+    preview_path: noticias/{{slug}}/
+    summary: "{{title}}"
+    sortable_fields:
+      - title
+      - date
+      - order
+  - name: paginas
+    label: Páginas institucionales
+    editor:
+      preview: false
+    delete: false
+    files:
+      - name: admisiones
+        label: Admisiones
+        file: src/content/paginas/admisiones.md
+        fields:
+          - name: route
+            widget: hidden
+            default: /admisiones/
+            required: false
+          - *ref_0
+          - *ref_1
+          - &ref_9
+            name: heroTitle
+            label: Título principal visible
+            required: true
+            widget: text
+            pattern:
+              - .*\S.*
+              - Este campo no puede quedar vacío.
+          - &ref_10
+            name: heroDescription
+            label: Texto de bienvenida
+            required: true
+            widget: text
+            pattern:
+              - .*\S.*
+              - Este campo no puede quedar vacío.
+          - &ref_11
+            name: heroEyebrow
+            label: Antetítulo principal
+            required: true
+            widget: string
+            pattern:
+              - .*\S.*
+              - Este campo no puede quedar vacío.
+          - &ref_12
+            name: heroImage
+            label: Fotografía principal
+            required: false
+            widget: relation
+            collection: medios
+            value_field: "{{slug}}"
+            search_fields:
+              - title
+              - alt
+            display_fields:
+              - title
+            options_length: 100
+            hint: >-
+              Selecciona una fotografía de la biblioteca. Para agregar una, crea primero su ficha en
+              «Fotografías». Las referencias nuevas se seleccionan después de aprobar esa ficha.
+          - &ref_16
+            name: primaryActionLabel
+            label: Texto del botón principal
+            required: false
+            widget: string
+          - &ref_17
+            name: secondaryActionLabel
+            label: Texto del botón secundario
+            required: false
+            widget: string
+          - name: admissionsCta
+            label: Invitación a admisiones
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - &ref_5
+                name: linkHref
+                label: Destino del enlace · enlace
+                required: true
+                widget: string
+                pattern:
+                  - ^(?:\/(?!\/)|#[a-zA-Z]|https:\/\/|mailto:|tel:)[^\s]*$
+                  - Revisa el formato. Los enlaces deben ser rutas internas o direcciones seguras.
+              - &ref_2
+                name: eyebrow
+                label: Antetítulo
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - &ref_3
+                name: titleStart
+                label: "Título: primera parte"
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - &ref_4
+                name: titleEnd
+                label: "Título: parte final"
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - *ref_1
+              - &ref_7
+                name: linkLabel
+                label: Texto visible · enlace
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+          - name: admissionsProcess
+            label: Proceso de admisión
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - &ref_24
+                name: documentsLinkHref
+                label: Destino del enlace · documentos
+                required: true
+                widget: string
+                pattern:
+                  - ^(?:\/(?!\/)|#[a-zA-Z]|https:\/\/|mailto:|tel:)[^\s]*$
+                  - Revisa el formato. Los enlaces deben ser rutas internas o direcciones seguras.
+              - *ref_2
+              - *ref_3
+              - *ref_4
+              - &ref_6
+                name: introduction
+                label: Introducción
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: noticeTitle
+                label: Título · aviso
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: noticeDescription
+                label: Descripción · aviso
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - &ref_18
+                name: whatsappLabel
+                label: Texto visible · WhatsApp
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: phoneLabel
+                label: Texto visible · teléfono
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: processEyebrow
+                label: Antetítulo · proceso
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: processTitle
+                label: Título · proceso
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: processDescription
+                label: Descripción · proceso
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: documentsEyebrow
+                label: Antetítulo · documentos
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: documentsTitle
+                label: Título · documentos
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: documentsDescription
+                label: Descripción · documentos
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: documentsNotice
+                label: Aviso · documentos
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - &ref_25
+                name: documentsLinkLabel
+                label: Texto del enlace · documentos
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: steps
+                label: Pasos
+                required: true
+                widget: list
+                collapsed: true
+                fields:
+                  - *ref_0
+                  - &ref_14
+                    name: text
+                    label: Texto
+                    required: true
+                    widget: text
+                    pattern:
+                      - .*\S.*
+                      - Este campo no puede quedar vacío.
+                  - &ref_29
+                    name: href
+                    label: Destino del enlace
+                    required: false
+                    widget: string
+                    pattern:
+                      - ^(?:\/(?!\/)|#[a-zA-Z]|https:\/\/|mailto:|tel:)[^\s]*$
+                      - Revisa el formato. Los enlaces deben ser rutas internas o direcciones seguras.
+                  - name: label
+                    label: Texto del enlace
+                    required: false
+                    widget: string
+          - name: faq
+            label: Preguntas frecuentes
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - *ref_5
+              - *ref_2
+              - *ref_3
+              - *ref_4
+              - *ref_6
+              - *ref_7
+              - name: items
+                label: Elementos
+                required: true
+                widget: list
+                collapsed: true
+                fields:
+                  - name: question
+                    label: Pregunta
+                    required: true
+                    widget: string
+                    pattern:
+                      - .*\S.*
+                      - Este campo no puede quedar vacío.
+                  - name: answer
+                    label: Respuesta
+                    required: true
+                    widget: text
+                    pattern:
+                      - .*\S.*
+                      - Este campo no puede quedar vacío.
+          - *ref_8
+      - name: bachillerato
+        label: Bachillerato
+        file: src/content/paginas/bachillerato.md
+        fields:
+          - name: route
+            widget: hidden
+            default: /oferta-educativa/bachillerato/
+            required: false
+          - *ref_0
+          - *ref_1
+          - *ref_9
+          - *ref_10
+          - *ref_11
+          - *ref_12
+          - &ref_15
+            name: education
+            label: Contenido del nivel educativo
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - *ref_13
+              - name: methodology
+                label: Metodología
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - *ref_1
+              - name: focus
+                label: Enfoques del nivel educativo
+                required: true
+                widget: list
+                collapsed: true
+                fields:
+                  - *ref_0
+                  - *ref_14
+              - name: related
+                label: Niveles educativos relacionados
+                required: true
+                widget: select
+                collapsed: true
+                multiple: true
+                options:
+                  - label: inicial
+                    value: inicial
+                  - label: primaria
+                    value: primaria
+                  - label: bachillerato
+                    value: bachillerato
+                  - label: ingles
+                    value: ingles
+                  - label: ciencia tecnologia
+                    value: ciencia-tecnologia
+                  - label: robotica
+                    value: robotica
+                  - label: formacion integral
+                    value: formacion-integral
+          - *ref_8
+      - name: ciencia-tecnologia
+        label: Ciencia y tecnología
+        file: src/content/paginas/ciencia-tecnologia.md
+        fields:
+          - name: route
+            widget: hidden
+            default: /oferta-educativa/ciencia-tecnologia/
+            required: false
+          - *ref_0
+          - *ref_1
+          - *ref_9
+          - *ref_10
+          - *ref_11
+          - *ref_12
+          - *ref_15
+          - *ref_8
+      - name: contacto
+        label: Contacto
+        file: src/content/paginas/contacto.md
+        fields:
+          - name: route
+            widget: hidden
+            default: /contacto/
+            required: false
+          - *ref_0
+          - *ref_1
+          - *ref_9
+          - *ref_10
+          - *ref_11
+          - *ref_12
+          - *ref_16
+          - *ref_17
+          - name: contactDetails
+            label: Atención y ubicación
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - name: hoursLinkHref
+                label: Destino del enlace · horarios
+                required: true
+                widget: string
+                pattern:
+                  - ^(?:\/(?!\/)|#[a-zA-Z]|https:\/\/|mailto:|tel:)[^\s]*$
+                  - Revisa el formato. Los enlaces deben ser rutas internas o direcciones seguras.
+              - name: emailEyebrow
+                label: Antetítulo · correo
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: emailTitle
+                label: Título · correo
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: phoneEyebrow
+                label: Antetítulo · teléfono
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: visitEyebrow
+                label: Antetítulo · visita
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: neighborhood
+                label: Barrio
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: countrySuffix
+                label: País que acompaña la dirección
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: mapsLabel
+                label: Texto visible · Google Maps
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: hoursEyebrow
+                label: Antetítulo · horarios
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: hoursTitle
+                label: Título · horarios
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: generalHoursLabel
+                label: Texto visible · atención general
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: weekdays
+                label: Días de atención
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: morningHours
+                label: Horario de la mañana
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: afternoonHours
+                label: Horario de la tarde
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: appointmentLabel
+                label: Texto visible · citas
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: appointmentNotice
+                label: Aviso · citas
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: appointmentInstructions
+                label: Instrucciones · citas
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: hoursNotice
+                label: Aviso · horarios
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: hoursLinkLabel
+                label: Texto del enlace · horarios
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: mapEyebrow
+                label: Antetítulo · mapa
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: mapTitle
+                label: Título · mapa
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: mapLinkLabel
+                label: Texto del enlace · mapa
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+          - name: contact
+            label: Datos institucionales compartidos
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - name: motto
+                label: Lema institucional
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - &ref_30
+                name: name
+                label: Nombre
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: fullName
+                label: Nombre completo de la institución
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: url
+                label: Dominio público del sitio
+                required: true
+                widget: string
+                pattern:
+                  - ^https://[^\s]+$
+                  - Utiliza una dirección completa que comience por https://.
+              - name: email
+                label: Correo electrónico
+                required: true
+                widget: string
+                pattern:
+                  - ^[^\s@]+@[^\s@]+\.[^\s@]+$
+                  - Escribe un correo válido.
+              - name: address
+                label: Dirección
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: city
+                label: Ciudad y departamento
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: phones
+                label: Teléfonos
+                required: true
+                widget: list
+                collapsed: true
+                fields:
+                  - &ref_19
+                    name: label
+                    label: Texto del enlace
+                    required: true
+                    widget: string
+                    pattern:
+                      - .*\S.*
+                      - Este campo no puede quedar vacío.
+                  - &ref_20
+                    name: href
+                    label: Destino del enlace
+                    required: true
+                    widget: string
+                    pattern:
+                      - ^(?:\/(?!\/)|#[a-zA-Z]|https:\/\/|mailto:|tel:)[^\s]*$
+                      - Revisa el formato. Los enlaces deben ser rutas internas o direcciones seguras.
+              - name: whatsapp
+                label: Enlace de WhatsApp
+                required: true
+                widget: string
+                pattern:
+                  - ^https://[^\s]+$
+                  - Utiliza una dirección completa que comience por https://.
+              - *ref_18
+              - name: q10
+                label: Enlace de Q10
+                required: true
+                widget: string
+                pattern:
+                  - ^https://[^\s]+$
+                  - Utiliza una dirección completa que comience por https://.
+              - name: unoi
+                label: Enlace de UNOi
+                required: true
+                widget: string
+                pattern:
+                  - ^https://[^\s]+$
+                  - Utiliza una dirección completa que comience por https://.
+              - name: preinscripcion
+                label: Enlace de preinscripción
+                required: true
+                widget: string
+                pattern:
+                  - ^https://[^\s]+$
+                  - Utiliza una dirección completa que comience por https://.
+              - name: maps
+                label: Enlace de Google Maps
+                required: true
+                widget: string
+                pattern:
+                  - ^https://[^\s]+$
+                  - Utiliza una dirección completa que comience por https://.
+              - name: mapEmbed
+                label: Enlace del mapa integrado
+                required: true
+                widget: string
+                pattern:
+                  - ^https://[^\s]+$
+                  - Utiliza una dirección completa que comience por https://.
+              - name: socials
+                label: Redes sociales
+                required: true
+                widget: list
+                collapsed: true
+                fields:
+                  - *ref_19
+                  - *ref_20
+          - *ref_8
+      - name: documentos
+        label: Documentos institucionales
+        file: src/content/paginas/documentos.md
+        fields:
+          - name: route
+            widget: hidden
+            default: /documentos/
+            required: false
+          - *ref_0
+          - *ref_1
+          - *ref_9
+          - *ref_10
+          - *ref_11
+          - *ref_12
+          - *ref_16
+          - name: documentsList
+            label: Documentos para las familias
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - *ref_5
+              - *ref_2
+              - *ref_0
+              - *ref_1
+              - *ref_7
+              - name: items
+                label: Elementos
+                required: true
+                widget: list
+                collapsed: true
+                fields:
+                  - name: id
+                    widget: hidden
+                    default: manual
+                    required: false
+                  - *ref_0
+                  - *ref_21
+                  - *ref_1
+                  - name: file
+                    label: Nombre del archivo PDF existente
+                    required: true
+                    widget: string
+                    pattern:
+                      - .*\S.*
+                      - Este campo no puede quedar vacío.
+                  - name: source
+                    widget: hidden
+                    default: Manual_de_Convivencia_CEDHU.pdf
+                    required: false
+          - *ref_8
+      - name: equipo
+        label: Equipo institucional
+        file: src/content/paginas/equipo.md
+        fields:
+          - name: route
+            widget: hidden
+            default: /nosotros/equipo/
+            required: false
+          - *ref_0
+          - *ref_1
+          - *ref_9
+          - *ref_10
+          - *ref_11
+          - *ref_12
+          - name: institutionTeam
+            label: Presentación del equipo
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - &ref_41
+                name: contactHref
+                label: Destino del enlace · contacto
+                required: true
+                widget: string
+                pattern:
+                  - ^(?:\/(?!\/)|#[a-zA-Z]|https:\/\/|mailto:|tel:)[^\s]*$
+                  - Revisa el formato. Los enlaces deben ser rutas internas o direcciones seguras.
+              - &ref_47
+                name: hoursHref
+                label: Destino del enlace · horarios
+                required: true
+                widget: string
+                pattern:
+                  - ^(?:\/(?!\/)|#[a-zA-Z]|https:\/\/|mailto:|tel:)[^\s]*$
+                  - Revisa el formato. Los enlaces deben ser rutas internas o direcciones seguras.
+              - *ref_2
+              - *ref_0
+              - *ref_6
+              - name: contactDescription
+                label: Descripción · contacto
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - &ref_46
+                name: contactLabel
+                label: Texto visible · contacto
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - &ref_48
+                name: hoursLabel
+                label: Texto visible · horarios
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+          - *ref_8
+      - name: espacios
+        label: Nuestros espacios
+        file: src/content/paginas/espacios.md
+        fields:
+          - name: route
+            widget: hidden
+            default: /nosotros/espacios/
+            required: false
+          - *ref_0
+          - *ref_1
+          - *ref_9
+          - *ref_10
+          - *ref_11
+          - *ref_12
+          - name: schoolSpaces
+            label: Fotografías de nuestros espacios
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - name: tourHref
+                widget: hidden
+                default: /videos/recorrido-cedhu.mp4
+                required: false
+              - name: visitHref
+                label: Destino del enlace · visita
+                required: true
+                widget: string
+                pattern:
+                  - ^(?:\/(?!\/)|#[a-zA-Z]|https:\/\/|mailto:|tel:)[^\s]*$
+                  - Revisa el formato. Los enlaces deben ser rutas internas o direcciones seguras.
+              - *ref_2
+              - *ref_22
+              - name: tourEyebrow
+                label: Antetítulo · recorrido virtual
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: tourTitle
+                label: Título · recorrido virtual
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: tourDescription
+                label: Descripción · recorrido virtual
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: tourLabel
+                label: Texto visible · recorrido virtual
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: visitLabel
+                label: Texto visible · visita
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: spaces
+                label: Espacios fotografiados
+                required: true
+                widget: list
+                collapsed: true
+                fields:
+                  - *ref_22
+                  - *ref_0
+                  - *ref_14
+          - *ref_8
+      - name: formacion-integral
+        label: Formación integral
+        file: src/content/paginas/formacion-integral.md
+        fields:
+          - name: route
+            widget: hidden
+            default: /oferta-educativa/formacion-integral/
+            required: false
+          - *ref_0
+          - *ref_1
+          - *ref_9
+          - *ref_10
+          - *ref_11
+          - *ref_12
+          - *ref_15
+          - &ref_26
+            name: supplement
+            label: Contenido complementario
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - *ref_2
+              - *ref_0
+              - *ref_6
+              - name: familyDescription
+                label: Descripción · familias
+                required: false
+                widget: text
+              - *ref_23
+              - *ref_7
+          - *ref_8
+      - name: historia
+        label: Nuestra historia
+        file: src/content/paginas/historia.md
+        fields:
+          - name: route
+            widget: hidden
+            default: /historia/
+            required: false
+          - *ref_0
+          - *ref_1
+          - *ref_9
+          - *ref_10
+          - *ref_11
+          - *ref_12
+          - &ref_31
+            name: heroImageCaption
+            label: Pie de fotografía principal
+            required: false
+            widget: string
+          - name: historyTimeline
+            label: Reseña histórica
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - name: items
+                label: Elementos
+                required: true
+                widget: list
+                collapsed: true
+                fields:
+                  - name: year
+                    label: Año
+                    required: true
+                    widget: string
+                    pattern:
+                      - .*\S.*
+                      - Este campo no puede quedar vacío.
+                  - *ref_0
+                  - *ref_14
+          - *ref_8
+      - name: identidad
+        label: Identidad institucional
+        file: src/content/paginas/identidad.md
+        fields:
+          - name: route
+            widget: hidden
+            default: /nosotros/identidad/
+            required: false
+          - *ref_0
+          - *ref_1
+          - *ref_9
+          - *ref_10
+          - *ref_11
+          - *ref_12
+          - name: institutionIdentity
+            label: Principios, valores y símbolos
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - *ref_24
+              - name: principlesEyebrow
+                label: Antetítulo · principios
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: principlesTitle
+                label: Título · principios
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - &ref_43
+                name: valuesEyebrow
+                label: Antetítulo · valores
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - &ref_44
+                name: valuesTitle
+                label: Título · valores
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: mottoEyebrow
+                label: Antetítulo · lema
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: mottoStart
+                label: "Lema: primera parte"
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: mottoEnd
+                label: "Lema: parte final"
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: mottoDescription
+                label: Descripción · lema
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: communicationTitle
+                label: Título · comunicación
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - &ref_42
+                name: communicationDescription
+                label: Descripción · comunicación
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: integrityDescription
+                label: Descripción · formación integral
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: symbolsEyebrow
+                label: Antetítulo · símbolos
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - *ref_22
+              - name: flagTitle
+                label: Título · bandera
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: flagDescription
+                label: Descripción · bandera
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: emblemTitle
+                label: Título · emblema
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: emblemDescription
+                label: Descripción · emblema
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: uniformDescription
+                label: Descripción · uniforme
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - *ref_25
+              - name: principles
+                label: Principios
+                required: true
+                widget: list
+                collapsed: true
+                fields:
+                  - *ref_0
+                  - *ref_14
+              - name: values
+                label: Valores
+                required: true
+                widget: list
+                collapsed: true
+                fields:
+                  - *ref_0
+                  - *ref_14
+          - *ref_8
+      - name: ingles
+        label: Inglés
+        file: src/content/paginas/ingles.md
+        fields:
+          - name: route
+            widget: hidden
+            default: /oferta-educativa/ingles/
+            required: false
+          - *ref_0
+          - *ref_1
+          - *ref_9
+          - *ref_10
+          - *ref_11
+          - *ref_12
+          - *ref_15
+          - *ref_8
+      - name: inicial
+        label: Inicial y preescolar
+        file: src/content/paginas/inicial.md
+        fields:
+          - name: route
+            widget: hidden
+            default: /oferta-educativa/inicial/
+            required: false
+          - *ref_0
+          - *ref_1
+          - *ref_9
+          - *ref_10
+          - *ref_11
+          - *ref_12
+          - *ref_15
+          - *ref_26
+          - *ref_8
+      - name: inicio
+        label: Aprender. Crear. Ser felices.
+        file: src/content/paginas/inicio.md
+        fields:
+          - name: route
+            widget: hidden
+            default: /
+            required: false
+          - *ref_0
+          - *ref_1
+          - *ref_9
+          - *ref_10
+          - *ref_11
+          - *ref_12
+          - name: hero
+            label: Bienvenida y fotografías de inicio
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - name: context
+                label: Presentación de la propuesta
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - &ref_40
+                name: admissionsLabel
+                label: Texto visible · admisiones
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: educationLabel
+                label: Texto visible · educación
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: collageLabel
+                label: Texto visible · collage de fotografías
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - &ref_27
+                name: photoCaption
+                label: Pie de fotografía
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: photoCaptionEmphasis
+                label: Palabras resaltadas · pie de fotografía
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: campusImage
+                label: Fotografía · instalaciones
+                required: true
+                widget: relation
+                collection: medios
+                value_field: "{{slug}}"
+                search_fields:
+                  - title
+                  - alt
+                display_fields:
+                  - title
+                options_length: 100
+                hint: >-
+                  Selecciona una fotografía de la biblioteca. Para agregar una, crea primero su ficha en
+                  «Fotografías». Las referencias nuevas se seleccionan después de aprobar esa ficha.
+              - name: campusCaption
+                label: Pie de fotografía · instalaciones
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: playImage
+                label: Fotografía · convivencia
+                required: true
+                widget: relation
+                collection: medios
+                value_field: "{{slug}}"
+                search_fields:
+                  - title
+                  - alt
+                display_fields:
+                  - title
+                options_length: 100
+                hint: >-
+                  Selecciona una fotografía de la biblioteca. Para agregar una, crea primero su ficha en
+                  «Fotografías». Las referencias nuevas se seleccionan después de aprobar esa ficha.
+              - name: playCaption
+                label: Pie de fotografía · convivencia
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: insetImage
+                label: Fotografía · fotografía pequeña
+                required: true
+                widget: relation
+                collection: medios
+                value_field: "{{slug}}"
+                search_fields:
+                  - title
+                  - alt
+                display_fields:
+                  - title
+                options_length: 100
+                hint: >-
+                  Selecciona una fotografía de la biblioteca. Para agregar una, crea primero su ficha en
+                  «Fotografías». Las referencias nuevas se seleccionan después de aprobar esa ficha.
+              - name: insetLabel
+                label: Texto visible · fotografía pequeña
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: footerDescription
+                label: Descripción · cierre de bienvenida
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: discoverLabel
+                label: Texto visible · descubrir
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: levelsLabel
+                label: Texto visible · niveles
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+          - name: campusModel
+            label: Textos junto a la maqueta
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - *ref_2
+              - *ref_0
+              - *ref_1
+              - *ref_19
+              - name: areas
+                label: Áreas
+                required: true
+                widget: list
+                collapsed: true
+                min: 1
+                field: *ref_14
+          - name: whyCedhu
+            label: Por qué elegir el CEDHU
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - *ref_2
+              - *ref_3
+              - &ref_28
+                name: titleEmphasis
+                label: Palabras resaltadas del título
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - *ref_6
+              - *ref_22
+              - *ref_27
+              - name: experiences
+                label: Experiencias formativas
+                required: true
+                widget: list
+                collapsed: true
+                min: 5
+                max: 6
+                fields:
+                  - *ref_0
+                  - *ref_1
+              - *ref_7
+              - *ref_5
+          - name: humanFormation
+            label: Formación humana
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - *ref_5
+              - *ref_22
+              - *ref_27
+              - *ref_2
+              - *ref_3
+              - *ref_4
+              - *ref_28
+              - *ref_6
+              - &ref_45
+                name: supportDescription
+                label: Descripción · acompañamiento
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - *ref_7
+          - name: identityIntro
+            label: Presentación institucional
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - *ref_5
+              - *ref_2
+              - *ref_3
+              - *ref_4
+              - *ref_28
+              - *ref_6
+              - &ref_37
+                name: familyDescription
+                label: Descripción · familias
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - *ref_7
+              - name: humanPillar
+                label: Pilar del SER
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: knowledgePillar
+                label: Pilar del saber
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: communityPillar
+                label: Pilar de convivencia
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+          - name: evidenceSection
+            label: Tarjetas de evidencia CEDHU
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - *ref_2
+              - *ref_0
+              - *ref_6
+              - *ref_7
+              - *ref_5
+              - name: cards
+                label: Tarjetas existentes
+                required: true
+                widget: list
+                collapsed: true
+                min: 4
+                max: 4
+                fields:
+                  - name: id
+                    widget: hidden
+                    default: academicos
+                    required: false
+                  - *ref_0
+                  - *ref_1
+                  - *ref_22
+                  - name: action
+                    label: Enlace opcional de la tarjeta
+                    required: false
+                    widget: object
+                    collapsed: true
+                    fields:
+                      - *ref_19
+                      - *ref_20
+                  - name: note
+                    label: Nota informativa
+                    required: false
+                    widget: string
+                allow_add: false
+          - name: newsSection
+            label: Presentación de noticias
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - *ref_5
+              - *ref_2
+              - *ref_0
+              - *ref_7
+          - name: quickAccess
+            label: Accesos de la comunidad
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - *ref_2
+              - *ref_3
+              - *ref_4
+              - name: links
+                label: Accesos
+                required: true
+                widget: list
+                collapsed: true
+                fields:
+                  - *ref_19
+                  - name: detail
+                    label: Texto de apoyo
+                    required: true
+                    widget: string
+                    pattern:
+                      - .*\S.*
+                      - Este campo no puede quedar vacío.
+                  - *ref_29
+                  - name: platform
+                    widget: hidden
+                    required: false
+                  - name: external
+                    label: Abrir en una pestaña nueva
+                    required: false
+                    widget: boolean
+                    default: false
+          - name: technology
+            label: Ciencia y tecnología
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - *ref_5
+              - *ref_2
+              - *ref_3
+              - *ref_4
+              - *ref_28
+              - *ref_6
+              - *ref_22
+              - name: photoCaptionStart
+                label: Primera parte · pie de fotografía
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: photoCaptionEnd
+                label: Parte final · pie de fotografía
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - *ref_7
+              - name: areas
+                label: Áreas
+                required: true
+                widget: list
+                collapsed: true
+                fields:
+                  - *ref_30
+                  - *ref_1
+                  - *ref_20
+          - *ref_8
+      - name: investigacion
+        label: Investigación
+        file: src/content/paginas/investigacion.md
+        fields:
+          - name: route
+            widget: hidden
+            default: /oferta-educativa/investigacion/
+            required: false
+          - *ref_0
+          - *ref_1
+          - *ref_9
+          - *ref_10
+          - *ref_11
+          - *ref_12
+          - *ref_31
+          - *ref_16
+          - name: researchProjects
+            label: Semillero de investigación
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - name: projects
+                label: Proyectos del semillero
+                required: true
+                widget: list
+                collapsed: true
+                fields:
+                  - *ref_0
+                  - name: slug
+                    label: Nombre corto para el enlace del proyecto
+                    required: true
+                    widget: string
+                    pattern:
+                      - ^[a-z0-9]+(?:-[a-z0-9]+)*$
+                      - Revisa el formato. Los enlaces deben ser rutas internas o direcciones seguras.
+                  - name: summary
+                    label: Resumen
+                    required: true
+                    widget: text
+                    pattern:
+                      - .*\S.*
+                      - Este campo no puede quedar vacío.
+                  - *ref_32
+                  - name: area
+                    label: Área de investigación
+                    required: false
+                    widget: string
+                  - name: description
+                    label: Descripción
+                    required: false
+                    widget: list
+                    collapsed: true
+                    field: *ref_14
+                  - name: coverImage
+                    label: Fotografía de portada
+                    required: false
+                    widget: object
+                    collapsed: true
+                    fields:
+                      - *ref_22
+                      - &ref_33
+                        name: alt
+                        label: Descripción accesible de la fotografía
+                        required: true
+                        widget: string
+                        pattern:
+                          - .*\S.*
+                          - Este campo no puede quedar vacío.
+                      - &ref_34
+                        name: caption
+                        label: Pie de fotografía
+                        required: false
+                        widget: string
+                  - name: gallery
+                    label: Galería de fotografías
+                    required: false
+                    widget: list
+                    collapsed: true
+                    fields:
+                      - *ref_22
+                      - *ref_33
+                      - *ref_34
+                  - name: authors
+                    label: Educandos y responsables
+                    required: false
+                    widget: list
+                    collapsed: true
+                    field: *ref_14
+                  - name: details
+                    label: Datos adicionales
+                    required: false
+                    widget: list
+                    collapsed: true
+                    fields:
+                      - *ref_19
+                      - name: value
+                        label: Información
+                        required: true
+                        widget: string
+                        pattern:
+                          - .*\S.*
+                          - Este campo no puede quedar vacío.
+                  - name: pdfs
+                    label: Documentos de investigación
+                    required: false
+                    widget: list
+                    collapsed: true
+                    fields:
+                      - *ref_0
+                      - name: href
+                        label: Destino del enlace
+                        required: true
+                        widget: string
+                        pattern:
+                          - ^\/documentos\/investigacion\/(?:[a-z0-9-]+\/)*[a-z0-9-]+\.pdf$
+                          - Revisa el formato. Los enlaces deben ser rutas internas o direcciones seguras.
+                  - name: tags
+                    label: Temas
+                    required: false
+                    widget: list
+                    collapsed: true
+                    field: *ref_14
+                  - *ref_35
+                  - *ref_36
+              - name: educationLinkHref
+                label: Destino del enlace · educación
+                required: true
+                widget: string
+                pattern:
+                  - ^(?:\/(?!\/)|#[a-zA-Z]|https:\/\/|mailto:|tel:)[^\s]*$
+                  - Revisa el formato. Los enlaces deben ser rutas internas o direcciones seguras.
+              - *ref_2
+              - *ref_0
+              - *ref_6
+              - name: publicationsDescription
+                label: Descripción · publicaciones
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: projectsEyebrow
+                label: Antetítulo · proyectos
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: projectsTitle
+                label: Título · proyectos
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: emptyTitle
+                label: Título · mensaje sin publicaciones
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: emptyDescription
+                label: Descripción · mensaje sin publicaciones
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: educationLinkLabel
+                label: Texto del enlace · educación
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+          - *ref_8
+      - name: ludicas
+        label: Lúdicas
+        file: src/content/paginas/ludicas.md
+        fields:
+          - name: route
+            widget: hidden
+            default: /ludicas/
+            required: false
+          - *ref_0
+          - *ref_1
+          - *ref_9
+          - *ref_10
+          - *ref_11
+          - *ref_12
+          - name: activities
+            label: Lúdicas e inscripciones
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - *ref_2
+              - *ref_0
+              - name: registrationEyebrow
+                label: Antetítulo · inscripción
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: registrationTitle
+                label: Título · inscripción
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: registrationDescription
+                label: Descripción · inscripción
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: groups
+                label: Grupos de actividades
+                required: true
+                widget: list
+                collapsed: true
+                fields:
+                  - *ref_0
+                  - name: items
+                    label: Elementos
+                    required: true
+                    widget: list
+                    collapsed: true
+                    field: *ref_14
+              - name: forms
+                label: Formularios de inscripción
+                required: true
+                widget: list
+                collapsed: true
+                fields:
+                  - *ref_19
+                  - *ref_20
+          - *ref_8
+      - name: nosotros
+        label: Nosotros
+        file: src/content/paginas/nosotros.md
+        fields:
+          - name: route
+            widget: hidden
+            default: /nosotros/
+            required: false
+          - *ref_0
+          - *ref_1
+          - *ref_9
+          - *ref_10
+          - *ref_11
+          - *ref_12
+          - name: institutionOverview
+            label: Nosotros, misión y visión
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - name: historyLinkHref
+                label: Destino del enlace · historia
+                required: true
+                widget: string
+                pattern:
+                  - ^(?:\/(?!\/)|#[a-zA-Z]|https:\/\/|mailto:|tel:)[^\s]*$
+                  - Revisa el formato. Los enlaces deben ser rutas internas o direcciones seguras.
+              - name: principlesLinkHref
+                label: Destino del enlace · principios
+                required: true
+                widget: string
+                pattern:
+                  - ^(?:\/(?!\/)|#[a-zA-Z]|https:\/\/|mailto:|tel:)[^\s]*$
+                  - Revisa el formato. Los enlaces deben ser rutas internas o direcciones seguras.
+              - &ref_38
+                name: pedagogyLinkHref
+                label: Destino del enlace · pedagogía
+                required: true
+                widget: string
+                pattern:
+                  - ^(?:\/(?!\/)|#[a-zA-Z]|https:\/\/|mailto:|tel:)[^\s]*$
+                  - Revisa el formato. Los enlaces deben ser rutas internas o direcciones seguras.
+              - name: spacesLinkHref
+                label: Destino del enlace · espacios
+                required: true
+                widget: string
+                pattern:
+                  - ^(?:\/(?!\/)|#[a-zA-Z]|https:\/\/|mailto:|tel:)[^\s]*$
+                  - Revisa el formato. Los enlaces deben ser rutas internas o direcciones seguras.
+              - name: teamLinkHref
+                label: Destino del enlace · equipo
+                required: true
+                widget: string
+                pattern:
+                  - ^(?:\/(?!\/)|#[a-zA-Z]|https:\/\/|mailto:|tel:)[^\s]*$
+                  - Revisa el formato. Los enlaces deben ser rutas internas o direcciones seguras.
+              - *ref_24
+              - *ref_2
+              - *ref_0
+              - *ref_6
+              - name: educationalApproach
+                label: Enfoque educativo
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - *ref_37
+              - name: historyLinkLabel
+                label: Texto del enlace · historia
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: horizonEyebrow
+                label: Antetítulo · horizonte institucional
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: missionTitle
+                label: Título · misión
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: visionTitle
+                label: Título · visión
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - *ref_22
+              - name: identityEyebrow
+                label: Antetítulo · identidad
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: identityTitleStart
+                label: "Título de identidad: primera parte"
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: identityTitleEnd
+                label: "Título de identidad: parte final"
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: principlesLinkLabel
+                label: Texto del enlace · principios
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - &ref_39
+                name: pedagogyLinkLabel
+                label: Texto del enlace · pedagogía
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: spacesLinkLabel
+                label: Texto del enlace · espacios
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: teamLinkLabel
+                label: Texto del enlace · equipo
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - *ref_25
+              - name: mission
+                label: Misión
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: vision
+                label: Visión
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+          - *ref_8
+      - name: noticias
+        label: Actualidad y vida CEDHU
+        file: src/content/paginas/noticias.md
+        fields:
+          - name: route
+            widget: hidden
+            default: /noticias/
+            required: false
+          - *ref_0
+          - *ref_1
+          - *ref_9
+          - *ref_10
+          - *ref_11
+          - *ref_12
+          - *ref_8
+      - name: oferta-educativa
+        label: Nuestra propuesta educativa
+        file: src/content/paginas/oferta-educativa.md
+        fields:
+          - name: route
+            widget: hidden
+            default: /oferta-educativa/
+            required: false
+          - *ref_0
+          - *ref_1
+          - *ref_9
+          - *ref_10
+          - *ref_11
+          - *ref_12
+          - name: educationalLevels
+            label: Niveles educativos
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - *ref_5
+              - *ref_2
+              - *ref_0
+              - *ref_7
+          - name: educationOverview
+            label: Propuesta educativa
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - *ref_38
+              - name: researchLinkHref
+                label: Destino del enlace · investigación
+                required: true
+                widget: text
+                pattern:
+                  - ^(?:\/(?!\/)|#[a-zA-Z]|https:\/\/|mailto:|tel:)[^\s]*$
+                  - Revisa el formato. Los enlaces deben ser rutas internas o direcciones seguras.
+              - *ref_2
+              - *ref_0
+              - *ref_6
+              - name: methodologyDescription
+                label: Descripción · metodología
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - *ref_39
+              - name: explorationEyebrow
+                label: Antetítulo · exploración
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: explorationTitle
+                label: Título · exploración
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: researchLinkLabel
+                label: Texto del enlace · investigación
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - *ref_22
+          - name: educationInterface
+            label: Textos compartidos de la oferta educativa
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - name: methodologyEyebrow
+                label: Antetítulo · metodología
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - *ref_40
+              - name: relatedEyebrow
+                label: Antetítulo · contenido relacionado
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: pedagogyLabel
+                label: Texto visible · pedagogía
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+          - *ref_8
+      - name: pedagogia-de-la-felicidad
+        label: Pedagogía de la Felicidad
+        file: src/content/paginas/pedagogia-de-la-felicidad.md
+        fields:
+          - name: route
+            widget: hidden
+            default: /nosotros/pedagogia-de-la-felicidad/
+            required: false
+          - *ref_0
+          - *ref_1
+          - *ref_9
+          - *ref_10
+          - *ref_11
+          - *ref_12
+          - name: pedagogy
+            label: Pedagogía de la Felicidad
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - *ref_41
+              - name: quote
+                label: Cita institucional
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: quoteAttribution
+                label: Autor de la cita
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - *ref_0
+              - *ref_6
+              - *ref_42
+              - *ref_43
+              - *ref_44
+              - *ref_22
+              - name: supportEyebrow
+                label: Antetítulo · acompañamiento
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: supportTitle
+                label: Título · acompañamiento
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - *ref_45
+              - *ref_37
+              - *ref_46
+              - name: ideas
+                label: Ideas pedagógicas
+                required: true
+                widget: list
+                collapsed: true
+                fields:
+                  - *ref_0
+                  - *ref_14
+          - *ref_8
+      - name: primaria
+        label: Primaria
+        file: src/content/paginas/primaria.md
+        fields:
+          - name: route
+            widget: hidden
+            default: /oferta-educativa/primaria/
+            required: false
+          - *ref_0
+          - *ref_1
+          - *ref_9
+          - *ref_10
+          - *ref_11
+          - *ref_12
+          - *ref_15
+          - *ref_8
+      - name: robotica
+        label: Robótica
+        file: src/content/paginas/robotica.md
+        fields:
+          - name: route
+            widget: hidden
+            default: /oferta-educativa/robotica/
+            required: false
+          - *ref_0
+          - *ref_1
+          - *ref_9
+          - *ref_10
+          - *ref_11
+          - *ref_12
+          - *ref_15
+          - *ref_8
+      - name: servicios-en-linea
+        label: Servicios en línea
+        file: src/content/paginas/servicios-en-linea.md
+        fields:
+          - name: route
+            widget: hidden
+            default: /servicios-en-linea/
+            required: false
+          - *ref_0
+          - *ref_1
+          - *ref_9
+          - *ref_10
+          - *ref_11
+          - *ref_12
+          - name: services
+            label: Servicios en línea
+            required: false
+            widget: object
+            collapsed: true
+            fields:
+              - *ref_47
+              - name: suppliesHref
+                label: Destino del enlace · útiles escolares
+                required: true
+                widget: string
+                pattern:
+                  - ^(?:\/(?!\/)|#[a-zA-Z]|https:\/\/|mailto:|tel:)[^\s]*$
+                  - Revisa el formato. Los enlaces deben ser rutas internas o direcciones seguras.
+              - name: activitiesHref
+                label: Destino del enlace · lúdicas
+                required: true
+                widget: string
+                pattern:
+                  - ^(?:\/(?!\/)|#[a-zA-Z]|https:\/\/|mailto:|tel:)[^\s]*$
+                  - Revisa el formato. Los enlaces deben ser rutas internas o direcciones seguras.
+              - name: documentsHref
+                label: Destino del enlace · documentos
+                required: true
+                widget: string
+                pattern:
+                  - ^(?:\/(?!\/)|#[a-zA-Z]|https:\/\/|mailto:|tel:)[^\s]*$
+                  - Revisa el formato. Los enlaces deben ser rutas internas o direcciones seguras.
+              - name: treasuryHref
+                label: Destino del enlace · tesorería
+                required: true
+                widget: string
+                pattern:
+                  - ^(?:\/(?!\/)|#[a-zA-Z]|https:\/\/|mailto:|tel:)[^\s]*$
+                  - Revisa el formato. Los enlaces deben ser rutas internas o direcciones seguras.
+              - name: booksHref
+                label: Destino del enlace · libros
+                required: true
+                widget: string
+                pattern:
+                  - ^(?:\/(?!\/)|#[a-zA-Z]|https:\/\/|mailto:|tel:)[^\s]*$
+                  - Revisa el formato. Los enlaces deben ser rutas internas o direcciones seguras.
+              - name: alumniHref
+                label: Destino del enlace · egresados
+                required: true
+                widget: string
+                pattern:
+                  - ^(?:\/(?!\/)|#[a-zA-Z]|https:\/\/|mailto:|tel:)[^\s]*$
+                  - Revisa el formato. Los enlaces deben ser rutas internas o direcciones seguras.
+              - name: q10Name
+                label: Nombre · Q10
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: q10Title
+                label: Título · Q10
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: q10Description
+                label: Descripción · Q10
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: q10Label
+                label: Texto visible · Q10
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: unoiName
+                label: Nombre · UNOi
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: unoiTitle
+                label: Título · UNOi
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: unoiDescription
+                label: Descripción · UNOi
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: unoiLabel
+                label: Texto visible · UNOi
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: resourcesEyebrow
+                label: Antetítulo · recursos
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: resourcesTitle
+                label: Título · recursos
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - *ref_48
+              - name: suppliesLabel
+                label: Texto visible · útiles escolares
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: activitiesLabel
+                label: Texto visible · lúdicas
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: documentsLabel
+                label: Texto visible · documentos
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: treasuryEyebrow
+                label: Antetítulo · tesorería
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: treasuryTitle
+                label: Título · tesorería
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: paymentsTitle
+                label: Título · pagos
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: paymentsDescription
+                label: Descripción · pagos
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: treasuryLabel
+                label: Texto visible · tesorería
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: booksTitle
+                label: Título · libros
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: booksDescription
+                label: Descripción · libros
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: booksLabel
+                label: Texto visible · libros
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: alumniEyebrow
+                label: Antetítulo · egresados
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: alumniTitle
+                label: Título · egresados
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: alumniDescription
+                label: Descripción · egresados
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+              - name: alumniLabel
+                label: Texto visible · egresados
+                required: true
+                widget: string
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
+          - *ref_8
+  - name: personal
+    label: Equipo institucional
+    label_singular: Equipo institucional
+    folder: src/content/personal
+    create: false
+    delete: false
+    slug: "{{slug}}"
+    extension: json
+    format: json
+    editor:
+      preview: false
+    fields:
+      - name: personId
+        widget: hidden
+        required: false
+      - *ref_30
+      - name: category
+        widget: hidden
+        required: false
+      - name: group
+        widget: hidden
+        required: false
+      - name: role
+        label: Cargo
+        required: true
+        widget: string
+        pattern:
+          - .*\S.*
+          - Este campo no puede quedar vacío.
+      - *ref_13
+      - name: photo
+        label: Fotografía del perfil
+        required: true
+        widget: image
+        choose_url: false
+        allow_multiple: false
+        pattern:
+          - ^/src/assets/.*\.(?:[jJ][pP][eE]?[gG]|[pP][nN][gG]|[wW][eE][bB][pP]|[aA][vV][iI][fF])$
+          - Selecciona JPG, PNG, WebP o AVIF.
+        hint: Máximo 3 MB por fotografía nueva. Conserva el encuadre y escribe una descripción accesible.
+        media_library:
+          config:
+            max_file_size: 3145728
+            multiple: false
+      - name: photoAlt
+        label: Descripción accesible de la fotografía
+        required: false
+        widget: string
+      - name: visible
+        label: Mostrar este perfil en el sitio
+        required: false
+        widget: boolean
+        default: true
+      - name: photoUnavailable
+        label: Usar el emblema mientras se recibe la fotografía
+        required: false
+        widget: boolean
+        default: false
+      - name: description
+        label: Descripción
+        required: false
+        widget: text
+      - name: officeHours
+        label: Horario de atención
+        required: false
+        widget: string
+      - name: assignments
+        label: Asignaturas y grados
+        required: false
+        widget: list
+        collapsed: true
+        min: 1
+        fields:
+          - name: subject
+            label: Asignatura
+            required: true
+            widget: string
+            pattern:
+              - .*\S.*
+              - Este campo no puede quedar vacío.
+          - name: grades
+            label: Grados
+            required: true
+            widget: string
+            pattern:
+              - .*\S.*
+              - Este campo no puede quedar vacío.
+      - name: groupLeadership
+        label: Dirección de grupo
+        required: false
+        widget: string
+      - name: research
+        label: Responsabilidad en investigación
+        required: false
+        widget: text
+      - name: responsibilities
+        label: Otras responsabilidades
+        required: false
+        widget: list
+        collapsed: true
+        min: 1
+        field: *ref_14
+    identifier_field: name
+    summary: "{{name}} · {{role}}"
+  - name: reconocimientos
+    label: Reconocimientos
+    label_singular: Reconocimientos
+    folder: src/content/reconocimientos
+    create: true
+    delete: false
+    slug: "{{slug}}"
+    extension: md
+    format: frontmatter
+    editor:
+      preview: false
+    fields:
+      - *ref_0
+      - *ref_1
+      - *ref_32
+      - *ref_23
+      - name: category
+        label: Categoría
+        required: true
+        widget: select
+        options:
+          - label: Académico
+            value: academico
+          - label: Deportivo
+            value: deportivo
+          - label: Científico
+            value: cientifico
+          - label: Cultural
+            value: cultural
+          - label: Egresados
+            value: egresados
+      - *ref_35
+      - name: educandos
+        label: Nombre de los educandos o equipo
+        required: false
+        widget: string
+      - name: organizer
+        label: Institución o evento organizador
+        required: false
+        widget: string
+      - *ref_49
+      - name: sourceUrl
+        label: Enlace público de respaldo
+        required: false
+        widget: string
+        pattern:
+          - ^https://[^\s]+$
+          - Utiliza una dirección completa que comience por https://.
+      - *ref_13
+      - &ref_50
+        name: draft
+        label: Retirar u ocultar del sitio público
+        required: false
+        widget: boolean
+        default: true
+        hint: >-
+          Este interruptor oculta el contenido incluso después de aprobarlo. Para publicarlo, desactívalo y
+          completa la revisión editorial. Guardar un borrador del flujo editorial no cambia producción.
+    preview_path: /#evidencia-cedhu
+  - name: eventos
+    label: Eventos y agenda
+    label_singular: Eventos y agenda
+    folder: src/content/eventos
+    create: true
+    delete: false
+    slug: "{{slug}}"
+    extension: md
+    format: frontmatter
+    editor:
+      preview: false
+    fields:
+      - *ref_0
+      - *ref_1
+      - name: startDate
+        label: Fecha y hora de inicio
+        required: true
+        widget: datetime
+        format: YYYY-MM-DDTHH:mm:ssZ
+        date_format: DD/MM/YYYY
+        time_format: HH:mm
+        picker_utc: false
+        default: ""
+      - name: endDate
+        label: Fecha y hora de finalización
+        required: false
+        widget: datetime
+        format: YYYY-MM-DDTHH:mm:ssZ
+        date_format: DD/MM/YYYY
+        time_format: HH:mm
+        picker_utc: false
+        default: ""
+      - name: location
+        label: Lugar
+        required: true
+        widget: string
+        pattern:
+          - .*\S.*
+          - Este campo no puede quedar vacío.
+      - *ref_23
+      - name: additionalInfo
+        label: Información adicional
+        required: false
+        widget: text
+      - *ref_50
+    preview_path: ludicas/
+  - name: medios
+    label: Fotografías
+    label_singular: Fotografía
+    description: >-
+      Registra aquí la fotografía, su nombre y descripción accesible. Aprueba la ficha antes de seleccionarla
+      en otras secciones.
+    folder: src/content/medios
+    create: true
+    delete: false
+    extension: json
+    format: json
+    slug: "{{slug}}"
+    editor:
+      preview: false
+    fields:
+      - name: title
+        label: Nombre en la biblioteca
+        widget: string
+        pattern:
+          - .*\S.*
+          - Escribe un nombre descriptivo.
+      - name: image
+        label: Fotografía
+        required: true
+        widget: image
+        choose_url: false
+        allow_multiple: false
+        pattern:
+          - ^/src/assets/.*\.(?:[jJ][pP][eE]?[gG]|[pP][nN][gG]|[wW][eE][bB][pP]|[aA][vV][iI][fF])$
+          - Selecciona JPG, PNG, WebP o AVIF.
+        hint: Máximo 3 MB por fotografía nueva. Conserva el encuadre y escribe una descripción accesible.
+        media_library:
+          config:
+            max_file_size: 3145728
+            multiple: false
+      - name: alt
+        label: Descripción accesible
+        widget: text
+        pattern:
+          - .*\S.*
+          - Describe la fotografía para quienes no pueden verla.
+        hint: Describe lo que ocurre y usa el término educandos cuando corresponda.

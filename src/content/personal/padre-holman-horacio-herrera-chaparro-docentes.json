@@ -1,0 +1,18 @@
+{
+  "id": "padre-holman-horacio-herrera-chaparro-docentes",
+  "personId": "padre-holman-horacio-herrera-chaparro",
+  "name": "Padre Holman Horacio Herrera Chaparro",
+  "category": "docentes",
+  "role": "Religión",
+  "order": 42,
+  "group": "religion-educacion-emocional",
+  "officeHours": "jueves de 11:00 a. m. a 12:00 m.",
+  "assignments": [
+    {
+      "subject": "Religión",
+      "grades": "5° a 11°"
+    }
+  ],
+  "photo": "/src/assets/fotos-cedhu/personal/padre-holman-horacio-herrera-chaparro.jpg",
+  "visible": true
+}

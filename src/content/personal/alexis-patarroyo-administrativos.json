@@ -1,0 +1,12 @@
+{
+  "id": "alexis-patarroyo-administrativos",
+  "personId": "alexis-patarroyo",
+  "name": "Alexis Patarroyo",
+  "category": "administrativos",
+  "role": "Coordinador de Tecnología",
+  "order": 55,
+  "description": "Responsable del acompañamiento tecnológico institucional, soporte técnico, gestión de herramientas digitales y apoyo a los procesos informáticos del CEDHU.",
+  "officeHours": "lunes a viernes de 10:00 a 11:00 a. m. y de 3:00 a 4:00 p. m.",
+  "photo": "/src/assets/fotos-cedhu/personal/alexis-patarroyo.jpg",
+  "visible": true
+}

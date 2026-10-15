@@ -13,4 +13,4 @@ if (!entry) throw new Error(`Falta la noticia ${item.slug}.`);
 const { Content } = await render(entry);
 const schema = { '@context':'https://schema.org', '@type':'Article', headline:item.title, description:item.description, ...(item.date && {datePublished:item.date}), author:{'@type':'Organization',name:'CEDHU'}, publisher:{'@type':'Organization',name:'CEDHU'}, mainEntityOfPage:new URL(`/noticias/${item.slug}/`,site.url).href };
 ---
-<BaseLayout title={item.title} description={item.description} type="article"><Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(schema).replace(/</g,'\u003c')} /></Fragment><Breadcrumb label={item.category} parent={{label:'Actualidad',href:'/noticias/'}} /><NewsArticle item={item}><Content /></NewsArticle></BaseLayout>
+<BaseLayout title={item.title} description={item.description} seo={item.seo} type="article"><Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(schema).replace(/</g,'\u003c')} /></Fragment><Breadcrumb label={item.category} parent={{label:'Actualidad',href:'/noticias/'}} /><NewsArticle item={item}><Content /></NewsArticle></BaseLayout>

@@ -1,0 +1,28 @@
+{
+  "id": "yenny-avella-docentes",
+  "personId": "yenny-avella",
+  "name": "Yenny Avella",
+  "category": "docentes",
+  "role": "Matemáticas",
+  "order": 26,
+  "group": "matematicas",
+  "officeHours": "miércoles de 7:30 a 8:30 a. m.",
+  "assignments": [
+    {
+      "subject": "Matemáticas",
+      "grades": "4° y 5°"
+    },
+    {
+      "subject": "Geometría",
+      "grades": "4° y 5°"
+    },
+    {
+      "subject": "Estadística",
+      "grades": "3°, 4°, 5° y 6°"
+    }
+  ],
+  "groupLeadership": "4° B",
+  "research": "4° B",
+  "photo": "/src/assets/fotos-cedhu/personal/yenny-avella.jpg",
+  "visible": true
+}

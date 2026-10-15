@@ -1,0 +1,13 @@
+{
+  "id": "gladys-yadira-africano-coordinadores",
+  "personId": "gladys-yadira-africano",
+  "name": "Gladys Yadira Africano",
+  "category": "coordinadores",
+  "role": "Coordinadora Comportamental",
+  "order": 4,
+  "responsibilities": [
+    "Coordinadora Académica de Bachillerato"
+  ],
+  "photo": "/src/assets/fotos-cedhu/personal/yadira-africano.avif",
+  "visible": true
+}

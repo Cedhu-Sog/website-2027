@@ -1,0 +1,22 @@
+{
+  "id": "angie-moreno-c-docentes",
+  "personId": "angie-moreno-c",
+  "name": "Angie Moreno C",
+  "category": "docentes",
+  "role": "Física",
+  "order": 35,
+  "group": "ciencias-naturales",
+  "officeHours": "jueves de 7:30 a 8:30 a. m.",
+  "assignments": [
+    {
+      "subject": "Física",
+      "grades": "4° a 11°"
+    }
+  ],
+  "groupLeadership": "10° A",
+  "responsibilities": [
+    "Lúdicas"
+  ],
+  "photo": "/src/assets/fotos-cedhu/personal/angie-moreno-c.jpg",
+  "visible": true
+}

@@ -8,7 +8,8 @@ Referencia: [Content collections, documentación oficial de Astro](https://docs.
 
 - `src/content/paginas/*.md`: contenido editorial de las 22 páginas institucionales y de los índices. Frontmatter con campos nombrados para las secciones existentes; sin HTML ni clases CSS.
 - `src/content/noticias/*.md`: cuatro publicaciones originales. El frontmatter describe la publicación y el cuerpo Markdown contiene sus párrafos.
-- `src/content/reconocimientos/` y `src/content/eventos/`: colecciones preparadas, todavía vacías. Los `.gitkeep` conservan los directorios en Git y no se cargan como entradas. Astro puede advertir que no encontró Markdown en ellas; es esperado.
+- `src/content/reconocimientos/`: siete evidencias originales de inicio, ahora en fichas individuales; `src/content/eventos/`: agenda inicialmente vacía, conectada con lúdicas. Los `.gitkeep` no se cargan como entradas. Ver la guía de Decap para publicación y retirada.
+- `src/content/personal/*.json`: los 63 cargos actuales, migrados conservando sus datos e imágenes. `src/content/medios/*.json`: catálogo de fotografías y alternativas accesibles.
 - `src/schemas/`: campos compartidos y schemas de las secciones. Los textos obligatorios no pueden quedar vacíos; las imágenes deben existir en el registro; las fechas deben ser válidas. En eventos, la fecha final no puede ser anterior al inicio.
 - `src/lib/content.ts`: consultas tipadas, secciones compartidas, filtros de borradores, orden de noticias y adaptación de referencias al sistema de imágenes existente.
 - `src/components/`: estructura y presentación de cada sección. Los componentes conservan elementos, clases, saltos de línea y particularidades del diseño. Las secciones compartidas aceptan contenido por props y consultan su entrada de origen si no se proporciona.
@@ -68,7 +69,7 @@ No copiar estas secciones a cada página que las usa. Los nombres de navegación
 
 ## Noticias
 
-Conservar los nombres de los cuatro archivos existentes: generan `/noticias/<id>/`. Para nuevas publicaciones, crear un Markdown con título, descripción, categoría, imagen de tarjeta, pieza original (`poster`), fuente (`source`) y leyenda (`imageCaption`). Las imágenes son claves del registro existente.
+Conservar los nombres de los cuatro archivos existentes: generan `/noticias/<id>/`. Para nuevas publicaciones, crear un Markdown con título, descripción, categoría, imagen de tarjeta y cuerpo Markdown. La pieza original (`poster`), fuente (`source`) y leyenda (`imageCaption`) son opcionales. Las imágenes son referencias del catálogo de fotografías.
 
 - `date`: fecha confirmada `YYYY-MM-DD`. La etiqueta visible se calcula automáticamente; no mantener una segunda fecha textual.
 - `undatedLabel`: solo para publicaciones sin fecha confirmada, como el comunicado original de registro de marca.
@@ -81,17 +82,15 @@ El cuerpo se convierte en HTML con `render(entry)` dentro de `NewsArticle`, cons
 
 ## Imágenes y documentos
 
-`heroImage`, `image`, `poster` y las referencias del collage usan identificadores como `cienciaCedhu` o `robotica`. `src/data/media.ts` conserva las mismas importaciones, alternativas descriptivas y assets; `Photo.astro` mantiene la optimización de Astro. `media-keys.ts` enumera los identificadores válidos para el schema sin importar binarios durante la configuración del contenido.
+`heroImage`, `image`, `poster` y las referencias del collage usan identificadores como `cienciaCedhu` o `robotica`. `src/data/media.ts` adapta las fichas de `src/content/medios/*.json`; `asset-images.ts` resuelve los archivos y `Photo.astro` mantiene la optimización de Astro. `media-catalog.ts` valida los identificadores sin importar binarios durante la configuración del contenido.
 
-Para una imagen nueva, añadir una sola importación al registro, su alternativa descriptiva y su clave a `media-keys.ts`. Las claves del registro están comprobadas con `satisfies`. No duplicar archivos de imágenes al editar contenido.
+Para una imagen nueva, crear y aprobar su ficha en Fotografías de Decap, cargar el archivo y escribir su alternativa. No hacen falta importaciones manuales. Las rutas del cuerpo Markdown se adaptan mediante el plugin Sätteri de `src/lib/markdown-images.mjs`. No duplicar archivos al editar contenido.
 
 Los documentos se editan en `documentos.md`, bloque `documentsList.items`; los PDF permanecen en `public/documentos/`. Las fichas del semillero se editan en `investigacion.md`, bloque `researchProjects.projects`; ver [Investigación](INVESTIGACION.md).
 
-## Integración futura con CMS
+## Integración con Decap CMS
 
-Un CMS basado en Git puede editar directamente estos Markdown y configurar sus formularios con los campos de los schemas. Para un CMS remoto se puede sustituir el loader de la colección por un loader de Astro que devuelva los mismos IDs y datos. Mantener el contrato validado permite conservar las rutas, consultas y componentes. El adaptador del CMS deberá resolver sus imágenes al sistema de assets del proyecto si proporciona otro formato.
-
-No se incorporaron CMS, panel de administración, autenticación, bases de datos ni APIs externas. Las colecciones de eventos y reconocimientos no crean rutas nuevas por sí solas.
+Ver [Administración de contenidos](DECAPCMS_ADMINISTRACION.md) para los formularios conectados, arquitectura OAuth, medios, flujo editorial, permisos y activación en GitHub/Vercel. Las colecciones conservan la generación estática; las únicas funciones de servidor son las dos rutas OAuth.
 
 ## Validación
 

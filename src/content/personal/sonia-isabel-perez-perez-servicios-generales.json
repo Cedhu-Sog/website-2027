@@ -1,0 +1,10 @@
+{
+  "id": "sonia-isabel-perez-perez-servicios-generales",
+  "personId": "sonia-isabel-perez-perez",
+  "name": "Sonia Isabel Pérez Pérez",
+  "category": "servicios-generales",
+  "role": "Auxiliar de servicios generales",
+  "order": 59,
+  "photo": "/src/assets/fotos-cedhu/personal/sonia-isabel-perez-perez.jpg",
+  "visible": true
+}

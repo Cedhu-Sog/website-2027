@@ -1,0 +1,30 @@
+{
+  "id": "ximena-aparicio-docentes",
+  "personId": "ximena-aparicio",
+  "name": "Ximena Aparicio",
+  "category": "docentes",
+  "role": "Inglés",
+  "order": 19,
+  "group": "ingles",
+  "officeHours": "martes de 2:00 a 2:50 p. m.",
+  "assignments": [
+    {
+      "subject": "Inglés",
+      "grades": "PV - PJ"
+    },
+    {
+      "subject": "Inglés",
+      "grades": "JR - TR"
+    },
+    {
+      "subject": "Inglés",
+      "grades": "1°"
+    },
+    {
+      "subject": "Lenguaje Técnico",
+      "grades": "1°, 2° y 3°"
+    }
+  ],
+  "photo": "/src/assets/fotos-cedhu/personal/ximena-aparicio.jpg",
+  "visible": true
+}

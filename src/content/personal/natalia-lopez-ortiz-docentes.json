@@ -1,0 +1,12 @@
+{
+  "id": "natalia-lopez-ortiz-docentes",
+  "personId": "natalia-lopez-ortiz",
+  "name": "Natalia López Ortíz",
+  "category": "docentes",
+  "role": "Jardín",
+  "order": 10,
+  "group": "preescolar",
+  "officeHours": "miércoles de 10:00 a 11:00 a. m.",
+  "photo": "/src/assets/fotos-cedhu/personal/natalia-lopez-ortiz.jpg",
+  "visible": true
+}

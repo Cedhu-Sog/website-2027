@@ -1,0 +1,23 @@
+{
+  "id": "yeison-fernando-diaz-docentes",
+  "personId": "yeison-fernando-diaz",
+  "name": "Yeison Fernando Díaz",
+  "category": "docentes",
+  "role": "Inglés",
+  "order": 23,
+  "group": "ingles",
+  "officeHours": "lunes de 7:30 a 8:30 a. m.",
+  "assignments": [
+    {
+      "subject": "Inglés",
+      "grades": "8° y 9°"
+    },
+    {
+      "subject": "Lenguaje Técnico",
+      "grades": "8°"
+    }
+  ],
+  "groupLeadership": "9° B",
+  "photo": "/src/assets/fotos-cedhu/personal/yeison-fernando-diaz.jpg",
+  "visible": true
+}

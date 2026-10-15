@@ -1,0 +1,12 @@
+{
+  "id": "paola-ochoa-aguilar-administrativos",
+  "personId": "paola-ochoa-aguilar",
+  "name": "Paola Ochoa Aguilar",
+  "category": "administrativos",
+  "role": "Contadora",
+  "order": 52,
+  "description": "Responsable del acompañamiento contable de la institución, apoyando la organización, revisión y gestión de los procesos financieros.",
+  "officeHours": "lunes a viernes de 10:00 a 11:00 a. m. y de 3:00 a 4:00 p. m.",
+  "photo": "/src/assets/fotos-cedhu/personal/paola-ochoa-aguilar.jpg",
+  "visible": true
+}
