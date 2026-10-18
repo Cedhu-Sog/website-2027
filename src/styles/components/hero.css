@@ -2,13 +2,11 @@
 @media (width < 48rem) { .hero { padding-top: var(--space-sm); } }
 .hero__copy .eyebrow { display: flex; align-items: center; gap: .6rem; font-size: .75rem; }
 .hero__point { display: inline-block; width: .55rem; height: .55rem; border-radius: 50%; background: var(--color-primary); flex-shrink: 0; }
-.hero h1 { font-size: var(--text-hero-title); font-weight: 550; line-height: var(--leading-hero-title); letter-spacing: -.065em; }
-.hero__copy { min-width: 0; }
-.hero h1 { padding-top: .2em; }
+.hero__copy { min-width: 0; container-type: inline-size; }
+.hero h1 { padding-top: .4em; color: var(--color-primary); font-size: var(--text-hero-academic-title); font-weight: 700; line-height: var(--leading-hero-academic-title); letter-spacing: -.035em; text-align: left; text-wrap: wrap; hyphens: none; }
 .hero__title-line { display: block; }
-.hero__title-line--secondary { margin-top: .35em; font-size: .47em; line-height: 1.25; letter-spacing: -.035em; }
-.hero__title-line--exam { margin-top: .15em; font-size: .68em; line-height: 1.15; letter-spacing: -.045em; }
-.hero__rank { position: relative; display: inline-block; color: var(--color-primary); white-space: nowrap; }
+.hero__title-line--secondary { margin-top: .3em; }
+.hero__rank { position: relative; display: inline-block; color: var(--color-primary); font-size: 1.12em; line-height: 1; white-space: nowrap; }
 .hero__rank-number { display: inline-block; font-weight: 700; transform-origin: center; }
 .hero__rank-crown { position: absolute; width: .55em; right: -.035em; top: -.31em; rotate: 10deg; pointer-events: none; }
 .hero__rank-crown svg { display: block; width: 100%; }
@@ -24,9 +22,8 @@
 .hero__news-action small { color: var(--color-text-muted); font-size: var(--text-small); }
 .hero__news-pending { padding: 0; border: 0; border-bottom: 1px solid currentColor; background: transparent; font-family: inherit; cursor: default; }
 .hero__news-pending:hover { color: var(--color-primary); }
-.hero__description { margin-top: var(--space-md); font-size: var(--text-intro); line-height: 1.55; }
-.hero__context { max-width: 29rem; margin-top: var(--space-sm); color: var(--color-text-muted); font-size: var(--text-body); line-height: 1.6; }
-.hero__copy .actions { margin-top: var(--space-lg); gap: .8rem 1.5rem; }
+.hero__description { max-width: 33rem; margin-top: var(--space-sm); font-size: var(--text-intro); line-height: 1.55; }
+.hero__copy .actions { margin-top: var(--space-sm); gap: .8rem 1.5rem; }
 .hero__copy .button { font-size: .85rem; }
 .hero__visual { position: relative; isolation: isolate; padding-top: 4rem; min-width: 0; }
 .hero__photo { position: relative; }
@@ -50,11 +47,11 @@
 /* Static rules above remain the fallback. Translate composes with the
    Polaroid's existing rotation and its hover/focus transition. */
 @media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="reduced"]) .hero__copy > :is(.eyebrow, h1, .hero__description, .hero__context, .actions) {
+  html:not([data-motion="reduced"]) .hero__copy > :is(.eyebrow, h1, .hero__description, .actions) {
     animation: hero-copy-enter var(--duration-hero-copy) var(--ease-standard) backwards;
   }
   html:not([data-motion="reduced"]) .hero__copy > h1 { animation-delay: var(--duration-hero-stagger); }
-  html:not([data-motion="reduced"]) .hero__copy > :is(.hero__description, .hero__context) { animation-delay: calc(var(--duration-hero-stagger) * 2); }
+  html:not([data-motion="reduced"]) .hero__copy > .hero__description { animation-delay: calc(var(--duration-hero-stagger) * 2); }
   html:not([data-motion="reduced"]) .hero__copy > .actions { animation-delay: calc(var(--duration-hero-stagger) * 3); }
   html:not([data-motion="reduced"]) .hero__photo > img { animation: hero-photo-enter var(--duration-hero-photo) var(--ease-standard) backwards; }
   html:not([data-motion="reduced"]) .hero__photo > figcaption { animation: hero-copy-enter var(--duration-hero-ribbon) var(--ease-standard) var(--duration-hero-stagger) backwards; }
@@ -79,6 +76,8 @@
   50% { translate: 0 var(--hero-polaroid-travel); }
 }
 @media (min-width: 48rem) {
+  /* Size follows the copy column; each phrase stays intact beside the collage. */
+  .hero__title-line { white-space: nowrap; }
   .hero { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); column-gap: 3rem; align-items: center; padding-top: 3rem; }
   .hero__foot { grid-column: 1 / -1; }
   .hero__foot p { display: block; }
@@ -95,11 +94,7 @@
 }
 @media (min-width: 62rem) and (max-height: 50rem) {
   .hero { min-height: auto; padding-top: 1.75rem; gap: 1.5rem 3rem; }
-  .hero h1 { font-size: var(--text-hero-title-compact); }
   .hero__copy .eyebrow { margin-bottom: 1rem; }
-  .hero__description { margin-top: 1.2rem; }
-  .hero__context { margin-top: .75rem; }
-  .hero__copy .actions { margin-top: 1.5rem; }
   .hero__photo > img { aspect-ratio: 1.85; }
   .hero__photo figcaption { padding-block: .8rem; }
   .hero__foot { padding-top: .8rem; }

@@ -5,16 +5,13 @@ description: >-
   Conoce el CEDHU en Sogamoso: preescolar, primaria y bachillerato con Pedagogía de la Felicidad,
   valores, inglés, ciencia y robótica.
 heroTitle: |-
-  Somos #1
-  en Sogamoso, pruebas
-  ICFES Saber 11
+  Somos #1 en Sogamoso
+  pruebas ICFES Saber 11
 heroDescription: |-
   Resultados que reflejan la excelencia académica y el compromiso formativo del CEDHU.
 heroEyebrow: EXCELENCIA ACADÉMICA
 heroImage: aulaCedhu
 hero:
-  context: >-
-    Una propuesta educativa integral que forma estudiantes con bases académicas sólidas, valores y visión de futuro.
   newsLabel: Ver noticia del logro
   newsSlug: excelencia-academica-saber-11-2025-2026
   educationLabel: Conoce nuestra propuesta educativa

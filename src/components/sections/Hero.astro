@@ -21,7 +21,6 @@ interface Props { page: PageData; }
         {i > 0 && ' '}
         <span class:list={['hero__title-line', {
           'hero__title-line--secondary': i === 1,
-          'hero__title-line--exam': i === 2,
         }]}>
           {line.split('#1').map((part, index) => <Fragment>
             {index > 0 && <span class="hero__rank">
@@ -45,7 +44,6 @@ interface Props { page: PageData; }
       </Fragment>)}
     </h1>
     <p class="hero__description">{page.heroDescription}</p>
-    <p class="hero__context">{content.context}</p>
     <div class="actions">
       <a class="button" href="/oferta-educativa/">{content.educationLabel} <Icon /></a>
       <div class="hero__news-action">

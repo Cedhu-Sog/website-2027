@@ -151,7 +151,6 @@ export const pageSections = {
     })),
   }).optional(),
   hero: z.object({
-    context: text,
     newsLabel: text,
     newsSlug: text.optional(),
     educationLabel: text,

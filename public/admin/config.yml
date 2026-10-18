@@ -1420,13 +1420,6 @@ collections:
             widget: object
             collapsed: true
             fields:
-              - name: context
-                label: Presentación de la propuesta
-                required: true
-                widget: text
-                pattern:
-                  - .*\S.*
-                  - Este campo no puede quedar vacío.
               - name: newsLabel
                 label: Texto visible · noticia del logro
                 required: true
