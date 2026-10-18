@@ -3,9 +3,29 @@
 .hero__copy .eyebrow { display: flex; align-items: center; gap: .6rem; font-size: .75rem; }
 .hero__point { display: inline-block; width: .55rem; height: .55rem; border-radius: 50%; background: var(--color-primary); flex-shrink: 0; }
 .hero h1 { font-size: var(--text-hero-title); font-weight: 550; line-height: var(--leading-hero-title); letter-spacing: -.065em; }
-.hero h1 > span { position: relative; display: inline-block; color: var(--color-primary); }
+.hero__copy { min-width: 0; }
+.hero h1 { padding-top: .2em; }
+.hero__title-line { display: block; }
+.hero__title-line--secondary { margin-top: .35em; font-size: .47em; line-height: 1.25; letter-spacing: -.035em; }
+.hero__title-line--exam { margin-top: .15em; font-size: .68em; line-height: 1.15; letter-spacing: -.045em; }
+.hero__rank { position: relative; display: inline-block; color: var(--color-primary); white-space: nowrap; }
+.hero__rank-number { display: inline-block; font-weight: 700; transform-origin: center; }
+.hero__rank-crown { position: absolute; width: .55em; right: -.035em; top: -.31em; rotate: 10deg; pointer-events: none; }
+.hero__rank-crown svg { display: block; width: 100%; }
+.hero__rank-underline { position: absolute; width: 112%; height: .2em; left: -6%; bottom: -.14em; }
+.hero__rank-rays { position: absolute; width: 180%; max-width: none; height: 130%; left: -40%; top: -15%; }
+.hero__rank :is(svg, path) { pointer-events: none; }
+.hero__rank svg { overflow: visible; stroke: var(--color-accent); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.hero__rank path { vector-effect: non-scaling-stroke; }
+.hero__rank-rays g { opacity: 0; }
+.hero__rank-rays-left { --rank-ray-travel: -5px; }
+.hero__rank-rays-right { --rank-ray-travel: 5px; }
+.hero__news-action { display: grid; justify-items: start; }
+.hero__news-action small { color: var(--color-text-muted); font-size: var(--text-small); }
+.hero__news-pending { padding: 0; border: 0; border-bottom: 1px solid currentColor; background: transparent; font-family: inherit; cursor: default; }
+.hero__news-pending:hover { color: var(--color-primary); }
 .hero__description { margin-top: var(--space-md); font-size: var(--text-intro); line-height: 1.55; }
-.hero__context { max-width: 29rem; margin-top: var(--space-sm); color: var(--color-text-muted); font-size: var(--text-intro); line-height: 1.6; }
+.hero__context { max-width: 29rem; margin-top: var(--space-sm); color: var(--color-text-muted); font-size: var(--text-body); line-height: 1.6; }
 .hero__copy .actions { margin-top: var(--space-lg); gap: .8rem 1.5rem; }
 .hero__copy .button { font-size: .85rem; }
 .hero__visual { position: relative; isolation: isolate; padding-top: 4rem; min-width: 0; }
@@ -83,4 +103,30 @@
   .hero__photo > img { aspect-ratio: 1.85; }
   .hero__photo figcaption { padding-block: .8rem; }
   .hero__foot { padding-top: .8rem; }
+}
+
+/* Only the numeral responds to hover; the heading keeps its layout and position. */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="reduced"]) .hero__rank-crown {
+    animation: hero-rank-float var(--duration-hero-rank-float) ease-in-out infinite;
+  }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="reduced"]) .hero__rank-number { transition: transform var(--duration-hero-rank-scale) var(--ease-standard); }
+  html:not([data-motion="reduced"]) .hero__rank:hover .hero__rank-number { transform: scale(1.035); }
+  html:not([data-motion="reduced"]) .hero__rank:hover .hero__rank-crown svg { animation: hero-rank-crown-hop var(--duration-hero-copy) ease-in-out; }
+  html:not([data-motion="reduced"]) .hero__rank:hover .hero__rank-rays g { animation: hero-rank-rays var(--duration-hero-photo) ease-out; }
+}
+@keyframes hero-rank-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+@keyframes hero-rank-crown-hop {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  40% { transform: translateY(-4px) rotate(-4deg); }
+}
+@keyframes hero-rank-rays {
+  0% { opacity: 0; transform: translateX(0); }
+  18%, 45% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(var(--rank-ray-travel)); }
 }

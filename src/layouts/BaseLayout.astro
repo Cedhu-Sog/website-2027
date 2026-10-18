@@ -3,19 +3,19 @@ import Header from '../components/navigation/Header.astro';
 import BottomNav from '../components/navigation/BottomNav.astro';
 import FloatingLogo from '../components/navigation/FloatingLogo.astro';
 import Footer from '../components/common/Footer.astro';
-import { site } from '../data/site';
+import { site, socialAssetOrigin } from '../data/site';
 import { getImage } from 'astro:assets';
 import { media } from '../data/media';
 import '../styles/tokens.css';
 import '../styles/reset.css';
 import '../styles/global.css';
 import '../styles/components/ui.css';
-interface Props { title: string; description: string; seo?: { title?: string; description?: string; image?: string }; noindex?: boolean; type?: 'website' | 'article'; }
-const { title, description: pageDescription, seo, noindex = false, type = 'website' } = Astro.props;
+interface Props { title: string; description: string; seo?: { title?: string; description?: string; image?: string }; noindex?: boolean; type?: 'website' | 'article'; titleSuffix?: boolean; socialTitle?: string; socialDescription?: string; }
+const { title, description: pageDescription, seo, noindex = false, type = 'website', titleSuffix = true, socialTitle, socialDescription } = Astro.props;
 const description = seo?.description ?? pageDescription;
 const shareImage = seo?.image ? await getImage({ src: media[seo.image].src, width: Math.min(1200, media[seo.image].src.width), format: 'webp' }) : undefined;
 const canonical = new URL(Astro.url.pathname, site.url);
-const fullTitle = `${seo?.title ?? title} | CEDHU · Sogamoso`;
+const fullTitle = `${seo?.title ?? title}${titleSuffix ? ' | CEDHU · Sogamoso' : ''}`;
 const schema = { '@context': 'https://schema.org', '@type': 'School', name: site.fullName + ' — ' + site.name, url: site.url, telephone: site.phones[0].href.replace('tel:+57608', '+57-608-'), email: site.email, address: { '@type': 'PostalAddress', streetAddress: site.address.replace('–', '-'), addressLocality: site.city.split(', ')[0], addressRegion: site.city.split(', ')[1], addressCountry: 'CO' }, sameAs: site.socials.map(link => link.href) };
 ---
 <!doctype html>
@@ -32,13 +32,13 @@ const schema = { '@context': 'https://schema.org', '@type': 'School', name: site
     <meta property="og:type" content={type} />
     <meta property="og:locale" content="es_CO" />
     <meta property="og:site_name" content="CEDHU" />
-    <meta property="og:title" content={fullTitle} />
-    <meta property="og:description" content={description} />
+    <meta property="og:title" content={socialTitle ?? fullTitle} />
+    <meta property="og:description" content={socialDescription ?? description} />
     <meta property="og:url" content={canonical} />
-    {shareImage && <><meta property="og:image" content={new URL(shareImage.src, site.url)} /><meta property="og:image:alt" content={media[seo!.image!].alt} /><meta name="twitter:image" content={new URL(shareImage.src, site.url)} /><meta name="twitter:image:alt" content={media[seo!.image!].alt} /></>}
+    {shareImage && <><meta property="og:image" content={new URL(shareImage.src, socialAssetOrigin)} /><meta property="og:image:alt" content={media[seo!.image!].alt} /><meta name="twitter:image" content={new URL(shareImage.src, socialAssetOrigin)} /><meta name="twitter:image:alt" content={media[seo!.image!].alt} /></>}
     <meta name="twitter:card" content={shareImage ? 'summary_large_image' : 'summary'} />
-    <meta name="twitter:title" content={fullTitle} />
-    <meta name="twitter:description" content={description} />
+    <meta name="twitter:title" content={socialTitle ?? fullTitle} />
+    <meta name="twitter:description" content={socialDescription ?? description} />
     <script is:inline type="application/ld+json" set:html={JSON.stringify(schema).replace(/</g, '\u003c')} />
     <slot name="head" />
   </head>

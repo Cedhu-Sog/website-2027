@@ -80,6 +80,8 @@
   --shadow-menu: 0 16px 45px #103e2e18;
   --duration-fast: 180ms;
   --duration-normal: 400ms;
+  --duration-hero-rank-float: 3.6s;
+  --duration-hero-rank-scale: 250ms;
   --duration-hero-copy: 550ms;
   --duration-hero-photo: 700ms;
   --duration-hero-ribbon: 600ms;

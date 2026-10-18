@@ -1,6 +1,11 @@
 import { getPageSection } from '../lib/content';
 
 export const site = await getPageSection('contacto', 'contact');
+// Social images must resolve on the deployed project while the canonical
+// institutional domain may still serve the previous website.
+export const socialAssetOrigin = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : site.url;
 export const navigation = [
   { label: 'CEDHU', href: '/nosotros/', children: [
     { label: 'Nosotros', href: '/nosotros/' },

@@ -165,6 +165,66 @@ collections:
         label: Pie del comunicado o fotografía
         required: false
         widget: string
+      - name: introduction
+        label: Entradilla editorial (activa la presentación con foto completa)
+        required: false
+        widget: text
+      - name: imageRecognition
+        label: Reconocimiento individual junto a la fotografía
+        required: false
+        widget: text
+      - name: resultHighlight
+        label: Resultado institucional destacado
+        required: false
+        widget: object
+        collapsed: true
+        fields:
+          - name: rank
+            label: Puesto principal
+            widget: string
+            required: true
+          - name: location
+            label: Ámbito local
+            widget: string
+            required: true
+          - name: edition
+            label: Prueba y año
+            widget: string
+            required: true
+          - name: regional
+            label: Puesto departamental
+            widget: string
+            required: true
+      - name: visitCta
+        label: Invitación a conocer el CEDHU
+        required: false
+        widget: object
+        collapsed: true
+        fields:
+          - name: title
+            label: Título
+            widget: string
+            required: true
+          - name: description
+            label: Descripción
+            widget: string
+            required: true
+          - name: invitation
+            label: Invitación destacada
+            widget: string
+            required: true
+          - name: details
+            label: Mensaje de visita sin cita
+            widget: string
+            required: true
+          - name: visitLabel
+            label: Texto del botón de ubicación
+            widget: string
+            required: true
+          - name: whatsappLabel
+            label: Texto del botón de WhatsApp
+            widget: string
+            required: true
       - &ref_13
         name: order
         label: Orden de presentación
@@ -1367,14 +1427,19 @@ collections:
                 pattern:
                   - .*\S.*
                   - Este campo no puede quedar vacío.
-              - &ref_40
-                name: admissionsLabel
-                label: Texto visible · admisiones
+              - name: newsLabel
+                label: Texto visible · noticia del logro
                 required: true
-                widget: text
-                pattern:
-                  - .*\S.*
-                  - Este campo no puede quedar vacío.
+                widget: string
+              - name: newsSlug
+                label: Noticia del logro
+                hint: Seleccionar una noticia publicada del logro. Vacío mantiene el botón desactivado.
+                required: false
+                widget: relation
+                collection: noticias
+                search_fields: [title]
+                value_field: '{{slug}}'
+                display_fields: [title]
               - name: educationLabel
                 label: Texto visible · educación
                 required: true
@@ -2228,7 +2293,13 @@ collections:
                 pattern:
                   - .*\S.*
                   - Este campo no puede quedar vacío.
-              - *ref_40
+              - name: admissionsLabel
+                label: Texto visible · admisiones
+                required: true
+                widget: text
+                pattern:
+                  - .*\S.*
+                  - Este campo no puede quedar vacío.
               - name: relatedEyebrow
                 label: Antetítulo · contenido relacionado
                 required: true

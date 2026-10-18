@@ -4,13 +4,17 @@ import Breadcrumb from '../../components/common/Breadcrumb.astro';
 import NewsArticle from '../../components/sections/NewsArticle.astro';
 import { getEntry, render } from 'astro:content';
 import { getNews, type NewsItem } from '../../lib/content';
-import { site } from '../../data/site';
+import { site, socialAssetOrigin } from '../../data/site';
+import { getImage } from 'astro:assets';
+import { media } from '../../data/media';
 export async function getStaticPaths() { return (await getNews()).map(item => ({params:{slug:item.slug},props:{item}})); }
 interface Props { item: NewsItem; }
 const { item } = Astro.props;
 const entry = await getEntry('noticias', item.slug);
 if (!entry) throw new Error(`Falta la noticia ${item.slug}.`);
 const { Content } = await render(entry);
-const schema = { '@context':'https://schema.org', '@type':'Article', headline:item.title, description:item.description, ...(item.date && {datePublished:item.date}), author:{'@type':'Organization',name:'CEDHU'}, publisher:{'@type':'Organization',name:'CEDHU'}, mainEntityOfPage:new URL(`/noticias/${item.slug}/`,site.url).href };
+const seo = item.introduction ? { ...item.seo, image: item.seo?.image ?? item.image } : item.seo;
+const image = item.introduction ? await getImage({ src: media[item.image].src, width: 1200, format: 'webp' }) : undefined;
+const schema = { '@context':'https://schema.org', '@type':'Article', headline:item.title, description:item.description, ...(image && { image: new URL(image.src, socialAssetOrigin).href }), ...(item.date && {datePublished:item.date}), author:{'@type':'Organization',name:'CEDHU'}, publisher:{'@type':'Organization',name:'CEDHU'}, mainEntityOfPage:new URL(`/noticias/${item.slug}/`,site.url).href };
 ---
-<BaseLayout title={item.title} description={item.description} seo={item.seo} type="article"><Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(schema).replace(/</g,'\u003c')} /></Fragment><Breadcrumb label={item.category} parent={{label:'Actualidad',href:'/noticias/'}} /><NewsArticle item={item}><Content /></NewsArticle></BaseLayout>
+<BaseLayout title={item.title} description={item.description} seo={seo} titleSuffix={!item.introduction || !item.seo?.title} socialTitle={item.introduction ? item.title : undefined} socialDescription={item.introduction ? item.description : undefined} type="article"><Fragment slot="head"><script is:inline type="application/ld+json" set:html={JSON.stringify(schema).replace(/</g,'\u003c')} /></Fragment><Breadcrumb label={item.category} parent={{label:'Actualidad',href:'/noticias/'}} /><NewsArticle item={item}><Content /></NewsArticle></BaseLayout>

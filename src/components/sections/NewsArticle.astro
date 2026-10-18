@@ -1,12 +1,55 @@
 ---
 import type { NewsItem } from '../../lib/content';
 import Photo from '../common/Photo.astro';
+import { site } from '../../data/site';
+import Icon from '../common/Icon.astro';
 import { media } from '../../data/media';
 import '../../styles/components/news.css';
 interface Props { item: NewsItem; }
 const { item } = Astro.props;
 ---
-<article class="container">
-  <header class="article-header"><p class="eyebrow">{item.category} · {item.date ? <time datetime={item.date}>{item.dateLabel}</time> : item.dateLabel}</p><h1>{item.title}</h1><p>{item.description}</p></header>
-  <div class="article-layout"><div class="article-layout__copy">{item.archived && <aside class="note">{item.archiveNotice}</aside>}<slot />{item.poster && <a class="text-link" href={media[item.poster].src.src} target="_blank" rel="noopener noreferrer">Consultar comunicado original<span class="sr-only"> (abre en otra pestaña)</span></a>}<div class="article-related"><a class="text-link" href="/noticias/">Volver a la actualidad</a></div></div><figure class="article-layout__poster"><Photo name={item.poster ?? item.image} priority sizes="(min-width: 768px) 40vw, 90vw"/>{item.imageCaption && <figcaption>{item.imageCaption}</figcaption>}</figure></div>
+<article class:list={['container', { 'article--editorial': Boolean(item.introduction) }]}>
+  <header class="article-header">
+    <p class="eyebrow">{item.category}{!item.introduction && <Fragment> · {item.date ? <time datetime={item.date}>{item.dateLabel}</time> : item.dateLabel}</Fragment>}</p>
+    <h1>{item.title}</h1>
+    {item.introduction && <p class="article-header__meta">{item.date && <time datetime={item.date}>{item.dateLabel}</time>} · {item.category}</p>}
+    <p>{item.introduction ?? item.description}</p>
+  </header>
+  {item.introduction && <figure class="article-cover">
+    <Photo name={item.image} priority sizes="(min-width: 1200px) 960px, 90vw" />
+    <figcaption>
+      {item.imageCaption && <p>{item.imageCaption}</p>}
+      {item.imageRecognition && <p>{item.imageRecognition}</p>}
+    </figcaption>
+  </figure>}
+  <div class="article-layout">
+    <div class="article-layout__copy">
+      {item.archived && <aside class="note">{item.archiveNotice}</aside>}
+      {item.resultHighlight && <aside class="article-result" aria-label="Resultado institucional de 2025">
+        <p><strong class="article-result__rank">{item.resultHighlight.rank}
+          <svg class="article-result__crown" viewBox="0 0 64 40" fill="none" aria-hidden="true" focusable="false"><path d="M9 29 5 10 21 20 31 4 40 20 58 10 53 30Q32 26 9 29ZM12 35Q32 32 51 35" /></svg>
+          <svg class="article-result__underline" viewBox="0 0 120 20" fill="none" aria-hidden="true" focusable="false"><path d="M5 11Q56 2 115 10M14 17Q66 10 105 15" /></svg>
+        </strong><span>{item.resultHighlight.location}</span></p>
+        <p>{item.resultHighlight.edition}</p>
+        <p><strong>{item.resultHighlight.regional}</strong></p>
+      </aside>}
+      <slot />
+      {item.poster && <a class="text-link" href={media[item.poster].src.src} target="_blank" rel="noopener noreferrer">Consultar comunicado original<span class="sr-only"> (abre en otra pestaña)</span></a>}
+      {item.visitCta && <section class="article-visit" aria-labelledby="article-visit-title">
+        <h2 id="article-visit-title">{item.visitCta.title}</h2>
+        <p class="article-visit__intro">{item.visitCta.description}</p>
+        <p class="article-visit__invitation">{item.visitCta.invitation}</p>
+        <p>{item.visitCta.details}</p>
+        <div class="actions">
+          <a class="button button--light" href={site.maps}>{item.visitCta.visitLabel}<Icon /></a>
+          <a class="text-link" href={site.whatsapp}>{item.visitCta.whatsappLabel}<Icon /></a>
+        </div>
+      </section>}
+      <div class="article-related"><a class="text-link" href="/noticias/">Volver a la actualidad</a></div>
+    </div>
+    {!item.introduction && <figure class="article-layout__poster">
+      <Photo name={item.poster ?? item.image} priority sizes="(min-width: 768px) 40vw, 90vw" />
+      {item.imageCaption && <figcaption>{item.imageCaption}</figcaption>}
+    </figure>}
+  </div>
 </article>

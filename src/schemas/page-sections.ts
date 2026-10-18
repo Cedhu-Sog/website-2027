@@ -152,7 +152,8 @@ export const pageSections = {
   }).optional(),
   hero: z.object({
     context: text,
-    admissionsLabel: text,
+    newsLabel: text,
+    newsSlug: text.optional(),
     educationLabel: text,
     collageLabel: text,
     photoCaption: text,

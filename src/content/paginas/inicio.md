@@ -5,20 +5,19 @@ description: >-
   Conoce el CEDHU en Sogamoso: preescolar, primaria y bachillerato con Pedagogía de la Felicidad,
   valores, inglés, ciencia y robótica.
 heroTitle: |-
-  Aprender.
-  Crear.
-  Ser felices.
+  Somos #1
+  en Sogamoso, pruebas
+  ICFES Saber 11
 heroDescription: |-
-  El conocimiento nos abre caminos.
-  Los valores nos enseñan a recorrerlos.
-heroEyebrow: Tecnología + academia + humanidad
+  Resultados que reflejan la excelencia académica y el compromiso formativo del CEDHU.
+heroEyebrow: EXCELENCIA ACADÉMICA
 heroImage: aulaCedhu
 hero:
   context: >-
-    En el CEDHU, la Pedagogía de la Felicidad conecta la excelencia académica con el desarrollo del
-    SER.
-  admissionsLabel: Quiero conocer el CEDHU
-  educationLabel: Nuestra educación
+    Una propuesta educativa integral que forma estudiantes con bases académicas sólidas, valores y visión de futuro.
+  newsLabel: Ver noticia del logro
+  newsSlug: excelencia-academica-saber-11-2025-2026
+  educationLabel: Conoce nuestra propuesta educativa
   collageLabel: EL APRENDIZAJE SE VIVE
   photoCaption: Ideas propias.
   photoCaptionEmphasis: Posibilidades compartidas.
