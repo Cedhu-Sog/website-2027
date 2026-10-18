@@ -54,6 +54,10 @@
   .hero-decor__dots { display: none; }
   .hero-decor__bands { height: 94%; top: -1%; }
 }
+@media (min-width: 1025px) and (max-width: 1440px) {
+  .hero-decor__bulb { left: 48%; top: var(--space-md); }
+  .hero-decor--ribbon { flex-basis: 2rem; width: 2rem; margin-inline-start: var(--space-xs); }
+}
 @media (forced-colors: active), print { .hero-decor { display: none; } }
 /* Reveal the existing filled underline without changing its shape or bounds. */
 @media (prefers-reduced-motion: no-preference) {
