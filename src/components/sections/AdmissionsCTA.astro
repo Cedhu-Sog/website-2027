@@ -15,10 +15,10 @@ interface Props { content?: PageSection<'admissionsCta'>; }
     <div>
       <p>{content.description}</p>
       <div class="admissions-cta__actions">
-        <a class="button" href={site.whatsapp} target="_blank" rel="noopener noreferrer">
-          <Icon name="calendar" />{content.linkLabel}<span class="sr-only"> por WhatsApp (abre en otra pestaña)</span>
+        <a class="button" href={content.linkHref}>
+          <Icon name="arrow" /><span class="admissions-cta__label-full">{content.linkLabel}</span><span class="admissions-cta__label-short">Visítanos</span>
         </a>
-        <a class="text-link" href={content.linkHref}>Conocer el proceso de admisión <Icon /></a>
+        <a class="text-link" href={site.whatsapp} target="_blank" rel="noopener noreferrer">Solicita información<span class="sr-only"> por WhatsApp (abre en otra pestaña)</span><Icon /></a>
       </div>
     </div>
   </div>

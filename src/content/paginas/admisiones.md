@@ -14,9 +14,9 @@ admissionsCta:
   eyebrow: El siguiente paso, en familia
   titleStart: Conocernos puede ser
   titleEnd: el comienzo de algo grande.
-  description: Escríbenos al WhatsApp institucional para coordinar una visita en familia con Admisiones y confirmar la disponibilidad de fecha y hora.
-  linkLabel: Agenda una visita
-  linkHref: /admisiones/
+  description: ¡Queremos conocerte! Visita el CEDHU, recorre nuestras instalaciones y descubre todo lo que tenemos para ofrecerte. No necesitas cita previa.
+  linkLabel: Ven a conocer el CEDHU
+  linkHref: /contacto/
 admissionsProcess:
   eyebrow: Antes de comenzar
   titleStart: Elegir en familia.
@@ -28,7 +28,7 @@ admissionsProcess:
   noticeDescription: >-
     El proceso público disponible corresponde a 2026. Los cupos, las fechas, los costos y las
     condiciones de admisión para 2027 deben confirmarse directamente con el CEDHU.
-  whatsappLabel: Consultar por WhatsApp
+  whatsappLabel: Solicita información
   phoneLabel: Llamar al CEDHU
   processEyebrow: Una guía para orientarte
   processTitle: Así es el proceso publicado.
@@ -53,10 +53,10 @@ admissionsProcess:
       label: Consultar documentos
     - title: Visitar el CEDHU en familia
       text: >-
-        La visita publicada contempla la participación de padres y aspirante. Comunícate con el
-        colegio para confirmar cuándo realizarla.
+        Acércate en familia a nuestras instalaciones: te recibiremos y te acompañaremos en un
+        recorrido por el colegio. No necesitas agendar una cita previa.
       href: /contacto/
-      label: Consultar una visita
+      label: Visítanos
     - title: Realizar la preinscripción
       text: >-
         El canal oficial de preinscripción es Q10. Confirma primero con el CEDHU la disponibilidad
@@ -89,9 +89,9 @@ faq:
         condiciones de ingreso para el periodo que te interesa.
     - question: ¿Cómo comienza el proceso de admisión?
       answer: >-
-        Conocer el colegio en familia es el primer acercamiento. La información publicada contempla
-        una visita con padres y aspirante, preinscripción en Q10 y orientación en tesorería.
-        Confirma previamente el calendario y la disponibilidad de cupos.
+        Puedes comenzar por conocer el colegio en familia, sin cita previa. Acércate a nuestras
+        instalaciones para recibir atención y recorrer el CEDHU. Allí también podremos orientarte
+        sobre los siguientes pasos del proceso de admisión.
     - question: ¿Cómo se realizan los pagos de matrícula?
       answer: >-
         El sitio institucional informa que se aceptan transferencias electrónicas, consignaciones en

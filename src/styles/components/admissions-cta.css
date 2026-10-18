@@ -7,5 +7,8 @@
 .admissions-cta__actions .button { width: 100%; font-size: var(--text-body); }
 .admissions-cta__actions svg { flex-shrink: 0; }
 .admissions-cta__actions .text-link { color: var(--color-primary-dark); }
+.admissions-cta__label-full { display: none; }
+.admissions-cta__label-short { white-space: nowrap; }
+@media (min-width: 48rem) { .admissions-cta__label-full { display: inline; white-space: nowrap; } .admissions-cta__label-short { display: none; } }
 @media (min-width: 48rem) { .admissions-cta__actions .button { width: fit-content; } }
 @media (min-width: 48rem) { .admissions-cta__inner { grid-template-columns: 1.5fr 1fr; gap: var(--space-xl); } }

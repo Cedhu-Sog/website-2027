@@ -7,7 +7,7 @@ heroTitle: Hablemos.
 heroDescription: Admisiones, atención a familias y preguntas del día a día. Estamos para orientarte.
 heroEyebrow: Sogamoso, Boyacá · Estamos cerca
 heroImage: instalacionesCedhu
-primaryActionLabel: Escribir por WhatsApp
+primaryActionLabel: Solicita información
 secondaryActionLabel: Llamar al CEDHU
 contactDetails:
   emailEyebrow: Escríbenos
@@ -27,8 +27,8 @@ contactDetails:
   appointmentNotice: Atención con cita previa.
   appointmentInstructions: Solicita agendamiento por teléfono.
   hoursNotice: >-
-    Confirma previamente la disponibilidad del área que necesitas, especialmente para una visita de
-    admisiones.
+    Para conocer el colegio, acércate durante nuestro horario de atención general. Te recibiremos y
+    te acompañaremos en un recorrido por las instalaciones, sin cita previa.
   hoursLinkLabel: Horario de atención a padres
   mapEyebrow: En el corazón de Sogamoso
   mapTitle: Aquí nos encuentras.
@@ -47,7 +47,7 @@ contact:
     - label: (608) 770 0316
       href: tel:+576087700316
   whatsappLabel: WhatsApp · 316 877 9094
-  whatsapp: https://api.whatsapp.com/send/?phone=573168779094&text&type=phone_number&app_absent=0
+  whatsapp: https://api.whatsapp.com/send/?phone=573168779094&text=Hola%2C%20estoy%20interesado%28a%29%20en%20conocer%20el%20CEDHU%20y%20recibir%20informaci%C3%B3n%20sobre%20su%20propuesta%20educativa&type=phone_number&app_absent=0
   q10: https://site2.q10.com/login?ReturnUrl=%2F&aplentId=04dd32ac-1f6a-46d0-b388-df88d12b739d
   unoi: https://edi-unoi-co.stn-neds.com/ts/view/access
   preinscripcion: https://cedhu.q10.com/Preinscripcion

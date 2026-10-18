@@ -4,8 +4,8 @@ description: El CEDHU celebra su primer puesto en Sogamoso en Saber 11 de 2025 y
 date: "2026-10-18"
 category: Excelencia académica
 image: educandos-saber-11-2026
-imageCaption: Diego Simón Martínez Fonseca · Nicolás Abril Barrera · Carlos Julián Guerrero Mora
-imageRecognition: "Diego Simón Martínez Fonseca: Mayor puntaje individual de Sogamoso · Saber 11 de 2026"
+imageCaption: "De izquierda a derecha: Nicolás Abril Barrera, Diego Simón Martínez Fonseca y Carlos Julián Guerrero Mora."
+imageRecognition: "Diego Simón Martínez Fonseca: 455 puntos · Saber 11 de 2026"
 introduction: El Centro de Desarrollo Humano – CEDHU celebra los resultados académicos alcanzados por sus educandos en las pruebas ICFES Saber 11, reafirmando su compromiso con una educación integral, exigente y orientada al desarrollo de las capacidades de cada estudiante.
 resultHighlight:
   rank: "#1"
@@ -42,12 +42,12 @@ Los resultados reflejan el esfuerzo de los educandos, el acompañamiento de sus 
 
 Los resultados de las pruebas ICFES Saber 11 de 2026 nos brindan nuevos motivos de satisfacción.
 
-**Diego Simón Martínez Fonseca** alcanzó el **mayor puntaje individual de Sogamoso**, un logro que reconocemos con especial orgullo.
+**Diego Simón Martínez Fonseca** obtuvo **455 puntos, el mayor puntaje de los tres estudiantes reconocidos**, un logro que celebramos con especial orgullo.
 
 De igual manera, felicitamos a nuestros educandos:
 
-- **Nicolás Abril Barrera**
-- **Carlos Julián Guerrero Mora**
+- **Nicolás Abril Barrera:** 412 puntos.
+- **Carlos Julián Guerrero Mora:** 412 puntos.
 
 Su destacado desempeño académico es resultado de la dedicación, la disciplina y la perseverancia a lo largo de su proceso formativo.
 

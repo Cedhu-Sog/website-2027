@@ -16,10 +16,10 @@ schoolSpaces:
   tourEyebrow: Recorre el colegio
   tourTitle: Un lugar que se vive mejor de cerca.
   tourDescription: >-
-    Conoce los espacios a través del recorrido audiovisual o conversa con
-    nosotros para organizar tu visita.
+    Conoce los espacios a través del recorrido audiovisual o ven a recorrer
+    nuestras instalaciones en familia, sin cita previa.
   tourLabel: Ver recorrido institucional
-  visitLabel: Quiero visitar el CEDHU
+  visitLabel: Visítanos
   spaces:
     - image: laboratorio
       title: Ciencia para experimentar
