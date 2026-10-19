@@ -5,7 +5,9 @@ import { media } from '../../data/media';
 <section class="projects-card" aria-labelledby="projects-title" data-projects-access>
   <header class="projects-brand">
     <img class="projects-brand__logo" src={media.logo.src.src} alt={media.logo.alt} width={media.logo.src.width} height={media.logo.src.height} loading="eager" decoding="async" />
-    <span class="projects-brand__label">Acceso institucional</span>
+    <nav class="projects-navigation" aria-label="Navegación del acceso institucional">
+      <a class="button button--outline projects-back" href="/"><Icon name="arrow" /> Volver al inicio</a>
+    </nav>
   </header>
   <h1 id="projects-title" tabindex="-1">Proyectos de investigación</h1>
   <div data-projects-login>
@@ -22,9 +24,6 @@ import { media } from '../../data/media';
   </div>
   <p class="projects-status" id="projects-status" role="status" aria-live="polite" aria-atomic="true" data-projects-status></p>
   <div data-projects-private></div>
-  <nav class="projects-navigation" aria-label="Navegación del acceso institucional">
-    <a class="button button--outline projects-back" href="/"><Icon name="arrow" /> Volver al inicio</a>
-  </nav>
   <p class="projects-footnote">Centro de Desarrollo Humano · CEDHU</p>
 </section>
 <!-- A dynamic import keeps the bundled entry external under Astro's defaults. -->
