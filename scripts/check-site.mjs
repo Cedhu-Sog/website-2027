@@ -72,11 +72,38 @@ for (const [route, page] of pages) {
   }
 }
 const sitemap = await readFile(path.join(root, 'sitemap.xml'), 'utf8');
-for (const route of pages.keys()) {
-  if (route === '/proyectos/') {
-    if (sitemap.includes('/proyectos/')) errors.push('Private access must not appear in sitemap');
-    continue;
+const privatePath = /^\/(?:admin|proyectos|api\/(?:cms|proyectos))(?:\/|$)/;
+for (const [, location] of sitemap.matchAll(/<loc>(.*?)<\/loc>/g)) {
+  if (privatePath.test(new URL(location).pathname)) errors.push(`Private or administrative URL in sitemap: ${location}`);
+}
+for (const file of files.filter(file => file.endsWith('.html'))) {
+  const route = '/' + path.relative(root, file).replaceAll('\\', '/');
+  if (privatePath.test(route)) {
+    const html = await readFile(file, 'utf8');
+    const head = html.match(/<head\b[^>]*>([\s\S]*?)<\/head>/i)?.[1] ?? '';
+    if (!head.includes('name="robots" content="noindex, nofollow"')) errors.push(`${route}: missing initial noindex, nofollow metadata`);
   }
+}
+const robots = await readFile(path.join(root, 'robots.txt'), 'utf8');
+if (/^\s*Disallow\s*:\s*\S/im.test(robots)) errors.push('robots.txt must allow crawlers to read noindex directives and public pages');
+const deployment = JSON.parse(await readFile('vercel.json', 'utf8'));
+// Vercel's :path* wildcard covers zero or more segments: bare roots, slashes and descendants.
+// Validate deployment configuration here; real HTTP responses require a Vercel deployment.
+for (const prefix of ['/admin', '/proyectos', '/api/cms', '/api/proyectos']) {
+  const rule = deployment.headers.find(rule => rule.source === `${prefix}/:path*`);
+  if (!rule?.headers.some(header => header.key.toLowerCase() === 'x-robots-tag' && header.value === 'noindex, nofollow')) {
+    errors.push(`${prefix}: missing recursive Vercel noindex, nofollow header`);
+  }
+}
+for (const rule of deployment.headers) {
+  if (rule.headers.some(header => header.key.toLowerCase() === 'x-robots-tag' && /noindex/i.test(header.value)) &&
+      !['/admin/:path*', '/proyectos/:path*', '/api/cms/:path*', '/api/proyectos/:path*'].includes(rule.source)) {
+    errors.push(`Unexpected noindex rule affecting public routes: ${rule.source}`);
+  }
+}
+for (const route of pages.keys()) {
+  if (privatePath.test(route)) continue;
+  if (route !== '/404.html' && /<meta\b[^>]*name="robots"[^>]*content="[^"]*noindex/i.test(pages.get(route).html)) errors.push(`${route}: public page must remain indexable`);
   if (route !== '/404.html' && !sitemap.includes(`<loc>https://cedhu.edu.co${route}</loc>`)) errors.push(`Missing sitemap entry: ${route}`);
 }
 const sourceFiles = await walk(path.resolve('src'));

@@ -2,7 +2,7 @@
 .projects-access { display: grid; place-items: center; min-height: calc(100svh - var(--space-xs)); padding: var(--space-lg) var(--space-sm); }
 .projects-card { width: min(100%, 34rem); padding: clamp(var(--space-md), 5vw, calc(var(--space-md) * 2)); border: 1px solid var(--color-line); border-radius: var(--radius-mobile-navigation); background: var(--color-surface); box-shadow: var(--shadow-menu); }
 .projects-brand { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xs); margin-bottom: var(--space-lg); color: var(--color-primary-dark); font-weight: 750; }
-.projects-brand__mark { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: var(--radius-sm); background: var(--color-accent); }
+.projects-brand__logo { width: min(100%, var(--header-logo-width)); height: auto; }
 .projects-brand__label { margin-left: auto; font-size: var(--text-small); font-weight: 500; color: var(--color-text-muted); }
 .projects-card h1 { font-size: var(--text-access-title); line-height: 1.15; color: var(--color-primary-dark); letter-spacing: -.035em; }
 .projects-description { margin-top: var(--space-sm); color: var(--color-text-muted); font-size: var(--text-detail); }
@@ -19,6 +19,10 @@
 .projects-status { margin-top: var(--space-sm); font-size: var(--text-detail); }
 .projects-status:empty { display: none; }
 .projects-status[data-error="true"] { color: var(--color-red); }
+.projects-navigation { margin-top: var(--space-md); }
+.projects-back { gap: var(--space-xs); max-width: 100%; border-radius: var(--radius-sm); font-size: var(--text-small); }
+.projects-back:hover { transform: none; }
+.projects-back svg { flex-shrink: 0; transform: rotate(180deg); }
 .projects-footnote { margin-top: var(--space-lg); padding-top: var(--space-md); border-top: 1px solid var(--color-line); color: var(--color-text-muted); font-size: var(--text-small); text-align: center; }
 .projects-private { display: grid; gap: var(--space-md); }
 .projects-private__status { display: flex; align-items: center; gap: var(--space-xs); width: fit-content; padding: var(--space-xs) var(--space-sm); border-radius: var(--radius-pill); background: var(--color-tint); color: var(--color-primary-dark); font-size: var(--text-small); }
