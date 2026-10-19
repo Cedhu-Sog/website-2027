@@ -4,7 +4,7 @@ backend:
   name: github
   repo: Cedhu-Sog/website-2027
   branch: master
-  base_url: https://website-2027-bay.vercel.app
+  base_url: https://website-2027-seven.vercel.app
   auth_endpoint: api/cms/auth
   auth_scope: public_repo
   preview_context: Vercel
@@ -16,8 +16,8 @@ backend:
     deleteMedia: "medios: retirar «{{path}}»"
 locale: es
 publish_mode: editorial_workflow
-site_url: https://website-2027-bay.vercel.app
-display_url: https://website-2027-bay.vercel.app
+site_url: https://website-2027-seven.vercel.app
+display_url: https://website-2027-seven.vercel.app
 logo_url: /favicon.ico
 media_folder: src/assets/uploads
 public_folder: /src/assets/uploads

@@ -2,6 +2,8 @@
 
 15 de octubre de 2026 · Rama local `codex/decap-cms` · Sin commit, push ni cambios de configuración remota.
 
+Actualización de dominio del 19 de octubre de 2026: configuración Decap, ejemplo de entorno y documentación preparados exclusivamente para `https://website-2027-seven.vercel.app`. Las pruebas y verificaciones remotas descritas en el informe original son antecedentes del 15 de octubre y no acreditan el funcionamiento OAuth en este dominio. Siguen pendientes la configuración externa, el despliegue y el login real.
+
 ## A. Implementación
 
 Se integró Decap 3.17.1 sobre Astro 7.2.3, reutilizando rutas, layouts y Content Collections. El sitio sigue generándose estáticamente. Solo la autenticación utiliza funciones Node de Vercel. No se instalaron dependencias ni se modificó el lockfile.
@@ -99,13 +101,13 @@ Persisten advertencias de build por la colección de eventos vacía y por el tam
 
 El procedimiento detallado está en [la guía de administración](DECAPCMS_ADMINISTRACION.md), apartados «Activación en GitHub» y «Activación en Vercel».
 
-1. Crear la OAuth App desde [GitHub Developer Settings](https://github.com/settings/developers). Homepage: `https://website-2027-bay.vercel.app/admin/`. Callback exacto: **`https://website-2027-bay.vercel.app/api/cms/callback`**.
-2. Configurar en Vercel Production: `CMS_ORIGIN=https://website-2027-bay.vercel.app`, Client ID y Client Secret reales, `CMS_OAUTH_COOKIE_SECRET` aleatorio de 64 caracteres hexadecimales. Opcional: `CMS_GITHUB_ALLOWED_USERS`. No usar variables `PUBLIC_`.
+1. Actualizar la OAuth App existente desde [GitHub Developer Settings](https://github.com/settings/developers); crear una solo si todavía no existe. Homepage: `https://website-2027-seven.vercel.app/admin/`. Callback exacto: **`https://website-2027-seven.vercel.app/api/cms/callback`**.
+2. Configurar en Vercel Production: `CMS_ORIGIN=https://website-2027-seven.vercel.app`, Client ID y Client Secret reales, `CMS_OAUTH_COOKIE_SECRET` aleatorio de 64 caracteres hexadecimales. Opcional: `CMS_GITHUB_ALLOWED_USERS`. No usar variables `PUBLIC_`.
 3. Dar Write a las cuentas editoriales reales, sin conceder Admin. Autorizar la app en la organización si corresponde.
 4. **Proteger `master`: actualmente GitHub devuelve `protected: false`.** Exigir PR, aprobación de otra persona, checks y ausencia de bypass editorial. Exigir «Validación de contenido» cuando la acción ya haya ejecutado su primer run.
 5. Verificar en Vercel repositorio, producción desde `master`, Node 22.x, build `npm run build` y salida `dist`. Revisar y desplegar estos cambios únicamente mediante el procedimiento autorizado.
 6. Completar login, lectura, edición, creación, carga de foto desde una ficha, borrador, revisión, publicación y comprobación del nuevo commit/despliegue. Probar que el borrador no cambia producción y que usuarios sin Write quedan rechazados.
-7. Verificar y vincular el dominio institucional antes de ofrecer `https://cedhu.edu.co/admin/`. Cambiar conjuntamente origen, configuración Decap y callback según la guía. No se cambió DNS ni se asumió esa vinculación.
+7. Mantener el CMS exclusivamente en `https://website-2027-seven.vercel.app/admin/`. El dominio institucional conserva sus configuraciones SEO, canonical, sitemap y DNS.
 
 ## F. Limitaciones
 

@@ -4,7 +4,7 @@ Implementación del 15 de octubre de 2026. Esta guía diferencia el código prep
 
 ## Estado y direcciones
 
-El repositorio real es [Cedhu-Sog/website-2027](https://github.com/Cedhu-Sog/website-2027), público, con rama principal `master`. Su página de GitHub identifica [website-2027-bay.vercel.app](https://website-2027-bay.vercel.app) como sitio desplegado. La API pública confirma un estado `Vercel` exitoso para `f14d144452fa7c2a9defefefaba039ba3d3ace52`, actualizado el 2 de octubre de 2026. Esto acredita la integración previa; no demuestra un despliegue de estos cambios.
+El repositorio real es [Cedhu-Sog/website-2027](https://github.com/Cedhu-Sog/website-2027), público, con rama principal `master`. Actualización de dominio del 19 de octubre de 2026: el único origen preparado para el CMS es `https://website-2027-seven.vercel.app`, indicado como dominio activo por el responsable. El despliegue anterior fue eliminado y sus direcciones de autenticación provocaban `404 DEPLOYMENT_NOT_FOUND`. Esta actualización se realiza exclusivamente en el repositorio local; no acredita un despliegue ni una autenticación real en el dominio activo.
 
 La consulta pública de la rama devuelve `protected: false`. **Antes de habilitar la edición institucional hay que proteger `master`** según las instrucciones de esta guía. No se han cambiado permisos, secretos ni ajustes remotos, ni se ha realizado push.
 
@@ -12,11 +12,11 @@ Direcciones preparadas, disponibles después del despliegue autorizado:
 
 | Uso | Dirección |
 | --- | --- |
-| Panel | `https://website-2027-bay.vercel.app/admin/` |
-| Inicio OAuth | `https://website-2027-bay.vercel.app/api/cms/auth` |
-| Callback OAuth exacto | `https://website-2027-bay.vercel.app/api/cms/callback` |
+| Panel | `https://website-2027-seven.vercel.app/admin/` |
+| Inicio OAuth | `https://website-2027-seven.vercel.app/api/cms/auth` |
+| Callback OAuth exacto | `https://website-2027-seven.vercel.app/api/cms/callback` |
 
-`cedhu.edu.co` responde por Cloudflare, pero no se ha acreditado que dirija a este proyecto Vercel. Se conserva su uso previo en canonical, sitemap y datos institucionales, sin cambiar DNS. Cuando el responsable vincule y verifique ese dominio en Vercel, el panel será `https://cedhu.edu.co/admin/` y el callback será `https://cedhu.edu.co/api/cms/callback`. Deben cambiar juntos `CMS_ORIGIN`, el callback de GitHub y `backend.base_url`, `site_url` y `display_url` de `public/admin/config.yml`. No usar ambos orígenes indistintamente.
+`cedhu.edu.co` conserva su uso previo en canonical, sitemap y datos institucionales, sin cambios de SEO ni DNS. Para esta configuración del CMS se utiliza exclusivamente el origen Vercel indicado arriba. Deben coincidir `CMS_ORIGIN`, el callback de GitHub y `backend.base_url`, `site_url` y `display_url` de `public/admin/config.yml`. No usar otros orígenes indistintamente.
 
 ## Arquitectura
 
@@ -66,8 +66,8 @@ Los nombres internos, rutas fijas, categorías de personal y procedencias histó
 
 Estas acciones corresponden al propietario o administrador autorizado. No se ejecutaron remotamente.
 
-1. Abrir [Developer settings → OAuth Apps](https://github.com/settings/developers) de la cuenta institucional que custodiará la integración. También puede crearse desde Developer settings de la organización. Seleccionar **New OAuth App**.
-2. Application name: un nombre reconocible como «CEDHU · Administración de contenidos». Homepage URL: `https://website-2027-bay.vercel.app/admin/`. Authorization callback URL: **`https://website-2027-bay.vercel.app/api/cms/callback`**, sin barra final. No activar Device Flow.
+1. Abrir [Developer settings → OAuth Apps](https://github.com/settings/developers) de la cuenta institucional u organización que custodia la integración y editar la OAuth App existente. Crear una solo si todavía no existe.
+2. Application name: un nombre reconocible como «CEDHU · Administración de contenidos». Homepage URL: `https://website-2027-seven.vercel.app/admin/`. Authorization callback URL: **`https://website-2027-seven.vercel.app/api/cms/callback`**, sin barra final. No activar Device Flow.
 3. Guardar el Client ID y generar un Client Secret. Introducirlos exclusivamente en Vercel. Nunca en config.yml, archivos públicos, capturas o mensajes. No crear un token personal para compartir entre editores.
 4. Si la organización restringe aplicaciones OAuth, aprobar esta aplicación para `Cedhu-Sog`; si corresponde, autorizar SSO. Cada administrativo utiliza su propia cuenta GitHub existente con autenticación de dos factores.
 5. En [Settings → Collaborators and teams](https://github.com/Cedhu-Sog/website-2027/settings/access), conceder **Write** al equipo editorial. No conceder Admin ni Maintain para editar contenido. Read y Triage no permiten guardar borradores en este backend. La baja de un editor requiere retirar su permiso Write y revocar su autorización de la app si procede.
@@ -87,7 +87,7 @@ Proyecto identificado por el estado público: [website-2027 en Vercel](https://v
 
 | Variable | Valor o finalidad |
 | --- | --- |
-| `CMS_ORIGIN` | `https://website-2027-bay.vercel.app`, sin barra final ni ruta |
+| `CMS_ORIGIN` | `https://website-2027-seven.vercel.app`, sin barra final ni ruta |
 | `GITHUB_OAUTH_CLIENT_ID` | Client ID real de la OAuth App |
 | `GITHUB_OAUTH_CLIENT_SECRET` | Client Secret real, marcado como sensible |
 | `CMS_OAUTH_COOKIE_SECRET` | 32 bytes aleatorios expresados como 64 caracteres hexadecimales, marcado como sensible |
@@ -97,7 +97,7 @@ Para generar la clave de cookie, ejecutar localmente y copiar su resultado direc
 
 4. No habilitar secretos de producción indiscriminadamente en previews. El CMS solo autentica en `CMS_ORIGIN`; una preview puede mostrar el formulario, pero su origen no está autorizado. Para una prueba OAuth aislada, usar un proyecto/origen y una app GitHub separados, ajustando también `config.yml`. No abrir la lista de orígenes mediante comodines.
 5. Revisar y desplegar esta rama mediante el procedimiento autorizado. Los cambios de entorno requieren un nuevo despliegue. Comprobar en **Functions** que aparezcan `/api/cms/auth` y `/api/cms/callback` como funciones Node, y que el resto siga siendo estático.
-6. Verificar `/admin/` y `/admin/config.yml`. Sin credenciales configuradas, `/api/cms/auth?provider=github&site_id=website-2027-bay.vercel.app` devuelve **503**; después de configurarlas debe redirigir a GitHub. Abrir directamente el callback sin cookie/estado válido debe devolver **403**, no un token.
+6. Verificar `/admin/` y `/admin/config.yml` en `https://website-2027-seven.vercel.app`. Sin las variables requeridas, `/api/cms/auth?provider=github&site_id=website-2027-seven.vercel.app` devuelve **503**; con las variables correctas debe redirigir a GitHub usando `https://website-2027-seven.vercel.app/api/cms/callback` como `redirect_uri`. Con el servidor configurado, abrir directamente el callback sin cookie/estado válido debe devolver **403**, no un token. Un `404 DEPLOYMENT_NOT_FOUND` exige revisar el dominio o el despliegue del proyecto existente; comprobar también que Decap haya recibido el `config.yml` actualizado.
 7. Completar la prueba real de publicación descrita al final. No dar el CMS por habilitado hasta superar esa prueba.
 
 ## Autenticación y alcance de seguridad
