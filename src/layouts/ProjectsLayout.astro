@@ -1,0 +1,30 @@
+---
+import '../styles/tokens.css';
+import '../styles/reset.css';
+import '../styles/global.css';
+import '../styles/components/ui.css';
+// Keep this small stylesheet external even when Astro's default inlining applies.
+import projectsStyles from '../styles/components/projects-access.css?url&no-inline';
+const title = 'Proyectos de investigación | CEDHU';
+const description = 'Acceso exclusivo para personal autorizado al repositorio institucional de proyectos de investigación del CEDHU.';
+---
+<!doctype html>
+<html lang="es-CO">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="referrer" content="no-referrer" />
+    <link rel="canonical" href="https://website-2027-seven.vercel.app/proyectos/" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <meta property="og:title" content={title} />
+    <meta name="twitter:title" content={title} />
+    <link rel="stylesheet" href={projectsStyles} />
+  </head>
+  <body class="projects-page">
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+    <main class="projects-access" id="contenido"><slot /></main>
+  </body>
+</html>

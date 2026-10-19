@@ -29,6 +29,7 @@
   --measure-page-intro: 43.75rem;
   --text-h2: clamp(2.05rem, 3.5vw, 3.35rem);
   --text-h3: clamp(1.3rem, 2vw, 1.65rem);
+  --text-access-title: clamp(1.75rem, 5vw, 2.35rem);
   --space-xs: .5rem;
   --space-sm: 1rem;
   --space-md: 1.5rem;

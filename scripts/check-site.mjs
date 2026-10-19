@@ -19,19 +19,26 @@ for (const file of htmlFiles) {
   const html = await readFile(file, 'utf8');
   const relative = path.relative(root, file).replaceAll('\\', '/');
   const route = relative === 'index.html' ? '/' : relative.endsWith('/index.html') ? '/' + relative.slice(0, -10) : '/' + relative;
+  const projectsAccess = route === '/proyectos/';
   const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
   const title = html.match(/<title>(.*?)<\/title>/s)?.[1];
   const check = (valid, message) => { if (!valid) errors.push(`${route}: ${message}`); };
   check((html.match(/<h1(?:\s|>)/g) ?? []).length === 1, 'must contain exactly one h1');
   check((html.match(/<main(?:\s|>)/g) ?? []).length === 1, 'must contain exactly one main');
-  check((html.match(/\bdata-floating-logo(?=[\s=>])/g) ?? []).length === 1, 'must contain exactly one global floating logo');
-  check((html.match(/\bdata-floating-logo-trigger(?=[\s=>])/g) ?? []).length === 1, 'must contain exactly one floating logo trigger');
+  if (!projectsAccess) {
+    check((html.match(/\bdata-floating-logo(?=[\s=>])/g) ?? []).length === 1, 'must contain exactly one global floating logo');
+    check((html.match(/\bdata-floating-logo-trigger(?=[\s=>])/g) ?? []).length === 1, 'must contain exactly one floating logo trigger');
+  } else {
+    check(html.includes('name="robots" content="noindex, nofollow"'), 'access page must not be indexed');
+    check(!html.includes('data-floating-logo') && !html.includes('class="site-footer"'), 'access shell must remain independent of public navigation');
+  }
   check(new Set(ids).size === ids.length, 'duplicate element IDs');
   check(Boolean(title) && !titles.has(title), 'missing or duplicated page title');
   titles.add(title);
   check(/<html[^>]*lang="es-CO"/.test(html), 'missing Spanish document language');
   check(/<meta name="description" content="[^"]+"/.test(html), 'missing description');
-  check(html.includes(`rel="canonical" href="https://cedhu.edu.co${route === '/404.html' ? '/404/' : route}"`), 'canonical does not match route');
+  const canonicalOrigin = projectsAccess ? 'https://website-2027-seven.vercel.app' : 'https://cedhu.edu.co';
+  check(html.includes(`rel="canonical" href="${canonicalOrigin}${route === '/404.html' ? '/404/' : route}"`), 'canonical does not match route');
   check(html.includes('property="og:title"') && html.includes('name="twitter:title"'), 'missing sharing metadata');
   for (const img of html.matchAll(/<img\b[^>]*>/g)) {
     check(/\balt="[^"]*"/.test(img[0]), 'image without alt');
@@ -66,6 +73,10 @@ for (const [route, page] of pages) {
 }
 const sitemap = await readFile(path.join(root, 'sitemap.xml'), 'utf8');
 for (const route of pages.keys()) {
+  if (route === '/proyectos/') {
+    if (sitemap.includes('/proyectos/')) errors.push('Private access must not appear in sitemap');
+    continue;
+  }
   if (route !== '/404.html' && !sitemap.includes(`<loc>https://cedhu.edu.co${route}</loc>`)) errors.push(`Missing sitemap entry: ${route}`);
 }
 const sourceFiles = await walk(path.resolve('src'));
