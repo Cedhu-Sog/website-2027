@@ -87,17 +87,19 @@ for (const file of files.filter(file => file.endsWith('.html'))) {
 const robots = await readFile(path.join(root, 'robots.txt'), 'utf8');
 if (/^\s*Disallow\s*:\s*\S/im.test(robots)) errors.push('robots.txt must allow crawlers to read noindex directives and public pages');
 const deployment = JSON.parse(await readFile('vercel.json', 'utf8'));
-// Vercel's :path* wildcard covers zero or more segments: bare roots, slashes and descendants.
+// Explicit trailing-slash rules are required alongside bare roots and descendants.
 // Validate deployment configuration here; real HTTP responses require a Vercel deployment.
 for (const prefix of ['/admin', '/proyectos', '/api/cms', '/api/proyectos']) {
-  const rule = deployment.headers.find(rule => rule.source === `${prefix}/:path*`);
-  if (!rule?.headers.some(header => header.key.toLowerCase() === 'x-robots-tag' && header.value === 'noindex, nofollow')) {
-    errors.push(`${prefix}: missing recursive Vercel noindex, nofollow header`);
+  for (const source of [`${prefix}/:path*`, `${prefix}/:path*/`]) {
+    const rule = deployment.headers.find(rule => rule.source === source);
+    if (!rule?.headers.some(header => header.key.toLowerCase() === 'x-robots-tag' && header.value === 'noindex, nofollow')) {
+      errors.push(`${source}: missing recursive Vercel noindex, nofollow header`);
+    }
   }
 }
 for (const rule of deployment.headers) {
   if (rule.headers.some(header => header.key.toLowerCase() === 'x-robots-tag' && /noindex/i.test(header.value)) &&
-      !['/admin/:path*', '/proyectos/:path*', '/api/cms/:path*', '/api/proyectos/:path*'].includes(rule.source)) {
+      !['/admin/:path*', '/proyectos/:path*', '/api/cms/:path*', '/api/proyectos/:path*'].some(source => rule.source === source || rule.source === `${source}/`)) {
     errors.push(`Unexpected noindex rule affecting public routes: ${rule.source}`);
   }
 }

@@ -9,6 +9,30 @@
   },
   "headers": [
     {
+      "source": "/admin/:path*/",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+      ]
+    },
+    {
+      "source": "/proyectos/:path*/",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+      ]
+    },
+    {
+      "source": "/api/cms/:path*/",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+      ]
+    },
+    {
+      "source": "/api/proyectos/:path*/",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+      ]
+    },
+    {
       "source": "/api/cms/:path*",
       "headers": [
         { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
