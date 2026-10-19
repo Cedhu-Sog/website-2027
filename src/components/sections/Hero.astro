@@ -24,7 +24,7 @@ interface Props { page: PageData; }
         }]}>
           {line.split('#1').map((part, index) => <Fragment>
             {index > 0 && <span class="hero__rank">
-              <span class="hero__rank-number">#1</span>
+              <button class="hero__rank-number" type="button" aria-label="#1: reproducir animación">#1</button>
               <span class="hero__rank-crown" aria-hidden="true">
                 <svg viewBox="0 0 64 40" fill="none" focusable="false">
                   <path d="M9 29 5 10 21 20 31 4 40 20 58 10 53 30Q32 26 9 29ZM12 35Q32 32 51 35" />
@@ -66,3 +66,7 @@ interface Props { page: PageData; }
   </div>
   <div class="hero__foot"><p>{content.footerDescription}</p><a href="#por-que-cedhu">{content.discoverLabel}</a><span>{content.levelsLabel}</span></div>
 </section>
+
+<script>
+  import '../../scripts/animations/hero-rank';
+</script>

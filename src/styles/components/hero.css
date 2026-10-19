@@ -7,7 +7,7 @@
 .hero__title-line { display: block; }
 .hero__title-line--secondary { margin-top: .3em; }
 .hero__rank { position: relative; display: inline-block; color: var(--color-primary); font-size: 1.12em; line-height: 1; white-space: nowrap; }
-.hero__rank-number { display: inline-block; font-weight: 700; transform-origin: center; }
+.hero__rank-number { display: inline-block; margin: 0; padding: 0; border: 0; background: none; font: inherit; font-weight: 700; letter-spacing: inherit; vertical-align: baseline; appearance: none; transform-origin: center; }
 .hero__rank-crown { position: absolute; width: .55em; right: -.035em; top: -.31em; rotate: 10deg; pointer-events: none; }
 .hero__rank-crown svg { display: block; width: 100%; }
 .hero__rank-underline { position: absolute; width: 112%; height: .2em; left: -6%; bottom: -.14em; }
@@ -113,17 +113,17 @@
   .hero__inset { position: relative; grid-column: 2; grid-row: 2; align-self: start; justify-self: end; top: auto; right: auto; width: var(--hero-inset-width); margin: calc(var(--hero-inset-width) * -.7) var(--space-xs) 0 0; }
 }
 
-/* Only the numeral responds to hover; the heading keeps its layout and position. */
+/* The crown's ambient motion remains independent of the triggered cycle. */
 @media (prefers-reduced-motion: no-preference) {
   html:not([data-motion="reduced"]) .hero__rank-crown {
     animation: hero-rank-float var(--duration-hero-rank-float) ease-in-out infinite;
   }
 }
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+@media (prefers-reduced-motion: no-preference) {
   html:not([data-motion="reduced"]) .hero__rank-number { transition: transform var(--duration-hero-rank-scale) var(--ease-standard); }
-  html:not([data-motion="reduced"]) .hero__rank:hover .hero__rank-number { transform: scale(1.035); }
-  html:not([data-motion="reduced"]) .hero__rank:hover .hero__rank-crown svg { animation: hero-rank-crown-hop var(--duration-hero-copy) ease-in-out; }
-  html:not([data-motion="reduced"]) .hero__rank:hover .hero__rank-rays g { animation: hero-rank-rays var(--duration-hero-photo) ease-out; }
+  html:not([data-motion="reduced"]) .hero__rank.is-animating .hero__rank-number { transform: scale(1.035); }
+  html:not([data-motion="reduced"]) .hero__rank.is-animating .hero__rank-crown svg { animation: hero-rank-crown-hop var(--duration-hero-copy) ease-in-out; }
+  html:not([data-motion="reduced"]) .hero__rank.is-animating .hero__rank-rays g { animation: hero-rank-rays var(--duration-hero-photo) ease-out; }
 }
 @keyframes hero-rank-float {
   0%, 100% { transform: translateY(0); }

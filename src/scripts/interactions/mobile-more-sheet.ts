@@ -3,8 +3,8 @@ export {};
 const sheet = document.querySelector<HTMLDialogElement>('#mobile-more-sheet');
 const trigger = document.querySelector<HTMLButtonElement>('[data-more-trigger]');
 const fallback = document.querySelector<HTMLAnchorElement>('[data-more-fallback]');
-// Match the existing tablet layout boundary in the navigation styles.
-const mobile = window.matchMedia('(width < 48rem)');
+// Match the bottom dock's desktop boundary, including tablet widths.
+const mobile = window.matchMedia('(width < 62rem)');
 
 if (sheet && trigger && fallback) {
   trigger.hidden = false;
