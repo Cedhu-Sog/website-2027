@@ -2,7 +2,7 @@
 
 15 de octubre de 2026 · Rama local `codex/decap-cms` · Sin commit, push ni cambios de configuración remota.
 
-Actualización de dominio del 19 de octubre de 2026: configuración Decap, ejemplo de entorno y documentación preparados exclusivamente para `https://website-2027-seven.vercel.app`. Las pruebas y verificaciones remotas descritas en el informe original son antecedentes del 15 de octubre y no acreditan el funcionamiento OAuth en este dominio. Siguen pendientes la configuración externa, el despliegue y el login real.
+Actualización de dominio del 19 de octubre de 2026: configuración Decap, ejemplo de entorno y documentación preparados exclusivamente para `https://website-2027-seven.vercel.app`. El responsable confirma que las variables de entorno de Vercel y la OAuth App de GitHub ya están configuradas correctamente; no requieren reconfiguración. Las pruebas, verificaciones remotas y pendientes descritos en el informe original son antecedentes del 15 de octubre y no acreditan el funcionamiento OAuth en este dominio. Esta revisión local no realiza despliegues ni verifica un login real.
 
 ## A. Implementación
 

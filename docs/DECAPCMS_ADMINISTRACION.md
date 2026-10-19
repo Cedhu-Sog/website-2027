@@ -6,6 +6,8 @@ Implementación del 15 de octubre de 2026. Esta guía diferencia el código prep
 
 El repositorio real es [Cedhu-Sog/website-2027](https://github.com/Cedhu-Sog/website-2027), público, con rama principal `master`. Actualización de dominio del 19 de octubre de 2026: el único origen preparado para el CMS es `https://website-2027-seven.vercel.app`, indicado como dominio activo por el responsable. El despliegue anterior fue eliminado y sus direcciones de autenticación provocaban `404 DEPLOYMENT_NOT_FOUND`. Esta actualización se realiza exclusivamente en el repositorio local; no acredita un despliegue ni una autenticación real en el dominio activo.
 
+El responsable confirma que las variables de entorno de Vercel y la OAuth App de GitHub ya están configuradas correctamente para este dominio. No es necesario volver a configurarlas. Los apartados de activación siguientes se conservan como referencia de mantenimiento; esta revisión no modifica ajustes externos ni verifica un login real.
+
 La consulta pública de la rama devuelve `protected: false`. **Antes de habilitar la edición institucional hay que proteger `master`** según las instrucciones de esta guía. No se han cambiado permisos, secretos ni ajustes remotos, ni se ha realizado push.
 
 Direcciones preparadas, disponibles después del despliegue autorizado:
