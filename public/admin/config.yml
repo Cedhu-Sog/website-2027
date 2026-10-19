@@ -1401,7 +1401,7 @@ collections:
           - *ref_26
           - *ref_8
       - name: inicio
-        label: Aprender. Crear. Ser felices.
+        label: Inicio
         file: src/content/paginas/inicio.md
         fields:
           - name: route

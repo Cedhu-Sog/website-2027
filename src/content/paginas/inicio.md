@@ -1,6 +1,6 @@
 ---
 route: /
-title: Aprender. Crear. Ser felices.
+title: Inicio
 description: >-
   Conoce el CEDHU en Sogamoso: preescolar, primaria y bachillerato con Pedagogía de la Felicidad,
   valores, inglés, ciencia y robótica.
