@@ -19,7 +19,6 @@
     "test:proyectos:google": "node --test scripts/proyectos/google.test.mjs",
     "test:images": "node --test scripts/image-processing.test.mjs",
     "check:proyectos:google": "node scripts/proyectos/google-check.mjs",
-    "proyectos:google:probe": "node scripts/proyectos/google-check.mjs --production",
     "check:proyectos:build": "node scripts/proyectos/verify-build.mjs",
     "proyectos:hash": "node scripts/proyectos/secrets.mjs hash",
     "proyectos:secret": "node scripts/proyectos/secrets.mjs secret"

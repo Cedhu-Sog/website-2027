@@ -4,7 +4,6 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "functions": {
-    "api/proyectos/google-diagnostic.js": { "maxDuration": 30 },
     "api/cms/*.js": { "maxDuration": 30 },
     "api/proyectos/*.js": { "maxDuration": 15 }
   },

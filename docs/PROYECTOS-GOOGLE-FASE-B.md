@@ -1,8 +1,9 @@
-# Fase B — preparación y confirmación operativa
+# Fase B — preparación, incidencia y cierre
 
-Fecha: 2026-10-22. Estado: preparación local terminada; activación pendiente de
-confirmación operativa del usuario. Este documento no acredita conexión real con
-Workspace ni cierre de una prueba que todavía no se ha iniciado.
+Fecha: 2026-10-22. La ventana autorizada venció sin ejecutar la consulta real a
+Workspace. Se retira el diagnóstico del código desplegable y se publica el cierre.
+Las secciones de preparación conservan la evidencia previa; el resultado de
+ejecución figura al final. Este documento no acredita conexión con Workspace.
 
 ## Producción comprobada antes de activar
 
@@ -240,20 +241,82 @@ ser D2 con diagnóstico activado: no asumir que sea un respaldo seguro ni que D1
 siga disponible para Instant Rollback. La eliminación de D2 también puede cambiar
 las opciones de recuperación; volver a comprobarlas.
 
-## Estado del informe de ejecución
+## Resultado de ejecución y cierre
 
-Las ocho condiciones Google Workspace están pendientes de prueba real.
-Despliegues B realizados: ninguno. El commit local de preparación se registrará
-en la evidencia operativa; no se hará push hasta confirmar el inicio de la ventana.
-Diagnóstico actual: deshabilitado, sin credenciales temporales. No hay despliegues
-históricos con diagnóstico activado creados durante esta preparación.
-No se inicia Fase C. El informe A/B/C/D definitivo se completará después del cierre.
+### A. Conexión Google Workspace
 
-La autorización de ejecución recibida después de la preparación permite configurar
-WAF, hacer commit y preparar el cierre. El usuario mantiene un punto adicional de
-confirmación justo antes de iniciar la ventana: hasta recibirlo, `ENABLED=false`,
-sin token, sin expiración, sin push ni despliegue. La expiración se calculará
-inmediatamente antes de la activación, después de la entrada segura del secreto.
+| Comprobación | Resultado |
+| --- | --- |
+| Token OIDC Vercel | No comprobado en ejecución real |
+| Identidad Production | No comprobada mediante JWT real |
+| Google Cloud STS | No comprobado |
+| Suplantación de cuenta de servicio | No comprobada |
+| Unidad compartida Drive | No comprobada |
+| Carpetas institucionales | No comprobadas |
+| Tres archivos Sheets | No comprobados |
+| Pestañas y encabezados | No comprobados |
+
+Ventana absoluta: 2026-10-22T15:40:03.000Z a 2026-10-22T16:00:03.000Z,
+incluido el despliegue. No se amplió. Los despliegues rechazaron el acceso con
+404 antes de obtener credenciales Google. La evidencia booleana del segundo
+despliegue mostró Production y fecha válidas, pero `tokenFormat=false`.
+Clasificación: configuración de la credencial administrativa en Vercel; no
+demuestra un fallo OIDC, STS, IAM, Drive ni Sheets. La rotación confirmada por el
+operador no llegó a aplicarse a un nuevo despliegue antes del vencimiento.
+Al retomar a las 19:04 UTC se inició el cierre, sin reabrir la ventana.
+
+### B. Seguridad
+
+- La terminal administrativa atravesó el WAF; una solicitud externa fue bloqueada
+  con 403 y la marca WAF `deny`. El endpoint devolvió 404 sin credencial y con GET,
+  con `no-store`; no alcanzó los rechazos 401/405 del estado habilitado.
+- Las validaciones negativas con credencial incorrecta, cuerpo o recursos
+  arbitrarios se validaron localmente; no se presentan como pruebas remotas.
+- No se ejecutó la consulta real ni hubo operaciones de escritura en Workspace.
+  No se generaron claves JSON permanentes ni se ampliaron privilegios.
+- Production: `ENABLED=false` comprobado mediante lectura exclusiva de esa
+  variable; TOKEN y EXPIRES_AT retirados e inventario sin ambas claves.
+- Se eliminan la función HTTP, el handler, la duración específica y el modo
+  administrativo del CLI. Los módulos Google reutilizables siguen fuera del cliente.
+- La revisión de logs del intento encontró exclusivamente indicadores booleanos
+  del gate. No se imprimieron secretos ni datos Workspace. La revisión no equivale
+  a una garantía sobre todos los logs históricos de la plataforma.
+- Cierre validado con Node 22: 13/13 pruebas, Astro SSG y verificación de privacidad
+  sobre 458 archivos versionables y 501 archivos públicos. Se conservan los avisos
+  previos de eventos vacíos y tamaño de chunk.
+
+### C. Producción y recuperación
+
+| Despliegue | Commit | URL única |
+| --- | --- | --- |
+| `dpl_FKn3To4fnmqZU3XWEKMQmapWKsCL` | `33830aa06cf52bca4279fdc4f72f71f17f0bba00` | <https://website-2027-d0bkixvok-cedhu-webmasters-projects.vercel.app> |
+| `dpl_ACbEeR97ARJgFos1L4FSUnG1g8AY` | `7aa2af652e8e34ecb507bfaa52cb0983fab7cc98` | <https://website-2027-m6yg31y90-cedhu-webmasters-projects.vercel.app> |
+
+El despliegue limpio se genera exclusivamente mediante el push de este cierre;
+su ID, URL, asignación de dominio y comprobaciones HTTP posteriores se registran
+en el informe final y en la evidencia operativa local ignorada bajo `.vercel/`.
+
+Se conserva D1, `dpl_FmjjU8ocEjjaCBLU4nzyAGdx7u59`, READY, y el respaldo
+anterior. Los dos despliegues de prueba tienen vencimiento absoluto ya pasado.
+No se usan como destino de recuperación. Se protegen además sus rutas históricas
+mediante WAF; conservarlos evita eliminar evidencia o respaldos sin necesidad.
+La elegibilidad técnica de una versión como rollback no acredita que sea segura.
+D1 ya no es el despliegue Production inmediatamente anterior: no se promete
+Instant Rollback a D1 en Hobby. La alternativa segura es publicar nuevamente
+el commit estable de Fase A con configuración cerrada, tras verificar entorno y
+dominio; no se ha ejecutado esa recuperación ni el API de rollback.
+
+El sitio, formulario `/proyectos/`, shell Decap y configuración CMS respondieron
+200 durante el intento. La publicación de cierre vuelve a verificar esos recursos.
+No se sustituyen contraseñas ni OAuth; una prueba nueva de login autenticado no
+se afirma a partir de la mera carga del formulario o del shell.
+
+### D. Conclusión
+
+La conexión real queda pendiente. No se inicia Fase C ni se vuelve a activar el
+diagnóstico automáticamente. La declaración de cierre solo es válida después
+de confirmar READY, ausencia de la ruta y protección de las versiones históricas:
+**FASE B DETENIDA POR BLOQUEO — ACCESO TEMPORAL DESHABILITADO.**
 
 ## Fuentes contrastadas
 
