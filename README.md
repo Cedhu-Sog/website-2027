@@ -4,16 +4,25 @@ Primera versión integral del sitio del Centro de Desarrollo Humano, Sogamoso. A
 
 ## Desarrollo y validación
 
-Requiere Node.js 22.12 o posterior y las dependencias del lockfile. La versión instalada durante la revisión fue Astro 7.2.3 sobre Node 24.14.0.
+Requiere Node.js `^22.19.0` y las dependencias de `package-lock.json` (`npm ci`). Astro está fijado en 7.2.8 y su procesador de imágenes Sharp en 0.35.5. El requisito de Node lo determina Undici 8.10.2. La validación local completa se ejecutó correctamente con **Node 22.23.4 y npm 10.9.9**, mediante una distribución portátil oficial verificada, sin reemplazar el Node 24.14.0 de la terminal predeterminada. Para Production se conserva Node 22.x; el usuario confirmó esa selección y sus Production Overrides. Sigue pendiente comprobar el runtime efectivo y la conexión Google en un despliegue autorizado; ver [informe de Node 22](docs/PROYECTOS-GOOGLE.md#cierre-de-validación-local-con-node-22).
 
 | Comando | Responsabilidad |
 | --- | --- |
 | `npm run dev -- --host 127.0.0.1` | Servidor local de desarrollo |
 | `npm run build` | Genera el sitio y las imágenes optimizadas en `dist/` |
 | `npm run check:site` | Revisa el resultado de un build: rutas, enlaces locales, fragmentos, metadatos, imágenes, PDFs y separación del CSS |
+| `npm run test:cms` | Pruebas de fechas, generación de contenido y OAuth de Decap con transportes simulados |
+| `npm run test:proyectos` | Autenticación, sesiones y acceso protegido del portal |
+| `npm run test:proyectos:google` | Google OIDC, SDK y diagnóstico administrativo sin consultas remotas |
+| `npm run test:images` | Decodificación y conversión AVIF, SVG, PNG, JPEG y WebP |
+| `npm run check:proyectos:build` | Build con credenciales sintéticas y búsqueda de valores privados en archivos versionables y públicos |
+| `node --env-file=.env.local scripts/proyectos/google-check.mjs` | Validación de formato de la configuración local de Workspace, sin red |
+| `npm audit` | Vulnerabilidades resueltas y avisos pendientes de evaluación |
 | `npm run preview -- --host 127.0.0.1` | Revisión local de `dist/` |
 
 Ejecutar siempre `build` antes de `check:site`. No hay comandos de lint o typecheck configurados ni están instalados ESLint, TypeScript o `@astrojs/check`. El build y el comprobador del sitio no sustituyen una comprobación completa de tipos. No se añadieron dependencias para esta implementación.
+
+La correspondencia de Workspace se configura en `.env.local`, excluido de Git; `.env.example` conserva valores vacíos. El diagnóstico permanece deshabilitado. Ver [configuración y límites de la conexión](docs/PROYECTOS-GOOGLE.md), incluidos los overrides de seguridad y el aviso pendiente de `http-cache-semantics`.
 
 ## Arquitectura
 

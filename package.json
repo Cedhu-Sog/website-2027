@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.1",
   "engines": {
-    "node": "^22.12.0"
+    "node": "^22.19.0"
   },
   "scripts": {
     "dev": "astro dev",
@@ -16,15 +16,31 @@
     "check:cms": "node scripts/cms/check-config.mjs",
     "test:cms": "node --test scripts/cms/*.test.mjs",
     "test:proyectos": "node --test scripts/proyectos/auth.test.mjs",
+    "test:proyectos:google": "node --test scripts/proyectos/google.test.mjs",
+    "test:images": "node --test scripts/image-processing.test.mjs",
+    "check:proyectos:google": "node scripts/proyectos/google-check.mjs",
+    "proyectos:google:probe": "node scripts/proyectos/google-check.mjs --production",
     "check:proyectos:build": "node scripts/proyectos/verify-build.mjs",
     "proyectos:hash": "node scripts/proyectos/secrets.mjs hash",
     "proyectos:secret": "node scripts/proyectos/secrets.mjs secret"
   },
   "dependencies": {
-    "astro": "^7.2.3",
+    "@vercel/oidc": "4.0.2",
+    "astro": "7.2.8",
+    "google-auth-library": "11.3.1",
     "three": "0.186.0"
   },
   "devDependencies": {
     "@types/three": "0.186.0"
+  },
+  "overrides": {
+    "devalue": "5.9.3",
+    "js-yaml": "4.3.2",
+    "sharp": "0.35.5",
+    "smol-toml": "1.9.1",
+    "source-map-js": "1.2.2",
+    "svgo": "4.1.0",
+    "undici": "8.10.2",
+    "vite": "8.2.4"
   }
 }
