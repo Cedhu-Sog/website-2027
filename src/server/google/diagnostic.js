@@ -53,10 +53,13 @@ export function createGoogleDiagnosticHandler({ env = process.env, now = Date.no
   return async function googleDiagnostic(request) {
     const expiry = env.PROYECTOS_GOOGLE_DIAGNOSTICS_EXPIRES_AT || '';
     const expiresAt = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/.test(expiry) ? Date.parse(expiry) : NaN;
+    const canonicalExpiry = expiry.includes('.') ? expiry : expiry.replace('Z', '.000Z');
+    const currentTime = now();
     const token = env.PROYECTOS_GOOGLE_DIAGNOSTICS_TOKEN;
     if (env.PROYECTOS_GOOGLE_DIAGNOSTICS_ENABLED !== 'true' || env.VERCEL !== '1' || env.VERCEL_ENV !== 'production' ||
         (env.VERCEL_TARGET_ENV && env.VERCEL_TARGET_ENV !== 'production') ||
-        !Number.isFinite(expiresAt) || expiresAt <= now() || expiresAt - now() > 60 * 60 * 1000 ||
+        !Number.isFinite(expiresAt) || new Date(expiresAt).toISOString() !== canonicalExpiry ||
+        expiresAt <= currentTime || expiresAt - currentTime > 20 * 60 * 1000 ||
         typeof token !== 'string' || !/^[a-f0-9]{64}$/.test(token)) {
       return projectsJson({ code: 'not_found' }, 404);
     }
@@ -72,13 +75,15 @@ export function createGoogleDiagnosticHandler({ env = process.env, now = Date.no
         (request.headers.has('content-length') && request.headers.get('content-length') !== '0') || !await hasEmptyBody(request)) {
       return projectsJson({ code: 'invalid_request' }, 400);
     }
+    // Body validation can await a stream; never start Google after the deadline.
+    if (now() >= expiresAt) return projectsJson({ code: 'not_found' }, 404);
     if (active) return projectsJson({ code: 'busy' }, 429, { 'Retry-After': '10' });
     active = true;
     const controller = new AbortController();
     let timer;
     try {
       const timeout = new Promise((_, reject) => {
-        timer = setTimeout(() => { controller.abort(); reject(new GoogleConnectionError('google_timeout')); }, timeoutMs);
+        timer = setTimeout(() => { controller.abort(); reject(new GoogleConnectionError('google_timeout')); }, Math.min(timeoutMs, expiresAt - now()));
       });
       const result = await Promise.race([diagnose({ env, now, signal: controller.signal }), timeout]);
       return projectsJson(result, result.ok ? 200 : 503);

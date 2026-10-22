@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { randomBytes } from 'node:crypto';
+import { spawnSync } from 'node:child_process';
 import { readFile, readdir } from 'node:fs/promises';
 import { IdentityPoolClient } from 'google-auth-library';
 import { authenticateGoogle, createGoogleClient, GOOGLE_READ_SCOPES } from '../../src/server/google/auth.js';
@@ -19,7 +20,7 @@ const env = {
   GCP_WORKLOAD_IDENTITY_POOL_ID: GOOGLE_IDENTITY.pool, GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID: GOOGLE_IDENTITY.provider,
   PROYECTOS_DRIVE_ROOT_ID: id(), PROYECTOS_METADATA_SPREADSHEET_ID: id(), PROYECTOS_AUTH_SPREADSHEET_ID: id(), PROYECTOS_AUDIT_SPREADSHEET_ID: id(),
   PROYECTOS_GOOGLE_DIAGNOSTICS_ENABLED: 'true', PROYECTOS_GOOGLE_DIAGNOSTICS_TOKEN: randomBytes(32).toString('hex'),
-  PROYECTOS_GOOGLE_DIAGNOSTICS_EXPIRES_AT: new Date(start + 1800000).toISOString(),
+  PROYECTOS_GOOGLE_DIAGNOSTICS_EXPIRES_AT: new Date(start + 1200000).toISOString(),
 };
 const now = () => start;
 const config = googleRepositoryConfig(env);
@@ -126,7 +127,8 @@ test('installed IdentityPoolClient uses supplier lazily, STS audience, impersona
 test('rejects unverified, expired, malformed and foreign tokens, without retaining raw credential errors', async () => {
   for (const changes of [{ environment: 'preview' }, { sub: 'other' }, { iss: 'https://evil.test' }, { aud: 'other' }, { project_id: 'prj_Other' }]) {
     const client = createGoogleClient({ env, now, getToken: async () => 'fixture', verifyToken: async () => ({ payload: { ...payload, ...changes } }) });
-    await assert.rejects(() => client.retrieveSubjectToken(), error => error.code === 'oidc_invalid');
+    const code = changes.aud ? 'oidc_audience_invalid' : changes.sub ? 'oidc_subject_invalid' : 'oidc_invalid';
+    await assert.rejects(() => client.retrieveSubjectToken(), error => error.code === code);
   }
   const failedVerification = createGoogleClient({ env, getToken: async () => 'fixture', verifyToken: async () => { throw new Error('fixture-expired-secret'); } });
   await assert.rejects(() => failedVerification.retrieveSubjectToken(), error => error.code === 'oidc_invalid' && !error.message.includes('secret'));
@@ -136,6 +138,12 @@ test('rejects unverified, expired, malformed and foreign tokens, without retaini
   }
   const unavailable = createGoogleClient({ env, getToken: async () => { throw new Error('fixture-sensitive'); } });
   await assert.rejects(() => unavailable.retrieveSubjectToken(), error => error.code === 'oidc_unavailable');
+  for (const [claim, code] of [['aud', 'oidc_audience_invalid'], ['sub', 'oidc_subject_invalid']]) {
+    const client = createGoogleClient({ env, getToken: async () => 'fixture', verifyToken: async () => {
+      throw { code: 'ERR_JWT_CLAIM_VALIDATION_FAILED', claim, message: 'sensitive', payload: { private: 'sensitive' } };
+    } });
+    await assert.rejects(() => client.retrieveSubjectToken(), error => error.code === code && !JSON.stringify(error).includes('sensitive'));
+  }
 });
 
 test('identifies STS and IAM failures without serializing library errors or headers', async () => {
@@ -228,6 +236,16 @@ test('denies external sheets, shortcuts, trashed files and wrong parents BEFORE 
   assert.equal(calls.length, 0);
 });
 
+test('distinguishes Drive metadata permissions from Sheets permissions without retaining provider errors', async () => {
+  for (const [service, expected] of [['/drive/v3/files/', 'drive_forbidden'], ['sheets.googleapis.com', 'sheets_forbidden']]) {
+    const { repository, system } = resourceFixture((data, options) => {
+      if (options.url.includes(service)) throw { response: { status: 403 }, config: { headers: { Authorization: 'sensitive' } }, message: 'sensitive' };
+      return data;
+    });
+    await assert.rejects(() => repository.checkSheet('catalog', system), error => error.code === expected && !JSON.stringify(error).includes('sensitive'));
+  }
+});
+
 test('rejects missing/non-grid tabs and empty, reordered, extra or changed headers', async () => {
   for (const values of [[], [[]], [['changed']], [[...config.sheets[0].headers].reverse()], [[...config.sheets[0].headers, 'extra']]]) {
     const { repository, system } = resourceFixture((data, options) => options.url.includes('/values/') ? { values } : data);
@@ -261,12 +279,43 @@ test('diagnostic reports all sheet results safely; prerequisite failure skips do
 test('HTTP diagnostic is closed by default, in Preview, on expiry and with invalid activation settings', async () => {
   for (const changes of [{ PROYECTOS_GOOGLE_DIAGNOSTICS_ENABLED: '' }, { VERCEL: '' }, { VERCEL_ENV: 'preview' },
     { VERCEL_TARGET_ENV: 'staging' }, { PROYECTOS_GOOGLE_DIAGNOSTICS_EXPIRES_AT: new Date(start).toISOString() },
-    { PROYECTOS_GOOGLE_DIAGNOSTICS_EXPIRES_AT: 'bad' }, { PROYECTOS_GOOGLE_DIAGNOSTICS_EXPIRES_AT: new Date(start + 3600001).toISOString() },
+    { PROYECTOS_GOOGLE_DIAGNOSTICS_EXPIRES_AT: 'bad' }, { PROYECTOS_GOOGLE_DIAGNOSTICS_EXPIRES_AT: new Date(start + 1200001).toISOString() },
+    { PROYECTOS_GOOGLE_DIAGNOSTICS_EXPIRES_AT: '2026-02-30T12:00:00Z' },
+    { PROYECTOS_GOOGLE_DIAGNOSTICS_EXPIRES_AT: '2026-10-22T12:00:00-05:00' },
     { PROYECTOS_GOOGLE_DIAGNOSTICS_TOKEN: 'weak' }]) {
     const response = await createGoogleDiagnosticHandler({ env: { ...env, ...changes }, now,
       diagnose: () => assert.fail('must not contact Google') })(request());
     assert.equal(response.status, 404);
   }
+});
+
+test('accepts the exact 20-minute boundary and UTC seconds; the same deployment closes at its absolute expiry', async () => {
+  let time = start;
+  let calls = 0;
+  const handler = createGoogleDiagnosticHandler({ env, now: () => time, diagnose: async () => { calls++; return { ok: true }; } });
+  assert.equal((await handler(request())).status, 200);
+  time = start + 1200000 - 1;
+  assert.equal((await handler(request())).status, 200);
+  time++;
+  assert.equal((await handler(request())).status, 404);
+  time++;
+  assert.equal((await handler(request())).status, 404);
+  assert.equal(calls, 2);
+  const seconds = createGoogleDiagnosticHandler({ env: { ...env,
+    PROYECTOS_GOOGLE_DIAGNOSTICS_EXPIRES_AT: new Date(start + 600000).toISOString().replace(/\.\d{3}Z$/, 'Z'),
+  }, now, diagnose: async () => ({ ok: true }) });
+  assert.equal((await seconds(request())).status, 200);
+  const normalizedInvalidDate = createGoogleDiagnosticHandler({ env: { ...env,
+    PROYECTOS_GOOGLE_DIAGNOSTICS_EXPIRES_AT: '2026-02-30T12:00:00Z',
+  }, now: () => Date.parse('2026-03-02T11:50:00Z'), diagnose: () => assert.fail('invalid calendar date') });
+  assert.equal((await normalizedInvalidDate(request())).status, 404);
+});
+
+test('does not contact Google if expiry passes while validating the request body', async () => {
+  let time = start;
+  const body = new ReadableStream({ pull(controller) { time = start + 1200000; controller.close(); } });
+  const handler = createGoogleDiagnosticHandler({ env, now: () => time, diagnose: () => assert.fail('expired during body validation') });
+  assert.equal((await handler(request({ body }))).status, 404);
 });
 
 test('requires independent admin bearer, correct origin/method, and forbids arbitrary query/body IDs', async () => {
@@ -313,6 +362,43 @@ test('safe errors distinguish configuration, APIs, scopes, permissions and hidde
     [{ response: { status: 429 } }, 'google_rate_limited'], [{ response: { data: { error: { details: [{ reason: 'SERVICE_DISABLED' }] } } } }, 'google_api_disabled'],
     [{ response: { data: { error: { details: [{ reason: 'ACCESS_TOKEN_SCOPE_INSUFFICIENT' }] } } } }, 'google_scope_insufficient']]) {
     assert.deepEqual(safeGoogleFailure({ ...error, message: 'sensitive', headers: { authorization: 'sensitive' } }), { code });
+  }
+});
+
+test('administrator CLI negative mode uses hidden input and never invokes Google; it stops at the first unexpected gate', () => {
+  // The actual CLI executes in a child with a simulated TTY and in-process HTTP
+  // handler. No real token, network, terminal capture or Workspace call is used.
+  const routeUrl = new URL('../../src/server/google/diagnostic.js', import.meta.url).href;
+  for (const disabled of [false, true]) {
+    const setup = `
+      import assert from 'node:assert/strict';
+      import { createGoogleDiagnosticHandler } from ${JSON.stringify(routeUrl)};
+      const token = 'ab'.repeat(32);
+      const handler = createGoogleDiagnosticHandler({ env: {
+        VERCEL: '1', VERCEL_ENV: 'production', PROYECTOS_GOOGLE_DIAGNOSTICS_ENABLED: ${JSON.stringify(disabled ? 'false' : 'true')},
+        PROYECTOS_GOOGLE_DIAGNOSTICS_TOKEN: token,
+        PROYECTOS_GOOGLE_DIAGNOSTICS_EXPIRES_AT: new Date(Date.now() + 600000).toISOString(),
+      }, diagnose: () => assert.fail('negative mode must never invoke Google') });
+      Object.defineProperty(process.stdin, 'isTTY', { value: true });
+      Object.defineProperty(process.stdout, 'isTTY', { value: true });
+      process.stdin.setRawMode = () => {};
+      globalThis.fetch = async (url, options) => {
+        assert.equal(new URL(url).origin, 'https://website-2027-seven.vercel.app');
+        assert.equal(options.redirect, 'error');
+        return handler(new Request(url, options));
+      };
+      setImmediate(() => {
+        process.stdin.emit('keypress', token, {});
+        process.stdin.emit('keypress', '\\r', { name: 'return' });
+      });
+    `;
+    const child = spawnSync(process.execPath, ['--import', `data:text/javascript,${encodeURIComponent(setup)}`,
+      'scripts/proyectos/google-check.mjs', '--production', '--negative'], { encoding: 'utf8', timeout: 15000 });
+    assert.equal(child.status, disabled ? 1 : 0, child.stderr);
+    assert(!child.stdout.includes('ab'.repeat(32)));
+    const rows = child.stdout.split('\n').filter(line => line.startsWith('{')).map(line => JSON.parse(line));
+    assert.equal(rows.length, disabled ? 1 : 8);
+    assert(rows.every(row => row.ok === !disabled));
   }
 });
 

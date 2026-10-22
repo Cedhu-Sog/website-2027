@@ -1,4 +1,4 @@
-import { GoogleConnectionError } from './config.js';
+import { GoogleConnectionError, safeGoogleFailure } from './config.js';
 
 const DRIVE = 'https://www.googleapis.com/drive/v3';
 const SHEETS = 'https://sheets.googleapis.com/v4/spreadsheets';
@@ -12,9 +12,14 @@ const FILE_FIELDS = 'id,name,mimeType,parents,driveId,trashed';
  */
 export function createGoogleRepository(client, config, { signal } = {}) {
   async function get(url, params) {
-    const response = await client.request({ url, params, method: 'GET', responseType: 'json',
-      timeout: 4000, retry: false, maxRedirects: 0, maxContentLength: 262144, signal });
-    return response.data;
+    try {
+      const response = await client.request({ url, params, method: 'GET', responseType: 'json',
+        timeout: 4000, retry: false, maxRedirects: 0, maxContentLength: 262144, signal });
+      return response.data;
+    } catch (error) {
+      const service = url.startsWith(`${DRIVE}/`) ? 'drive' : 'sheets';
+      throw new GoogleConnectionError(`${service}_${safeGoogleFailure(error).code.replace(/^google_/, '')}`);
+    }
   }
 
   async function checkServiceAccount() {

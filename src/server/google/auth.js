@@ -44,10 +44,17 @@ export function createGoogleClient({ env = process.env, now = Date.now, signal,
             maxTokenAge: '1h',
             currentDate: new Date(now()),
           });
-          if (payload.environment !== 'production' || payload.sub !== GOOGLE_IDENTITY.subject ||
-              payload.iss !== GOOGLE_IDENTITY.issuer || payload.aud !== GOOGLE_IDENTITY.audience ||
-              payload.project_id !== projectId) throw new Error('identity');
-        } catch { throw new GoogleConnectionError('oidc_invalid'); }
+          if (payload.aud !== GOOGLE_IDENTITY.audience) throw new GoogleConnectionError('oidc_audience_invalid');
+          if (payload.sub !== GOOGLE_IDENTITY.subject) throw new GoogleConnectionError('oidc_subject_invalid');
+          if (payload.environment !== 'production' || payload.iss !== GOOGLE_IDENTITY.issuer ||
+              payload.project_id !== projectId) throw new GoogleConnectionError('oidc_invalid');
+        } catch (error) {
+          if (error instanceof GoogleConnectionError) throw error;
+          // JOSE identifies the failed claim. Never expose its message/payload.
+          if (error?.code === 'ERR_JWT_CLAIM_VALIDATION_FAILED' && error.claim === 'aud') throw new GoogleConnectionError('oidc_audience_invalid');
+          if (error?.code === 'ERR_JWT_CLAIM_VALIDATION_FAILED' && error.claim === 'sub') throw new GoogleConnectionError('oidc_subject_invalid');
+          throw new GoogleConnectionError('oidc_invalid');
+        }
         return token;
       },
     },
