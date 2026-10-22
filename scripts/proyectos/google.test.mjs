@@ -289,6 +289,24 @@ test('HTTP diagnostic is closed by default, in Preview, on expiry and with inval
   }
 });
 
+test('temporary gate evidence contains only a fixed event and booleans, never environment or credential values', async () => {
+  const messages = [];
+  const original = console.info;
+  console.info = message => messages.push(message);
+  try {
+    const handler = createGoogleDiagnosticHandler({ env: { ...env, VERCEL: '' }, now,
+      diagnose: () => assert.fail('closed gate must not contact Google') });
+    assert.equal((await handler(request())).status, 404);
+  } finally { console.info = original; }
+  assert.equal(messages.length, 1);
+  const data = JSON.parse(messages[0]);
+  assert.deepEqual(Object.keys(data), ['event', 'vercelRuntime', 'productionEnvironment', 'productionTarget', 'canonicalExpiry', 'withinWindow', 'tokenFormat']);
+  assert.equal(data.event, 'cedhu_google_gate_closed');
+  assert(Object.entries(data).filter(([key]) => key !== 'event').every(([, value]) => typeof value === 'boolean'));
+  assert.equal(data.vercelRuntime, false);
+  for (const value of [env.PROYECTOS_GOOGLE_DIAGNOSTICS_TOKEN, env.PROYECTOS_DRIVE_ROOT_ID, env.GCP_SERVICE_ACCOUNT_EMAIL]) assert(!messages[0].includes(value));
+});
+
 test('accepts the exact 20-minute boundary and UTC seconds; the same deployment closes at its absolute expiry', async () => {
   let time = start;
   let calls = 0;

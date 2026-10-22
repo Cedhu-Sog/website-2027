@@ -61,6 +61,16 @@ export function createGoogleDiagnosticHandler({ env = process.env, now = Date.no
         !Number.isFinite(expiresAt) || new Date(expiresAt).toISOString() !== canonicalExpiry ||
         expiresAt <= currentTime || expiresAt - currentTime > 20 * 60 * 1000 ||
         typeof token !== 'string' || !/^[a-f0-9]{64}$/.test(token)) {
+      if (env.PROYECTOS_GOOGLE_DIAGNOSTICS_ENABLED === 'true') {
+        // Temporary server-only evidence: fixed keys and booleans, no values.
+        console.info(JSON.stringify({ event: 'cedhu_google_gate_closed',
+          vercelRuntime: env.VERCEL === '1', productionEnvironment: env.VERCEL_ENV === 'production',
+          productionTarget: !env.VERCEL_TARGET_ENV || env.VERCEL_TARGET_ENV === 'production',
+          canonicalExpiry: Number.isFinite(expiresAt) && new Date(expiresAt).toISOString() === canonicalExpiry,
+          withinWindow: expiresAt > currentTime && expiresAt - currentTime <= 20 * 60 * 1000,
+          tokenFormat: typeof token === 'string' && /^[a-f0-9]{64}$/.test(token),
+        }));
+      }
       return projectsJson({ code: 'not_found' }, 404);
     }
     if (request.method !== 'POST') return projectsJson({ code: 'method_not_allowed' }, 405, { Allow: 'POST' });
