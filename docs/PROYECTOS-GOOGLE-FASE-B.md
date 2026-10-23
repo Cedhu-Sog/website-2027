@@ -5,7 +5,142 @@ Workspace. Se retira el diagnóstico del código desplegable y se publica el cie
 Las secciones de preparación conservan la evidencia previa; el resultado de
 ejecución figura al final. Este documento no acredita conexión con Workspace.
 
-## Producción comprobada antes de activar
+## Segundo intento — Etapa 1 preparada, pendiente de autorización
+
+La nueva autorización limita esta etapa a preparación local y consultas remotas
+de lectura. No se hizo commit, push, despliegue, cambio WAF, configuración de
+secretos ni activación. No se inició ninguna ventana y no se consultó Google.
+Los apartados posteriores conservan el historial del primer intento.
+
+Estado remoto comprobado: `dpl_D7wHHoueKojzZDQohyEdqvzea4vP`, READY, commit
+`18d6047d80da48c6d1d3161cd4185a5f2853db42`, asignado al dominio principal.
+Fase A y el cierre anterior están disponibles. Sin despliegues concurrentes.
+Las nueve variables de Google/recursos siguen presentes solo en Production,
+sin modificar sus valores. `ENABLED=false` leído individualmente; TOKEN y
+EXPIRES_AT ausentes. La configuración local autorizada sigue válida en formato.
+El panel autenticado ofrece Secret con campo oculto y Production seleccionado;
+se inspeccionó vacío y se cerró sin guardar. El CLI Vercel no está instalado:
+se usará el conector autenticado y la integración Git existente, sin instalar nada.
+
+### Formato y transporte del secreto
+
+La causa exacta de los caracteres recibidos por el primer deployment no se conoce:
+el log solo acreditó `tokenFormat=false`. El comprobador de portapapeles llegó a
+mostrar formato válido, pero eso no acreditó el valor del snapshot ya desplegado.
+No se atribuye el incidente a Google ni se afirma haber leído aquel secreto.
+
+Se recuperaron exclusivamente la ruta, handler, CLI y pruebas desde `7aa2af6`;
+no se revirtió el cierre ni se tocaron los módulos IAM/Workspace existentes.
+Cambios dirigidos para el segundo intento:
+
+- `diagnostic-access.js`: validación compartida, longitud exactamente 64,
+  exclusivamente `a-f0-9`, sin normalizar ni recortar. La longitud explícita
+  también rechaza el salto final que puede admitir el ancla `$` de JavaScript.
+- `google-diagnostic-prebuild.mjs`: con ENABLED=true, formato/entorno/fecha y
+  configuración del servidor inválidos abortan el build antes de publicar.
+  Con ENABLED=false no activa nada ni consulta servicios. Errores de texto fijo.
+- `google-session.ps1`: genera 32 bytes CSPRNG solamente después de autorización
+  y `-Start`, conserva el valor en memoria y lo copia una vez al panel. `R` permite
+  recuperar el mismo valor si se sobrescribe el portapapeles; nunca regenera.
+- Tras un único pegado humano en Secret/Production, el cliente recibe el MISMO
+  valor residente por pipe anónimo, exactamente 64 bytes ASCII, sin BOM ni newline,
+  argumentos, variables de entorno o archivo. No hay que volver a pegarlo al CLI.
+- `npm run proyectos:google:probe -- --all --stdin-secret` conserva la entrada
+  oculta TTY alternativa. Ejecuta ocho negativos y luego una sola lectura real.
+  La petición `credential_match` exige HTTP 400 `invalid_request` después de la
+  comparación segura: demuestra coincidencia cliente-servidor sin consultar Google.
+  Si obtiene 401, 404, WAF, redirección o una salida inesperada, se detiene y cierra.
+- El handler conserva POST, comparación constante, vencimiento absoluto máximo
+  de 20 minutos, IDs exclusivamente del servidor, no-store y todos los controles
+  JWT. Se retiró el logging temporal del gate; no se añaden logs de credenciales.
+
+La garantía de coincidencia con Production se obtiene en esa comprobación HTTP,
+no por afirmar que leer el portapapeles demuestra lo guardado. En Etapa 1 no existe
+un secreto real nuevo que pueda compararse con Production.
+
+### Validación específica y cierre preparado
+
+Node 22.23.4 existente: 24/24 pruebas Google, incluidos casos de formato, apagado,
+expiración exacta, autorización y transporte real por npm con HTTP simulado.
+`google-session.ps1 -SelfTest`: fixtures públicas válidas e inválidas y transporte
+PowerShell→Node sin alterar bytes; no genera secreto ni hace solicitudes remotas.
+Build Astro SSG con `check:proyectos:build` correcto; 462 archivos versionables y
+501 públicos sin valores privados. CMS, estilos y autenticación no se editaron.
+No se repitieron suites extensas sin cambios ni se añadieron dependencias.
+
+`google-close.mjs` prepara/restaura diez rutas exactas respecto a `18d6047`, con
+huellas de contenido y rechazo previo si detecta cambios ajenos. No usa reset,
+force push ni borrados recursivos. `--self-test` aplicó el cierre local,
+comprobó cada archivo y 13/13 pruebas del baseline, y restauró exactamente el
+diagnóstico preparado. El manifiesto ignorado no contiene secretos.
+
+Comandos listos, para el agente, únicamente durante Etapa 2:
+
+```text
+git add -- api/proyectos/google-diagnostic.js src/server/google/diagnostic.js src/server/google/diagnostic-access.js scripts/proyectos/google-check.mjs scripts/proyectos/google.test.mjs scripts/proyectos/google-diagnostic-prebuild.mjs scripts/proyectos/google-session.ps1 scripts/proyectos/google-close.mjs package.json vercel.json docs/PROYECTOS-GOOGLE-FASE-B.md docs/PROYECTOS-GOOGLE.md
+git commit -m "fix(proyectos): prepare second controlled Workspace probe"
+git push origin master
+& '.vercel/local-node22-validation-20261021/node-v22.23.4-win-x64/node.exe' scripts/proyectos/google-close.mjs --check
+& '.vercel/local-node22-validation-20261021/node-v22.23.4-win-x64/node.exe' scripts/proyectos/google-close.mjs --apply
+git add -u -- api/proyectos/google-diagnostic.js src/server/google/diagnostic.js src/server/google/diagnostic-access.js scripts/proyectos/google-check.mjs scripts/proyectos/google.test.mjs scripts/proyectos/google-diagnostic-prebuild.mjs scripts/proyectos/google-session.ps1 scripts/proyectos/google-close.mjs package.json vercel.json docs/PROYECTOS-GOOGLE-FASE-B.md docs/PROYECTOS-GOOGLE.md
+git commit -m "fix(proyectos): close second Workspace connectivity probe"
+git push origin master
+```
+
+Se empleará el Node 22 verificado, no el Node 24 global. La lista exacta está
+en `.vercel/phase-b-2/closure.json`; el push de master inicia cada deployment
+por la integración Git. No se duplica con create_deployment ni se prueba un
+rollback mediante el API que devolvió 403. Staging `skip-domain` no está demostrado
+operativamente con las herramientas disponibles; no se presupone ni se instala CLI.
+
+### Secuencia remota prevista, aún NO iniciada
+
+1. Recibir confirmación operativa explícita de Etapa 2; revisar que no haya
+   cambios de Git/producción y que continúe disponible el margen de uso de Codex.
+2. Aplicar el payload WAF preparado: conservar bloqueos de ambos históricos,
+   bloquear diagnóstico fuera de la terminal administrativa y verificar activo.
+   La IP se guarda solo en `.vercel/phase-b-2/`, no en Git o informes públicos.
+3. Preparar commit local (sin push aún) y panel protegido, autorizar el control
+   local de sesión. El usuario ejecuta el comando que se le facilitará entonces,
+   pega una vez en Secret/Production, guarda, pulsa G en su terminal y avisa aquí.
+   Hasta ese momento ENABLED=false y no se calcula fecha ni arranca la ventana.
+4. Verificar metadatos Secret/Production y sesión local lista; calcular UTC actual
+   +20 minutos, configurar EXPIRES_AT y ENABLED=true, hacer UN push de activación.
+   Build y despliegue cuentan dentro de los 20 minutos; no se amplía el vencimiento.
+5. Confirmar READY, SHA, alias, portal/CMS y admisión WAF con rechazo sin credencial.
+   Marcar control local ready con ID/commit/fecha para que la sesión ejecute
+   automáticamente negativos, coincidencia y una consulta real, sin más pegados.
+   La sesión rechaza comenzar si quedan menos de tres minutos, aplica timeout
+   de dos minutos como máximo y reserva tiempo de cierre. No reintenta sola.
+6. En éxito o fallo: control closed=true/ready=false, WAF Block para todos,
+   ENABLED=false, eliminar TOKEN/EXPIRES_AT en el panel y verificar inventario.
+   Aplicar cierre local, publicar una sola vez y verificar READY/alias/HTTP 404.
+7. Añadir el nuevo host temporal al bloqueo histórico; no retirar los dos previos.
+   Mantener la fecha absoluta efectiva en cada snapshot y verificar WAF. Conservar
+   cierre y Fase A como recuperación; no usar el temporal como respaldo.
+
+No emitir el informe definitivo mientras el nuevo snapshot conserve una capacidad
+temporal vigente: confirmar que pasó su vencimiento absoluto, manteniendo WAF Block,
+o retirar exclusivamente ese deployment de prueba después de verificar el cierre.
+Cambiar variables del proyecto no revoca snapshots. No se borran Fase A, el cierre
+`18d6047` ni los respaldos anteriores. La expiración no se prolonga para verificarla.
+
+En Hobby el cierre `18d6047` será el anterior seguro durante activación. Después
+del cierre siguiente, el anterior puede ser el diagnóstico: no se promete Instant
+Rollback al cierre `18d6047` o a Fase A. Si dejan de ser elegibles, la alternativa
+segura es un nuevo deployment del commit cerrado con variables cerradas, verificando
+READY y dominio. Ante regresión crítica: bloquear diagnóstico, identificar destino
+elegible y comunicar EJECUTAR ROLLBACK MANUAL; no ejecutar el API de rollback.
+
+El margen consultado antes de la autorización tiene 61% disponible en cinco horas
+y 94% semanal; es una instantánea compartida de cuenta, no una reserva o garantía.
+Se volverá a consultar al iniciar Etapa 2 para reducir el riesgo del intento anterior.
+
+**Punto de parada:** preparación terminada; requiere respuesta expresa
+«AUTORIZO LA ETAPA 2 DEL SEGUNDO INTENTO DE FASE B». No ejecutar todavía el
+generador ni crear variables. No comienza Fase C.
+
+## Producción comprobada antes de activar (primer intento)
 
 | Elemento | Evidencia |
 | --- | --- |
@@ -320,6 +455,7 @@ de confirmar READY, ausencia de la ruta y protección de las versiones históric
 
 ## Fuentes contrastadas
 
+- [Vercel: variables Secret y Config](https://vercel.com/docs/environment-variables/sensitive-environment-variables).
 - [Vercel: skip-domain](https://vercel.com/docs/cli/deploy#skip-domain).
 - [Vercel: staging Production](https://vercel.com/docs/cli/deploying-from-cli#deploying-a-staged-production-build).
 - [Vercel: claims OIDC](https://vercel.com/docs/oidc/reference).

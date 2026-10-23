@@ -1,5 +1,10 @@
 # Conexión de servidor: Vercel → Google Workspace
 
+La preparación vigente del segundo intento de Fase B está en
+[Etapa 1 del segundo intento](PROYECTOS-GOOGLE-FASE-B.md#segundo-intento--etapa-1-preparada-pendiente-de-autorización).
+Production conserva el cierre `18d6047`; las referencias de ejecución anteriores
+son históricas. La nueva ventana requiere confirmación operativa independiente.
+
 ## Procedimiento vigente de A: publicación Git y rollback manual supervisado
 
 Este apartado actualiza las incidencias históricas de acceso documentadas más

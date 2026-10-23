@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "prebuild": "npm run check:cms",
+    "prebuild": "node scripts/proyectos/google-diagnostic-prebuild.mjs && npm run check:cms",
     "build": "astro build",
     "postbuild": "npm run check:site",
     "preview": "astro preview",
@@ -19,6 +19,7 @@
     "test:proyectos:google": "node --test scripts/proyectos/google.test.mjs",
     "test:images": "node --test scripts/image-processing.test.mjs",
     "check:proyectos:google": "node scripts/proyectos/google-check.mjs",
+    "proyectos:google:probe": "node scripts/proyectos/google-check.mjs --production",
     "check:proyectos:build": "node scripts/proyectos/verify-build.mjs",
     "proyectos:hash": "node scripts/proyectos/secrets.mjs hash",
     "proyectos:secret": "node scripts/proyectos/secrets.mjs secret"
