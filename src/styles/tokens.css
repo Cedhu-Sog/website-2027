@@ -103,6 +103,10 @@
   --delay-reveal-level: 70ms;
   --delay-reveal-max: 180ms;
   --delay-reveal-actions: 80ms;
+  --delay-reveal-start: 150ms;
+  --delay-reveal-text: 160ms;
+  --delay-reveal-card: 180ms;
+  --delay-reveal-photo: 180ms;
   --duration-hero-rank-float: 3.6s;
   --duration-hero-rank-scale: 250ms;
   --duration-hero-copy: 550ms;
