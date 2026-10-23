@@ -8,4 +8,4 @@ const content = Astro.props.content ?? await getPageSection('inicio', 'newsSecti
 const news = await getNews();
 interface Props { content?: PageSection<'newsSection'>; }
 ---
-<section class="news-section section section--white"><div class="container"><SectionHeader eyebrow={content.eyebrow} title={content.title} href={content.linkHref} linkLabel={content.linkLabel} /><div class="news-grid">{news.filter(item => item.featured).sort((a, b) => a.featuredOrder - b.featuredOrder).slice(0, 3).map(item => <NewsCard item={item} />)}</div></div></section>
+<section class="news-section section section--white"><div class="container"><div data-reveal="up"><SectionHeader eyebrow={content.eyebrow} title={content.title} href={content.linkHref} linkLabel={content.linkLabel} /></div><div class="news-grid" data-reveal-group>{news.filter(item => item.featured).sort((a, b) => a.featuredOrder - b.featuredOrder).slice(0, 3).map(item => <div data-reveal="up" data-reveal-preset="news"><NewsCard item={item} /></div>)}</div></div></section>

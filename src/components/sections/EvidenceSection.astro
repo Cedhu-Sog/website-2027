@@ -11,15 +11,15 @@ const recognitions = await getRecognitions();
 
 <section class="evidence section" id="evidencia-cedhu" aria-labelledby="evidence-title">
   <div class="container">
-    <header class="evidence__header">
+    <header class="evidence__header" data-reveal="up">
       <p class="eyebrow">{content.eyebrow}</p>
       <h2 id="evidence-title">{content.title}</h2>
       <p class="evidence__introduction">{content.introduction}</p>
     </header>
 
-    <div class="evidence__grid">
+    <div class="evidence__grid" data-reveal-group>
       {content.cards.map(card => (
-        <article class={`evidence-card evidence-card--${card.id}`} aria-labelledby={`evidence-${card.id}`}>
+        <div class="evidence__reveal" data-reveal="up"><article class={`evidence-card evidence-card--${card.id}`} aria-labelledby={`evidence-${card.id}`}>
           <div class="evidence-card__photo">
             <Photo name={card.image} sizes="(min-width: 1440px) 302px, (min-width: 1280px) 22vw, (min-width: 768px) 44vw, 91vw" />
           </div>
@@ -47,7 +47,7 @@ const recognitions = await getRecognitions();
               </a>
             )}
           </div>
-        </article>
+        </article></div>
       ))}
     </div>
 

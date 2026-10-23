@@ -8,13 +8,13 @@ interface Props { content?: PageSection<'admissionsCta'>; }
 ---
 <section class="admissions-cta" aria-labelledby="admissions-cta-title">
   <div class="container admissions-cta__inner">
-    <div>
+    <div data-reveal="up" data-reveal-preset="cta">
       <p class="eyebrow">{content.eyebrow}</p>
       <h2 id="admissions-cta-title">{content.titleStart}<br />{content.titleEnd}</h2>
     </div>
     <div>
-      <p>{content.description}</p>
-      <div class="admissions-cta__actions">
+      <p data-reveal="fade" data-reveal-preset="cta">{content.description}</p>
+      <div class="admissions-cta__actions" data-reveal="up" data-reveal-preset="cta" data-reveal-delay="actions">
         <a class="button" href={content.linkHref}>
           <Icon name="arrow" /><span class="admissions-cta__label-full">{content.linkLabel}</span><span class="admissions-cta__label-short">Visítanos</span>
         </a>

@@ -25,7 +25,7 @@
 .hero__description { max-width: 33rem; margin-top: var(--space-sm); font-size: var(--text-intro); line-height: 1.55; }
 .hero__copy .actions { margin-top: var(--space-sm); gap: .8rem 1.5rem; }
 .hero__copy .button { font-size: .85rem; }
-.hero__visual { position: relative; isolation: isolate; padding-top: 4rem; min-width: 0; }
+.hero__visual { position: relative; isolation: isolate; padding-top: 4rem; padding-bottom: 2.5rem; min-width: 0; }
 .hero__photo { position: relative; }
 .hero__caption-top { display: flex; justify-content: space-between; align-items: center; max-width: 55%; padding: 0 0 .6rem; font-size: .75rem; font-weight: 600; letter-spacing: .12em; }
 .hero__photo > img { width: 100%; aspect-ratio: 1.65; object-fit: cover; object-position: 50% 55%; border-radius: var(--radius-editorial) var(--radius-sm) var(--radius-sm) var(--radius-sm); box-shadow: var(--shadow-menu); }
@@ -36,16 +36,16 @@
 .hero__campus img { aspect-ratio: 16 / 9; }
 .hero__play img { border-bottom-right-radius: var(--radius-editorial); }
 .hero__moments figcaption { margin-top: var(--space-xs); color: var(--color-text-muted); font-size: var(--text-small); line-height: 1.4; }
-.hero__inset { display: block; position: absolute; top: 0; right: .25rem; width: 8rem; padding: .45rem; background: var(--color-surface); transform: rotate(5deg); text-decoration: none; box-shadow: var(--shadow-menu); transition: transform var(--duration-fast); }
-.hero__inset:hover, .hero__inset:focus-visible { transform: rotate(0); }
+.hero__inset { display: block; position: absolute; top: 0; right: .25rem; width: 8.5rem; padding: .45rem; background: var(--color-surface); transform: translate(var(--hero-track-x, 0px), calc(var(--hero-track-y, 0px) + var(--hero-float-y, 0px))) rotate(5deg); text-decoration: none; box-shadow: var(--shadow-menu); transition: rotate var(--duration-fast); }
+.hero__inset:hover, .hero__inset:focus-visible { rotate: -5deg; }
 .hero__inset img { width: 100%; aspect-ratio: 1.2; object-fit: cover; }
 .hero__inset > span { display: flex; gap: .5rem; justify-content: space-between; margin-top: .5rem; font-size: .75rem; line-height: 1.5; }
 .hero__foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-sm); border-top: 1px solid var(--color-line); padding-top: var(--space-md); font-size: .75rem; }
 .hero__foot p { display: none; color: var(--color-text-muted); }
 .hero__foot a { display: inline-flex; align-items: center; gap: var(--space-md); min-height: 2.75rem; text-decoration: none; }
 .hero__foot > span { font-size: .75rem; letter-spacing: .08em; }
-/* Static rules above remain the fallback. Translate composes with the
-   Polaroid's existing rotation and its hover/focus transition. */
+/* Typed ambient offset keeps the float independent of entrance and tracking. */
+@property --hero-float-y { syntax: '<length>'; inherits: false; initial-value: 0px; }
 @media (prefers-reduced-motion: no-preference) {
   html:not([data-motion="reduced"]) .hero__copy > :is(.eyebrow, h1, .hero__description, .actions) {
     animation: hero-copy-enter var(--duration-hero-copy) var(--ease-standard) backwards;
@@ -57,8 +57,14 @@
   html:not([data-motion="reduced"]) .hero__photo > figcaption { animation: hero-copy-enter var(--duration-hero-ribbon) var(--ease-standard) var(--duration-hero-stagger) backwards; }
 }
 @media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="reduced"]) .hero__inset { --hero-polaroid-travel: -3px; animation: hero-polaroid-float var(--duration-hero-polaroid) ease-in-out -2s infinite; }
-  html:not([data-motion="reduced"]) .hero__inset:is(:hover, :focus-visible) { animation-play-state: paused; }
+  html:not([data-motion="reduced"]) .hero__inset {
+    --hero-polaroid-travel: -3px;
+    animation: hero-polaroid-enter var(--duration-hero-inset-enter) var(--ease-standard) var(--delay-hero-polaroid) backwards,
+      hero-polaroid-float var(--duration-hero-polaroid) ease-in-out -2s infinite;
+  }
+  html:not([data-motion="reduced"]) .hero__inset[data-hero-entered] { animation-name: none, hero-polaroid-float; }
+  html:not([data-motion="reduced"]) .hero__inset:is(:hover, :focus-visible) { animation-play-state: running, paused; }
+  html:not([data-motion="reduced"]) .hero__inset:focus-visible { opacity: 1; animation-name: none, hero-polaroid-float; }
 }
 @media (prefers-reduced-motion: no-preference) and (min-width: 48rem) {
   html:not([data-motion="reduced"]) .hero__inset { --hero-polaroid-travel: -8px; }
@@ -72,12 +78,16 @@
   to { opacity: 1; transform: translateY(0); }
 }
 @keyframes hero-polaroid-float {
-  0%, 100% { translate: 0 0; }
-  50% { translate: 0 var(--hero-polaroid-travel); }
+  0%, 100% { --hero-float-y: 0px; }
+  50% { --hero-float-y: var(--hero-polaroid-travel); }
+}
+@keyframes hero-polaroid-enter {
+  from { opacity: .3; translate: 12px 10px; rotate: 3deg; }
+  to { opacity: 1; translate: 0 0; rotate: 0deg; }
 }
 @media (min-width: 48rem) {
   /* Size follows the copy column; each phrase stays intact beside the collage. */
-  .hero__title-line { white-space: nowrap; }
+  .hero__title-line { white-space: normal; }
   .hero { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); column-gap: 3rem; align-items: center; padding-top: 3rem; }
   .hero__foot { grid-column: 1 / -1; }
   .hero__foot p { display: block; }
@@ -93,14 +103,15 @@
 @media (min-width: 62rem) {
   .hero { padding-top: clamp(var(--space-sm), 3svh, 2.7rem); row-gap: clamp(var(--space-sm), 2.5svh, 2.5rem); }
   .hero__visual { width: min(100%, clamp(22rem, calc(70svh - 9rem), 35rem)); justify-self: center; padding-top: clamp(3rem, 6svh, 4rem); }
-  .hero__inset { width: clamp(8rem, 18svh, 10.5rem); }
+  .hero__visual { --hero-inset-width: clamp(8.5rem, 19svh, 11rem); }
+  .hero__inset { width: var(--hero-inset-width); }
   .hero__foot { padding-top: clamp(var(--space-xs), 1.5svh, var(--space-md)); }
 }
 
 /* Laptop collage: keep the existing DOM and reserve the larger track for the student. */
 @media (min-width: 1025px) and (max-width: 1440px) {
   /* Equal block padding centers the photographs rather than their empty top clearance. */
-  .hero__visual { --hero-inset-width: clamp(7rem, 10vw, 8.5rem); display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); gap: var(--space-xs) var(--space-sm); width: 100%; padding: clamp(5rem, 11svh, 6rem) 0; }
+  .hero__visual { --hero-inset-width: clamp(7.5rem, 10.8vw, 9rem); display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); gap: var(--space-xs) var(--space-sm); width: 100%; padding: clamp(5rem, 11svh, 6rem) 0; }
   .hero__caption-top { grid-column: 1; max-width: calc(100% - var(--hero-inset-width) - var(--space-xs)); }
   .hero__photo { grid-column: 1; grid-row: 2; min-height: 0; aspect-ratio: 1.12; align-self: stretch; }
   .hero__photo > img { position: absolute; inset: 0; height: 100%; aspect-ratio: auto; object-position: 55% 50%; }
@@ -111,6 +122,12 @@
   .hero__play { position: relative; }
   .hero__play figcaption { position: absolute; top: 100%; left: 0; }
   .hero__inset { position: relative; grid-column: 2; grid-row: 2; align-self: start; justify-self: end; top: auto; right: auto; width: var(--hero-inset-width); margin: calc(var(--hero-inset-width) * -.7) var(--space-xs) 0 0; }
+}
+
+/* Stacked collages reserve an upper pocket for the whole Polaroid, including
+   its tilt and float. It cannot cover faces as copy or viewport height changes. */
+@media (max-width: 1024px), (min-width: 1441px) {
+  .hero__visual { padding-top: calc(var(--hero-inset-width, 8.5rem) * 1.35); }
 }
 
 /* The crown's ambient motion remains independent of the triggered cycle. */

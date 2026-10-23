@@ -10,9 +10,9 @@ const content = Astro.props.content ?? await getPageSection('inicio', 'campusMod
 <section class="campus-model-section section" aria-label={content.eyebrow}>
   <div class="campus-model container">
     <header class="campus-model__copy">
-      <p class="eyebrow">{content.eyebrow}</p>
-      <h2>{content.title}</h2>
-      <p class="campus-model__description">{content.description}</p>
+      <p class="eyebrow" data-reveal="up">{content.eyebrow}</p>
+      <h2 data-reveal="up">{content.title}</h2>
+      <p class="campus-model__description" data-reveal="fade">{content.description}</p>
     </header>
   </div>
   <figure class="campus-model__figure">

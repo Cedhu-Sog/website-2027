@@ -35,6 +35,9 @@
     box-shadow var(--duration-normal) var(--ease-standard);
 }
 
+/* The outer reveal leaves the card's independent hover transform intact. */
+.evidence__reveal { min-width: 0; display: grid; }
+
 .evidence-card__photo { overflow: hidden; }
 
 .evidence-card__photo img {

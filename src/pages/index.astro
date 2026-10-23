@@ -13,6 +13,7 @@ import EvidenceSection from '../components/sections/EvidenceSection.astro';
 import NewsSection from '../components/sections/NewsSection.astro';
 import FAQ from '../components/sections/FAQ.astro';
 import AdmissionsCTA from '../components/sections/AdmissionsCTA.astro';
+import '../styles/motion.css';
 const page = await getPage('inicio');
 ---
 <BaseLayout title={page.title} description={page.description} seo={page.seo}>
@@ -24,3 +25,8 @@ const page = await getPage('inicio');
   <EvidenceSection />
   <NewsSection /><FAQ compact /><AdmissionsCTA />
 </BaseLayout>
+<script>
+  import { initScrollReveal } from '../scripts/animations/scroll-reveal';
+  const main = document.querySelector('main');
+  if (main) initScrollReveal(main);
+</script>

@@ -9,8 +9,8 @@ interface Props { content?: PageSection<'quickAccess'>; }
 ---
 <section class="quick-access" aria-labelledby="quick-title">
   <div class="container quick-access__inner">
-    <div><p class="eyebrow">{content.eyebrow}</p><h2 id="quick-title">{content.titleStart}<br />{content.titleEnd}</h2></div>
-    <nav class="quick-access__links" aria-label="Accesos de la comunidad CEDHUISTA">
+    <div data-reveal="up" data-reveal-preset="quick"><p class="eyebrow">{content.eyebrow}</p><h2 id="quick-title">{content.titleStart}<br />{content.titleEnd}</h2></div>
+    <nav data-reveal="up" data-reveal-preset="quick" class="quick-access__links" aria-label="Accesos de la comunidad CEDHUISTA">
       {links.map(link => (
         <a href={link.platform ? site[link.platform] : link.href} target={link.external ? '_blank' : undefined} rel={link.external ? 'noopener noreferrer' : undefined}>
           <span><strong>{link.label}</strong><span>{link.detail}</span></span>
