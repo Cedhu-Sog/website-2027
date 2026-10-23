@@ -53,13 +53,19 @@
   html:not([data-motion="reduced"]) .hero__copy > h1 { animation-delay: var(--duration-hero-stagger); }
   html:not([data-motion="reduced"]) .hero__copy > .hero__description { animation-delay: calc(var(--duration-hero-stagger) * 2); }
   html:not([data-motion="reduced"]) .hero__copy > .actions { animation-delay: calc(var(--duration-hero-stagger) * 3); }
-  html:not([data-motion="reduced"]) .hero__photo > img { animation: hero-photo-enter var(--duration-hero-photo) var(--ease-standard) backwards; }
+  /* Figures keep each secondary photograph and its caption in one entrance.
+     The main caption retains its independent ribbon animation. */
+  html:not([data-motion="reduced"]) :where(.hero__photo > img, .hero__campus, .hero__play) {
+    animation: hero-photo-enter var(--duration-hero-photo) var(--ease-hero-photo) backwards;
+  }
+  html:not([data-motion="reduced"]) .hero__campus { animation-delay: var(--delay-hero-photo-step); }
+  html:not([data-motion="reduced"]) .hero__play { animation-delay: calc(var(--delay-hero-photo-step) * 2); }
   html:not([data-motion="reduced"]) .hero__photo > figcaption { animation: hero-copy-enter var(--duration-hero-ribbon) var(--ease-standard) var(--duration-hero-stagger) backwards; }
 }
 @media (prefers-reduced-motion: no-preference) {
   html:not([data-motion="reduced"]) .hero__inset {
     --hero-polaroid-travel: -3px;
-    animation: hero-polaroid-enter var(--duration-hero-inset-enter) var(--ease-standard) var(--delay-hero-polaroid) backwards,
+    animation: hero-polaroid-enter var(--duration-hero-inset-enter) var(--ease-hero-expressive) var(--delay-hero-polaroid) backwards,
       hero-polaroid-float var(--duration-hero-polaroid) ease-in-out -2s infinite;
   }
   html:not([data-motion="reduced"]) .hero__inset[data-hero-entered] { animation-name: none, hero-polaroid-float; }
@@ -74,16 +80,20 @@
   to { opacity: 1; transform: translateY(0); }
 }
 @keyframes hero-photo-enter {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(var(--hero-photo-travel, var(--distance-hero-photo))) scale(.96); }
+  to { opacity: 1; transform: none; }
+}
+@media (width < 48rem) {
+  .hero__visual { --hero-photo-travel: var(--distance-hero-photo-mobile); }
 }
 @keyframes hero-polaroid-float {
   0%, 100% { --hero-float-y: 0px; }
   50% { --hero-float-y: var(--hero-polaroid-travel); }
 }
 @keyframes hero-polaroid-enter {
-  from { opacity: .3; translate: 12px 10px; rotate: 3deg; }
-  to { opacity: 1; translate: 0 0; rotate: 0deg; }
+  0% { opacity: 0; translate: var(--hero-polaroid-entry-x, -24px) var(--hero-polaroid-entry-y, 12px); rotate: 12deg; scale: .75; }
+  82% { opacity: 1; translate: 0 0; rotate: -1deg; scale: 1.02; }
+  100% { opacity: 1; translate: 0 0; rotate: 0deg; scale: 1; }
 }
 @media (min-width: 48rem) {
   /* Size follows the copy column; each phrase stays intact beside the collage. */
@@ -103,7 +113,7 @@
 @media (min-width: 62rem) {
   .hero { padding-top: clamp(var(--space-sm), 3svh, 2.7rem); row-gap: clamp(var(--space-sm), 2.5svh, 2.5rem); }
   .hero__visual { width: min(100%, clamp(22rem, calc(70svh - 9rem), 35rem)); justify-self: center; padding-top: clamp(3rem, 6svh, 4rem); }
-  .hero__visual { --hero-inset-width: clamp(8.5rem, 19svh, 11rem); }
+  .hero__visual { --hero-inset-width: clamp(8.5rem, 19svh, 11rem); --hero-polaroid-entry-x: -70px; --hero-polaroid-entry-y: 20px; }
   .hero__inset { width: var(--hero-inset-width); }
   .hero__foot { padding-top: clamp(var(--space-xs), 1.5svh, var(--space-md)); }
 }

@@ -1,64 +1,82 @@
-# Hero CEDHU: movimiento y verificación local
+# Hero CEDHU: movimiento expresivo e inercia
 
-Fecha: 23 de octubre de 2026. Trabajo exclusivamente local, sin dependencias, commits, push ni despliegues.
+Verificación local: 23 de octubre de 2026. Esta revisión modifica el hero existente; conserva P1/P2, contenidos, fotografías, enlaces y las animaciones del #1. No se crearon commits ni se ejecutaron push o despliegues durante esta tarea.
 
-## Auditoría
+## Auditoría y cambio realizado
 
-El controlador anterior asignaba cada SVG a puntero o scroll, con una interpolación común de 90 ms. El lápiz, la onda y las figuras solo se movían con scroll; los puntos seguían el puntero en dirección normal. La polaroid flotaba mediante `translate`, tenía rotación/hover mediante `transform` y no pertenecía al tracking. No había entradas diferenciadas para estos motivos. Se preservaron las entradas principales, fotografías, textos, botones y el controlador del `#1`.
+La versión anterior usaba una interpolación exponencial de primer orden: empezaba a moverse con la velocidad más alta y frenaba después. Sus amplitudes nominales eran 3–9 px. Todos los SVG dependían del contenedor fotográfico derecho. Se sustituyó esa respuesta por un resorte crítico de segundo orden con posición y velocidad persistentes, y se trasladó la misma capa decorativa al hero completo.
 
-La referencia ICFES se consultó como página, sin medir su movimiento. Los parámetros siguientes son decisiones propias para CEDHU, basadas en la descripción solicitada.
+La estructura de las columnas, los textos, la prioridad de carga de la fotografía principal y la disposición de las fotografías no se modificaron para crear espacio a decoraciones.
 
-## Comportamiento final
+## Coreografía y perfiles
 
-Amplitudes máximas por eje en píxeles CSS, relativas al neutro. Respuesta: constante de amortiguación exponencial, no un temporizador de espera. Valores completos desde 1200 px; entre 992 y 1199 px se aplica un factor de 0,65. En anchos menores o sin hover/puntero fino no hay tracking ni movimiento decorativo con scroll.
+Las amplitudes son máximos nominales en píxeles CSS, no desplazamientos acumulativos. La respuesta es el tiempo orientativo para aproximarse al destino; no hay temporizadores artificiales por elemento. Las amplitudes efectivas se limitan al espacio libre medido, especialmente en Y. Entre 992 y 1199 px también se aplica un factor de 0,72. Sin puntero fino/hover o por debajo de 992 px no hay tracking ni scroll decorativo.
 
-| Elemento | Entrada (inicio / duración) | Puntero X/Y | Respuesta | Scroll | Tamaño base y ubicación |
+| Elemento | Entrada: inicio / duración | Tracking X/Y | Respuesta | Scroll | Región |
 | --- | --- | --- | --- | --- | --- |
-| Spark | Pop 88%, giro −5° (180 / 450 ms) | Invertido 7/5 px | 130 ms | Ninguno | 1,5 → 1,8 rem; parte superior izquierda del collage, fuera de su etiqueta |
-| Bombillo | Pop 90%, ascenso 6 px (240 / 450 ms) | Normal 8/6 px | 120 ms | X, hasta 14 px | 2,25 → 2,65 rem; centro superior, con margen horizontal |
-| Lápiz | Diagonal 8/10 px, giro 4° (310 / 450 ms) | Normal 6/5 px | 75 ms | Ninguno | 1,4 → 1,6 rem; espacio entre columnas; oculto hasta 1024 px |
-| Onda | Dibujo SVG con `pathLength` y dash (370 / 500 ms) | Normal 9/6 px | 220 ms | Ninguno | 1,1 → 1,375 rem; separación lateral inferior; oculta hasta 1024 px |
-| Figuras | Pop 90%, tres nodos cada 60 ms (450 / 400 ms por nodo) | Invertido 6/7 px | 190 ms | Y, hasta 12 px | 3,6 rem móvil, 3 rem escritorio; variantes compactas de 2,75 rem; bolsillo inferior del collage |
-| Asterisco | Pop 86%, giro −8° (430 / 400 ms) | Invertido 8/5 px | 85 ms | Ninguno | 1,25 → 1,55 rem; perímetro derecho; visible desde 992 px |
-| Puntos | Pop secuencial cada 60 ms (500 / 400 ms por nodo) | Invertido 5/5 px | 145 ms | Ninguno | 1,5 → 1,75 rem; 2,5 → 2,875 rem en collage de portátil; debajo del mosaico, separado de subtítulos |
-| Polaroid | Asentamiento 12/10 px, giro adicional 3° (580 / 600 ms) | Invertido 3/2 px | 240 ms | Ninguno | Aumento aproximado del 5–8%, adaptable; parte superior derecha con espacio reservado cuando el collage está apilado |
+| Spark | 120 / 750 ms; desplazamiento radial 55 px, escala 65%, giro −15°, asentamiento 107% | Invertido 42/32 px | 600 ms | Ninguno | Superior izquierda |
+| Bombillo | 240 / 850 ms; diagonal desde abajo, escala 65→110→100% | Normal 45/32 px | 680 ms | X, 30 px | Bolsillo superior central entre etiqueta y polaroid |
+| Lápiz | 360 / 800 ms; diagonal hasta 80 px y giro 15° | Normal 38/28 px | 520 ms | Ninguno | Superior central, en la transición desde la izquierda |
+| Onda | 480 / 900 ms; trazo SVG más llegada lateral hasta 65 px | Normal 55/38 px | 900 ms | Ninguno | Inferior izquierda |
+| Figuras | 720 ms; 650 ms por figura, inicios separados 90 ms; escala 70%, desplazamientos opuestos hasta 50 px | Invertido 35/45 px | 820 ms | Y, 30 px | Inferior izquierda, separadas de la onda |
+| Asterisco | 600 / 700 ms; llegada de 50 px, escala 65→108→100%, giro 18° | Invertido 48/34 px | 460 ms | Ninguno | Inferior derecha, fuera de fotos y subtítulos |
+| Puntos | 840 ms; 550 ms por punto, separados 90 ms; cadena de llegadas alternas | Invertido 38/30 px | 700 ms | Ninguno | Inferior derecha, separados del asterisco |
+| Polaroid | 960 / 950 ms; diagonal de 70/20 px en escritorio, escala 75%, giro adicional 12° y asentamiento | Invertido 12/9 px | 950 ms | Ninguno | Superior derecha; conserva flotación y hover |
 
-En 320 px el bombillo se reduce a 2,25 rem y se desplaza hacia la izquierda para separarlo de la polaroid. En móvil/tablet se muestran spark, bombillo, figuras y polaroid. Las entradas terminan como máximo a los 1180 ms; la presentación principal no se retrasa.
+Los recorridos de entrada también se ajustan al espacio. Por ejemplo, a 1440×900 el bombillo dispone de aproximadamente 59 px horizontales y 33 px verticales para su entrada diagonal; no se fuerza un recorrido vertical de 70 px que atravesaría la fotografía. El lápiz conserva 80/15 px y la onda 65 px horizontales. Las entradas se solapan y terminan aproximadamente a los 1910 ms; no añaden retraso al texto ni a la fotografía principal.
 
-## Arquitectura y conservación de la composición
+Tamaños: spark 1,9 rem; bombillo 2,75 rem; lápiz 1,7 rem; onda 1,45 rem; figuras 3,2 rem; asterisco 1,65 rem; puntos 2,875 rem. Se conservó el aumento moderado previo de la polaroid. Los tamaños compactos se reducen según el espacio.
 
-- `hero-motion.ts` centraliza amplitudes, signos, ejes de scroll, límites e interpolación. Es independiente del DOM y tiene pruebas nativas de Node.
-- `hero-parallax.ts` amplía el mismo custom element. Un listener de puntero, un listener de scroll y un RAF compartido. La geometría se mide al inicializar, redimensionar o cambiar visibilidad; no en el RAF. La animación se detiene al estabilizarse, ocultar la pestaña o salir el hero del viewport. Se limpian listeners y observadores al desconectar.
-- En SVG, `translate` recibe tracking + scroll; `transform` pertenece a la entrada. Los nodos de figuras/puntos tienen entradas propias y después se desplazan como grupo.
-- En la polaroid, `transform` combina tracking, ángulo base y el offset ambiental tipado `--hero-float-y`; la entrada usa `translate`/`rotate` y opacidad. Hover/foco enderezan el ángulo y pausan la flotación, sin reemplazar el tracking. El foco cancela la entrada pendiente.
-- Cada elemento espera a sus animaciones finitas antes de responder al puntero. La flotación infinita queda excluida de esa espera. Un marcador impide repetir las entradas al cambiar preferencias.
-- Las posiciones siguen el contenedor fotográfico, sin detección de colisiones por JavaScript. Se reserva espacio inferior para figuras/puntos y un bolsillo superior proporcional a la polaroid en los collages apilados. El título admite nuevas líneas dentro de su columna. No se añadieron contenedores HTML.
-- Decoraciones SVG sin eventos ni foco, con el `aria-hidden` original. La polaroid conserva enlace, fotografía, marco y texto. Corona/subrayado no forman parte del tracking. P1/P2 no fueron modificadas por esta tarea.
+## Arquitectura y protección del contenido
 
-## Pruebas ejecutadas
+- Un único custom element/controlador del hero, un listener de puntero y el listener de scroll existente. No se creó un sistema paralelo.
+- Solución analítica de un resorte críticamente amortiguado: velocidad inicial cero, aceleración, frenado y reposo. Al cambiar el objetivo se conserva la velocidad; no se reinicia una transición CSS. Intervalos extremos limitados a 64 ms. Al estabilizar posición y velocidad se detiene el RAF.
+- `hero-motion.ts` centraliza signos, amplitudes, respuesta, scroll, límites y física. Las pruebas verifican consistencia entre pasos de 8 y 16 ms.
+- El mismo ResizeObserver observa hero, texto y collage. La geometría se actualiza al cambiar tamaño/disposición, preferencias o visibilidad. No se miden rectángulos ni se calculan colisiones en pointermove o RAF.
+- Se calculan rectángulos libres por encima y debajo del contenido izquierdo y alrededor de las fotografías. Se preserva un margen nominal de 20 px respecto a esas zonas. Las variables CSS ubican los motivos dentro de los espacios; los límites de viaje restringen la envolvente completa de tracking/scroll. Se normaliza el estado al redimensionar para no pintar un desplazamiento antiguo fuera del nuevo espacio.
+- En escritorio actual hay cuatro motivos a la izquierda del centro: spark, lápiz, onda y figuras. No se mueve la tipografía ni el collage para lograrlo.
+- Si un espacio no admite un motivo, se retira esa decoración. En 1024×768 se retiran asterisco y puntos porque no cabe su bolsillo inferior derecho. En móvil/tablet se conservan spark, bombillo y figuras, además de la polaroid; las entradas tienen distancias menores.
+- Transformaciones independientes: SVG `translate` recibe la posición interactiva; `transform` realiza la entrada. En la polaroid se conservan orientación, offset ambiental tipado, hover/foco y flotación, separados del asentamiento y tracking. La entrada espera a animaciones finitas; nunca espera la flotación infinita. Los marcadores de entrada impiden repetirla al regresar o cambiar preferencias.
+- Decoraciones sin eventos ni foco y con el aria-hidden original. La polaroid conserva su enlace. La corona y el subrayado no pertenecen al tracking.
 
-- `npm run build`: correcto; CMS y comprobación del sitio correctos (31 rutas construidas; comprobador de sitio: 30 páginas, 4294 referencias, 9 PDF).
-- `npm run check:proyectos:build`: correcto, incluidas comprobaciones de salida pública. No se modificaron fuentes de `/proyectos`.
-- `node --test scripts/animations/*.test.mjs`: 16 pruebas correctas (10 del reveal y 6 del hero). Incluyen cuadrantes, límites, ejes de scroll, retorno al neutro, amortiguación entre tasas de refresco, ausencia de mediciones en RAF, parada al estabilizarse, inicialización repetida, reducción de movimiento y limpieza.
-- `git diff --check`: sin errores de espacios; Git informa normalización CRLF/LF de archivos editados.
-- Navegador local: 1440×900, 1366×768, 1024×768, 768×1024, 390×844, 320×844 y comprobación adicional de 1920×1080. Sin desbordamiento horizontal ni colisiones detectadas con las zonas protegidas en el estado final revisado.
-- Puntero real mediante posicionamiento nativo: cuatro esquinas y centro del hero. Bombillo/lápiz/onda positivos y spark/asterisco/figuras/puntos/polaroid negativos. Salida del hero: retorno suave al neutro, conservando solo scroll del bombillo y las figuras. Scroll combinado y reversible. Las pruebas automatizadas verifican además los máximos completos.
-- Coreografía comprobada al recargar mediante estilos calculados: inicios 180/240/310/370/430/450/500/580 ms, secuencias internas de 60 ms y flotación de 7,5 s de la polaroid.
-- Escenarios temporales: B, línea adicional al título; C, párrafo aproximadamente un 50% más largo; D, título/párrafo y ambos enlaces extendidos. B/C comprobados en 1440 y 390 px; D en 1440, 1024, 768, 390 y 320 px. Se ajustó el margen lateral de lápiz/onda y se repitió la comprobación con D. Contenido original restaurado antes de las compilaciones finales; no hay textos de prueba en los archivos finales.
-- Preferencia de movimiento del sitio: cambio en sesión y recarga con preferencia guardada. Todos los motivos visibles, animación desactivada y variables de tracking eliminadas. Cambio de preferencia del SO cubierto por prueba del controlador con dobles de navegador.
-- Tab, foco de la polaroid, enlaces originales, click del `#1` y ancla `#por-que-cedhu` comprobados. El ancla dejó visibles las experiencias de P1. Consola sin errores ni advertencias registradas durante la prueba final.
-- Sin código de página: se abrió una copia temporal del HTML SSG con todas las etiquetas `script` eliminadas, servida con Astro preview. Navegador: 0 scripts, 0 marcadores JS de entrada, 47 objetivos reveal sin opacidad cero; las cuatro imágenes del hero cargadas y con alternativas; 13 objetivos P2 con opacidad 1. La copia se eliminó y el servidor temporal se detuvo. Esto no equivale a cambiar la configuración global de JavaScript del navegador.
+## Pruebas reales
 
-## Límites de la validación
+- `node --test scripts/animations/*.test.mjs`: 16 pruebas correctas. Incluyen límites y signos, scroll independiente, aceleración/frenado, ausencia de oscilación sostenida, continuidad de velocidad al retarget, equivalencia 60/120 Hz, límite del intervalo, RAF que se detiene, listener compartido, limpieza y preferencias. También pasan las diez pruebas de P1.
+- `npm run build`: correcto, incluidas las comprobaciones CMS y del sitio.
+- `npm run check:proyectos:build`: correcto. No se modificaron fuentes de /proyectos.
+- `git diff --check`: sin errores de espacios; Git advierte la normalización habitual CRLF/LF.
+- Navegador a 1440×900, 1366×768, 1024×768, 768×1024, 390×844 y 320×844: sin desbordamiento horizontal ni intersecciones detectadas con las cajas de contenido protegidas en los estados revisados.
+- Puntero real: centro, cuatro direcciones, diagonales entre esquinas, inversiones rápidas, desplazamientos pequeños repetidos, salida y regreso. Comprobaciones sucesivas sin cruces detectados con texto, botones, fotos ni subtítulos. Se midieron aproximadamente 43 px en bombillo, 53 px en onda, 40 px en spark invertido y 11,6 px en polaroid. Las velocidades y retardos perceptivos se complementaron con las pruebas matemáticas del resorte.
+- Scroll con puntero fuera: en una muestra a scrollY 225 px solo había desplazamiento X del bombillo e Y de figuras (aproximadamente 5,1 px cada uno); los demás motivos estaban en cero. Retorno mediante Home y progresión inversa comprobados. El máximo nominal de 30 px está cubierto por pruebas.
+- Entradas: nombres, duraciones, inicios y recorridos comprobados al recargar con estilos calculados; nodos secuenciales tienen animaciones propias. La foto y el texto conservan sus animaciones anteriores.
+- Movimiento reducido: activado durante la sesión y recarga con preferencia guardada; motivos en su estado final, animaciones desactivadas y variables de tracking eliminadas. Preferencia del SO cubierta por el doble de navegador en pruebas; no se emuló el ajuste del SO desde la interfaz.
+- Navegación: Tab, enlaces, click del #1 y ancla de WhyCedhu. P1 quedó visible tras el ancla; los siete objetivos de Technology alcanzaron done. No se modificó ningún archivo del sistema P1/P2.
+- Contenido temporal: título adicional que produce tres líneas en escritorio; párrafo aproximadamente 50% mayor; etiquetas de ambos botones extendidas; combinación de los tres. Casos individuales revisados en 1440 y 390 px, con puntero extremo en escritorio. Combinación revisada en las seis resoluciones, con puntero extremo en 1440, 1366 y 1024. Sin cruces ni overflow detectados. Todo el contenido ficticio se restauró antes de la compilación final.
+- Consola del navegador sin errores ni advertencias nuevas registradas.
 
-No se ejecutaron Lighthouse, mediciones comparativas de LCP ni pruebas en dispositivos físicos o varios motores de navegador. Se conservaron el `priority`/`fetchpriority`, las fotografías y el markup de carga originales. No hay comprobador estático TypeScript/Astro independiente instalado; la compilación Astro y las pruebas nativas de TypeScript mediante Node pasaron.
+## Limitaciones y decisiones deliberadas
 
-Permanecen las advertencias conocidas de colección `eventos` vacía y chunk mayor de 500 kB. No aparecieron advertencias nuevas de compilación.
+Con la combinación extrema de título, párrafo y botones largos a 1366×768, el texto elimina los bolsillos libres de la izquierda. Se retiran esos motivos y permanecen bombillo, asterisco, puntos y polaroid. A 1440×900 ese escenario conserva tres motivos en la mitad izquierda, retirando la onda. Se prioriza la lectura y no se desplazan los textos para mantener una cantidad fija de decoraciones.
 
-## Evidencia visual
+Las amplitudes nominales no se garantizan completas en todos los ejes y tamaños: por ejemplo, el movimiento vertical de asterisco/puntos se reduce en su bolsillo inferior. Las amplitudes horizontales principales sí son amplias donde caben. No se ejecutaron Lighthouse, mediciones comparativas de LCP, pruebas en dispositivos físicos ni varios motores. Se preservó la carga prioritaria de la fotografía. No hay comprobador estático TypeScript/Astro independiente instalado; compilación y pruebas nativas de TypeScript con Node correctas.
 
-Las capturas muestran la composición final con contenido original, no demuestran por sí mismas el movimiento. Las interacciones realmente ejecutadas se documentan arriba. La captura móvil incluye el hero completo; la barra fija conserva su posición del viewport de 844 px durante la captura.
+No se repitió la prueba visual sin scripts de la revisión previa. La capa SVG es una mejora decorativa que se muestra tras calcular espacios seguros; si no hay JavaScript puede omitirse sin ocultar textos, enlaces ni fotografías. Se conservaron las advertencias de colección eventos vacía y chunk mayor de 500 kB; no se amplió el alcance para resolverlas.
 
-![Escritorio 1440×900](desktop-1440.jpg)
+## Archivos de esta revisión
 
-![Hero móvil 390 px](mobile-390.jpg)
+- src/components/sections/Hero.astro
+- src/scripts/animations/hero-motion.ts
+- src/scripts/animations/hero-parallax.ts
+- src/styles/components/hero.css
+- src/styles/components/hero-decorations.css
+- src/styles/tokens.css
+- scripts/animations/hero-motion.test.mjs
+- docs/qa/hero-motion/README.md
+- docs/qa/hero-motion/desktop-1440.jpg
+- docs/qa/hero-motion/mobile-390.jpg
+
+Las capturas muestran composición, no prueban por sí mismas el movimiento. Las interacciones ejecutadas se describen arriba. La captura móvil abarca el hero completo e incluye la barra fija en su posición del viewport.
+
+![Distribución de escritorio](desktop-1440.jpg)
+
+![Distribución móvil](mobile-390.jpg)

@@ -44,126 +44,91 @@
   }
 }
 .hero-decor--underline { width: 84%; height: .23em; inset-inline-start: 12%; bottom: -.13em; fill: var(--color-accent); }
+/* One stage spans the whole hero. Measured free slots follow content geometry. */
 .hero-decor--photo { display: block; inset: 0; z-index: -1; }
-/* Perimeter positions follow the collage, independently of copy height.
-   Translate owns tracking/scroll; transform owns finite entrance motion. */
-.hero-decor__illustration { position: absolute; width: 1.8rem; height: auto; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; color: var(--color-primary); opacity: .75; translate: var(--hero-track-x, 0px) var(--hero-track-y, 0px); transform-box: fill-box; transform-origin: center; }
-/* Match the rank artwork's screen-space weight across responsive SVG sizes.
-   Denser motifs need a slightly lighter stroke to keep their inner spaces open. */
+.hero-decor__illustration {
+  position: absolute; width: 1.9rem; height: auto; fill: none; stroke: currentColor;
+  stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
+  color: var(--color-hero-decor-fuchsia); opacity: 1;
+  left: var(--hero-slot-x, 12%); top: var(--hero-slot-y, 3rem);
+  translate: var(--hero-track-x, 0px) var(--hero-track-y, 0px);
+  transform-box: fill-box; transform-origin: center; overflow: visible;
+  --hero-enter-from-x: -55px; --hero-enter-from-y: 0px;
+}
+.hero-decor--photo:not([data-hero-layout]) .hero-decor__illustration { opacity: 0; }
+.hero-decor__illustration[data-hero-safe="false"] { display: none; }
 .hero-decor__illustration :is(path, circle) { vector-effect: non-scaling-stroke; }
-.hero-decor__pencil, .hero-decor__geometry { stroke-width: 2; }
-.hero-decor__bulb { width: 2.65rem; left: 34%; top: 0; color: var(--color-accent); opacity: .95; }
-.hero-decor__sparkle { left: 9%; top: .5rem; }
-.hero-decor__geometry { width: 3.6rem; left: 12%; bottom: .25rem; opacity: .65; }
-.hero-decor__pencil, .hero-decor__wave, .hero-decor__asterisk, .hero-decor__dots { display: none; }
+.hero-decor__pencil, .hero-decor__geometry { stroke-width: 2.5; }
+.hero-decor__bulb { width: 2.75rem; color: var(--color-hero-decor-yellow); --hero-enter-from-x: -60px; --hero-enter-from-y: 70px; }
+.hero-decor__pencil { width: 1.7rem; color: var(--color-hero-decor-orange); --hero-enter-from-x: -80px; --hero-enter-from-y: 15px; }
+.hero-decor__wave { width: 1.45rem; color: var(--color-hero-decor-cyan); --hero-enter-from-x: -65px; }
+.hero-decor__geometry { width: 3.2rem; --hero-enter-from-x: -50px; }
+.hero-decor__geometry > :nth-child(1) { stroke: var(--color-hero-decor-fuchsia); }
+.hero-decor__geometry > :nth-child(2) { stroke: var(--color-hero-decor-yellow); }
+.hero-decor__geometry > :nth-child(3) { stroke: var(--color-hero-decor-cyan); }
+.hero-decor__asterisk { width: 1.65rem; color: var(--color-hero-decor-lime); --hero-enter-from-x: -50px; }
+.hero-decor__dots { width: 2.875rem; fill: currentColor; stroke: none; --hero-enter-from-x: -45px; --duration-hero-shape: var(--duration-hero-dot); }
+.hero-decor__dots > :nth-child(1) { fill: var(--color-hero-decor-fuchsia); }
+.hero-decor__dots > :nth-child(2) { fill: var(--color-hero-decor-orange); }
+.hero-decor__dots > :nth-child(3) { fill: var(--color-hero-decor-cyan); }
 .hero-decor--ribbon path { stroke: currentColor; stroke-width: 3; stroke-linecap: round; vector-effect: non-scaling-stroke; }
 .hero-decor--ribbon { position: relative; flex: 0 0 3rem; width: 3rem; height: 2rem; color: var(--color-primary-dark); opacity: .4; margin-inline-start: var(--space-sm); }
-@media (min-width: 48rem) {
-  .hero-decor--ribbon { flex-basis: 4.5rem; width: 4.5rem; }
-  .hero-decor__pencil { display: block; width: 1.6rem; left: -2.25rem; top: 30%; color: var(--color-accent); opacity: .9; }
-  .hero-decor__wave { display: block; width: 1.375rem; left: -2.125rem; top: 65%; opacity: .65; }
-  .hero-decor__geometry { width: 3rem; left: 16%; }
-}
-@media (min-width: 62rem) {
-  .hero-decor__asterisk { display: block; width: 1.55rem; right: -1.75rem; top: 44%; color: var(--color-accent); opacity: .9; }
-  .hero-decor__dots { display: block; width: 1.75rem; right: 8%; bottom: .5rem; fill: currentColor; stroke: none; opacity: .65; }
-}
-@media (min-width: 48rem) and (max-width: 1024px) {
-  .hero-decor__bulb { width: 2.35rem; top: 0; }
-  .hero-decor__geometry { width: 2.75rem; left: 18%; }
-  .hero-decor__pencil, .hero-decor__wave { display: none; }
-}
-@media (min-width: 75rem) {
-  .hero-decor__bulb { left: 42%; top: 0; }
-}
-@media (min-width: 62rem) and (max-height: 50rem) {
-  .hero-decor__bulb { width: 2.35rem; top: 0; }
+@media (width < 62rem) {
+  .hero-decor__bulb { width: 2.35rem; }
   .hero-decor__geometry { width: 2.75rem; }
+  .hero-decor__illustration { --hero-enter-from-x: -24px; --hero-enter-from-y: 8px; }
 }
-@media (width < 48rem) {
-  .hero-decor--background { background: radial-gradient(ellipse at 100% 65%, var(--color-warm), transparent 65%), linear-gradient(135deg, var(--color-surface), var(--color-background)); }
-}
-@media (max-width: 22rem), (min-width: 48rem) and (max-width: 61.99rem) {
-  .hero-decor--ribbon { display: none; }
-}
-@media (max-width: 22rem) {
-  .hero-decor__sparkle { left: 5%; }
-  .hero-decor__bulb { left: 24%; width: 2.25rem; }
-}
-@media (min-width: 1025px) and (max-width: 1440px) {
-  .hero-decor__bulb { left: 45%; top: var(--space-sm); }
-  .hero-decor__sparkle { top: 1.5rem; left: 16%; }
-  .hero-decor__geometry { bottom: 2.5rem; left: 14%; }
-  .hero-decor__dots { width: 2.875rem; bottom: 1.25rem; right: 14%; }
-  .hero-decor--ribbon { flex-basis: 2rem; width: 2rem; margin-inline-start: var(--space-xs); }
-}
+@media (max-width: 22rem) { .hero-decor__bulb { width: 2rem; } .hero-decor__sparkle { width: 1.6rem; } }
+@media (min-width: 48rem) { .hero-decor--ribbon { flex-basis: 4.5rem; width: 4.5rem; } }
+@media (max-width: 22rem), (min-width: 48rem) and (max-width: 61.99rem) { .hero-decor--ribbon { display: none; } }
+@media (min-width: 1025px) and (max-width: 1440px) { .hero-decor--ribbon { flex-basis: 2rem; width: 2rem; margin-inline-start: var(--space-xs); } }
+@media (width < 48rem) { .hero-decor--background { background: radial-gradient(ellipse at 100% 65%, var(--color-warm), transparent 65%), linear-gradient(135deg, var(--color-surface), var(--color-background)); } }
 @media (forced-colors: active), print { .hero-decor { display: none; } }
-/* Reveal the existing filled underline without changing its shape or bounds. */
 @media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="reduced"]) .hero-decor--underline {
-    animation: hero-underline-reveal var(--duration-hero-underline) var(--ease-standard) var(--duration-hero-stagger) backwards;
+  html:not([data-motion="reduced"]) .hero-decor--underline { animation: hero-underline-reveal var(--duration-hero-underline) var(--ease-standard) var(--duration-hero-stagger) backwards; }
+  html:not([data-motion="reduced"]) .hero-decor__illustration:not([data-hero-entered]) {
+    animation: var(--hero-enter-animation) var(--hero-enter-duration) var(--ease-hero-expressive) var(--hero-enter-delay) backwards;
   }
+  .hero-decor__sparkle { --hero-enter-animation: hero-spark-enter; --hero-enter-duration: var(--duration-hero-spark); --hero-enter-delay: var(--delay-hero-sparkle); }
+  .hero-decor__bulb { --hero-enter-animation: hero-bulb-enter; --hero-enter-duration: var(--duration-hero-bulb); --hero-enter-delay: var(--delay-hero-bulb); }
+  .hero-decor__pencil { --hero-enter-animation: hero-pencil-enter; --hero-enter-duration: var(--duration-hero-pencil); --hero-enter-delay: var(--delay-hero-pencil); }
+  .hero-decor__wave { --hero-enter-animation: hero-wave-arrive; --hero-enter-duration: var(--duration-hero-wave); --hero-enter-delay: var(--delay-hero-wave); }
+  .hero-decor__asterisk { --hero-enter-animation: hero-asterisk-enter; --hero-enter-duration: var(--duration-hero-asterisk); --hero-enter-delay: var(--delay-hero-asterisk); }
+  html:not([data-motion="reduced"]) .hero-decor__wave:not([data-hero-entered]) path { animation: hero-wave-enter var(--duration-hero-wave) var(--ease-hero-expressive) var(--delay-hero-wave) backwards; }
+  html:not([data-motion="reduced"]) :is(.hero-decor__geometry, .hero-decor__dots):not([data-hero-entered]) > * {
+    transform-box: fill-box; transform-origin: center;
+    animation: hero-shape-enter var(--duration-hero-shape) var(--ease-hero-expressive) var(--hero-shape-delay) backwards;
+  }
+  .hero-decor__geometry { --hero-shape-delay: var(--delay-hero-geometry); --hero-group-start: var(--delay-hero-geometry); }
+  .hero-decor__dots { --hero-shape-delay: var(--delay-hero-dots); --hero-group-start: var(--delay-hero-dots); }
+  :is(.hero-decor__geometry, .hero-decor__dots) > :nth-child(2) { --hero-shape-delay: calc(var(--hero-group-start) + var(--delay-hero-chain)); }
+  :is(.hero-decor__geometry, .hero-decor__dots) > :nth-child(3) { --hero-shape-delay: calc(var(--hero-group-start) + var(--delay-hero-chain) * 2); }
+  html:not([data-motion="reduced"]) :is(.hero-decor__geometry, .hero-decor__dots):not([data-hero-entered]) > :nth-child(2) { animation-name: hero-shape-enter-reverse; }
 }
-@keyframes hero-underline-reveal {
-  from { clip-path: inset(0 100% 0 0); }
-  to { clip-path: inset(0); }
-}
-/* Independent entrance transforms return to the static artwork at completion. */
-@media (prefers-reduced-motion: no-preference) {
-  html:not([data-motion="reduced"]) .hero-decor__sparkle:not([data-hero-entered]) {
-    animation: hero-spark-enter var(--duration-hero-decor-pop) var(--ease-standard) var(--delay-hero-sparkle) backwards;
-  }
-  html:not([data-motion="reduced"]) .hero-decor__bulb:not([data-hero-entered]) {
-    animation: hero-bulb-enter var(--duration-hero-decor-pop) var(--ease-standard) var(--delay-hero-bulb) backwards;
-  }
-  html:not([data-motion="reduced"]) .hero-decor__pencil:not([data-hero-entered]) {
-    animation: hero-pencil-enter var(--duration-hero-decor-pop) var(--ease-standard) var(--delay-hero-pencil) backwards;
-  }
-  html:not([data-motion="reduced"]) .hero-decor__wave:not([data-hero-entered]) path {
-    animation: hero-wave-enter var(--duration-hero-decor-draw) var(--ease-standard) var(--delay-hero-wave) backwards;
-  }
-  html:not([data-motion="reduced"]) .hero-decor__asterisk:not([data-hero-entered]) {
-    animation: hero-asterisk-enter var(--duration-normal) var(--ease-standard) var(--delay-hero-asterisk) backwards;
-  }
-  html:not([data-motion="reduced"]) .hero-decor__geometry:not([data-hero-entered]) > *,
-  html:not([data-motion="reduced"]) .hero-decor__dots:not([data-hero-entered]) > * {
-    transform-box: fill-box;
-    transform-origin: center;
-    animation: hero-shape-enter var(--duration-normal) var(--ease-standard) var(--hero-shape-delay) backwards;
-  }
-  .hero-decor__geometry { --hero-shape-delay: var(--delay-hero-geometry); }
-  .hero-decor__dots { --hero-shape-delay: var(--delay-hero-dots); }
-  .hero-decor__geometry > :nth-child(2), .hero-decor__dots > :nth-child(2) { --hero-shape-delay: calc(var(--hero-group-start) + var(--delay-reveal-step)); }
-  .hero-decor__geometry > :nth-child(3), .hero-decor__dots > :nth-child(3) { --hero-shape-delay: calc(var(--hero-group-start) + var(--delay-reveal-step) * 2); }
-  .hero-decor__geometry { --hero-group-start: var(--delay-hero-geometry); }
-  .hero-decor__dots { --hero-group-start: var(--delay-hero-dots); }
-}
+@keyframes hero-underline-reveal { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
 @keyframes hero-spark-enter {
-  from { opacity: 0; transform: scale(.88) rotate(-5deg); }
-  to { transform: none; }
+  0% { opacity: 0; transform: translate(var(--hero-entry-x), var(--hero-entry-y)) scale(.65) rotate(-15deg); }
+  78% { transform: scale(1.07) rotate(2deg); }
+  100% { transform: none; }
 }
 @keyframes hero-bulb-enter {
-  from { opacity: 0; transform: translateY(6px) scale(.9); }
-  to { transform: none; }
+  0% { opacity: 0; transform: translate(var(--hero-entry-x), var(--hero-entry-y)) scale(.65); }
+  75% { transform: scale(1.1); }
+  100% { transform: none; }
 }
 @keyframes hero-pencil-enter {
-  from { opacity: 0; transform: translate(8px, 10px) rotate(4deg); }
-  to { transform: none; }
+  0% { opacity: 0; transform: translate(var(--hero-entry-x), var(--hero-entry-y)) scale(.8) rotate(15deg); }
+  82% { transform: rotate(-2deg); }
+  100% { transform: none; }
 }
-@keyframes hero-wave-enter {
-  from { stroke-dasharray: 1; stroke-dashoffset: 1; }
-  to { stroke-dasharray: 1; stroke-dashoffset: 0; }
-}
+@keyframes hero-wave-arrive { from { opacity: 0; transform: translateX(var(--hero-entry-x)); } to { transform: none; } }
+@keyframes hero-wave-enter { from { stroke-dasharray: 1; stroke-dashoffset: 1; } to { stroke-dasharray: 1; stroke-dashoffset: 0; } }
 @keyframes hero-asterisk-enter {
-  from { opacity: 0; transform: scale(.86) rotate(-8deg); }
-  to { transform: none; }
+  0% { opacity: 0; transform: translateX(var(--hero-entry-x)) scale(.65) rotate(18deg); }
+  78% { transform: scale(1.08) rotate(-2deg); }
+  100% { transform: none; }
 }
-@keyframes hero-shape-enter {
-  from { opacity: 0; transform: scale(.9); }
-  to { opacity: 1; transform: none; }
-}
-/* CSS also protects the final position before preference observers run. */
+@keyframes hero-shape-enter { from { opacity: 0; transform: translateX(var(--hero-entry-x)) scale(.7) rotate(-10deg); } to { opacity: 1; transform: none; } }
+@keyframes hero-shape-enter-reverse { from { opacity: 0; transform: translateX(calc(-1 * var(--hero-entry-x))) scale(.65) rotate(10deg); } to { opacity: 1; transform: none; } }
 html[data-motion="reduced"] [data-hero-motion] { --hero-track-x: 0px !important; --hero-track-y: 0px !important; }
-@media (prefers-reduced-motion: reduce) {
-  [data-hero-motion] { --hero-track-x: 0px !important; --hero-track-y: 0px !important; }
-}
+@media (prefers-reduced-motion: reduce) { [data-hero-motion] { --hero-track-x: 0px !important; --hero-track-y: 0px !important; } }

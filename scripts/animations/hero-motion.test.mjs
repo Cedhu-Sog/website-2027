@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { approach, heroMotion, heroProgress, motionTarget } from '../../src/scripts/animations/hero-motion.ts';
+import { springStep, heroMotion, heroProgress, motionTarget } from '../../src/scripts/animations/hero-motion.ts';
 
 test('pointer quadrants produce opposing groups and bounded displacements', () => {
   for (const x of [-1, 1]) for (const y of [-1, 1]) {
@@ -15,7 +15,7 @@ test('pointer quadrants produce opposing groups and bounded displacements', () =
       assert.equal(Math.sign(target.y), -y);
     }
   }
-  assert.deepEqual(motionTarget('polaroid', 100, -100, 0), { x: -3, y: 2 });
+  assert.deepEqual(motionTarget('polaroid', 100, -100, 0), { x: -12, y: 9 });
 });
 
 test('scroll stays within the hero and only moves bulb X and geometry Y', () => {
@@ -25,36 +25,43 @@ test('scroll stays within the hero and only moves bulb X and geometry Y', () => 
   assert.equal(heroProgress(100, 100, 0), 0);
   for (const name of Object.keys(heroMotion)) {
     const target = motionTarget(name, 0, 0, 100);
-    assert.deepEqual(target, name === 'bulb' ? { x: 14, y: 0 }
-      : name === 'geometry' ? { x: 0, y: 12 } : { x: 0, y: 0 });
+    assert.deepEqual(target, name === 'bulb' ? { x: 30, y: 0 }
+      : name === 'geometry' ? { x: 0, y: 30 } : { x: 0, y: 0 });
   }
 });
 
 test('pointer release preserves scroll; returning to top reverses it', () => {
-  assert.deepEqual(motionTarget('bulb', 0, 0, 1), { x: 14, y: 0 });
-  assert.deepEqual(motionTarget('geometry', 0, 0, .5), { x: 0, y: 6 });
+  assert.deepEqual(motionTarget('bulb', 0, 0, 1), { x: 30, y: 0 });
+  assert.deepEqual(motionTarget('geometry', 0, 0, .5), { x: 0, y: 15 });
   assert.deepEqual(motionTarget('bulb', 0, 0, 0), { x: 0, y: 0 });
-  assert.deepEqual(motionTarget('bulb', 1, 1, 1), { x: 22, y: 6 });
-  assert(Math.abs(motionTarget('bulb', 1, 1, 1, .65).y - 3.9) < 1e-12);
+  assert.deepEqual(motionTarget('bulb', 1, 1, 1), { x: 75, y: 32 });
+  assert(Math.abs(motionTarget('bulb', 1, 1, 1, .65).y - 20.8) < 1e-12);
 });
 
-test('damping preserves direction without overshoot and gives distinct inertia', () => {
-  const fast = approach(0, 6, 16, heroMotion.pencil.response);
-  const slow = approach(0, 6, 16, heroMotion.wave.response);
-  assert(fast > slow && slow > 0 && fast < 6);
-  let current = -9;
+test('critical spring accelerates, brakes, settles and retains velocity on retarget', () => {
+  let state = { position: 0, velocity: 0 };
+  const speeds = [];
   for (let step = 0; step < 300; step++) {
-    const next = approach(current, 9, 16, 220);
-    assert(next >= current && next <= 9);
-    current = next;
+    const next = springStep(state.position, state.velocity, 55, 16, 900);
+    assert(next.position >= state.position && next.position <= 55);
+    speeds.push(next.velocity); state = next;
   }
-  assert.equal(current, 9); // The shared RAF can stop at rest.
+  assert(speeds[3] > speeds[0]);
+  assert(Math.max(...speeds) > speeds[30]);
+  assert.deepEqual(state, { position: 55, velocity: 0 });
+  const moving = springStep(0, 0, 55, 100, 900);
+  const reverse = springStep(moving.position, moving.velocity, -55, 0, 900);
+  assert.equal(reverse.position, moving.position);
+  assert.equal(reverse.velocity, moving.velocity);
 });
 
-test('response remains consistent between 60 Hz and 120 Hz', () => {
-  const full = approach(0, 8, 16, 130);
-  const half = approach(approach(0, 8, 8, 130), 8, 8, 130);
-  assert(Math.abs(full - half) < 1e-12);
+test('spring is refresh-rate independent and clamps inactive-tab intervals', () => {
+  const full = springStep(0, 0, 45, 16, 680);
+  const half = springStep(0, 0, 45, 8, 680);
+  const twice = springStep(half.position, half.velocity, 45, 8, 680);
+  assert(Math.abs(full.position - twice.position) < 1e-12);
+  assert(Math.abs(full.velocity - twice.velocity) < 1e-12);
+  assert.deepEqual(springStep(0, 0, 45, 10000, 680), springStep(0, 0, 45, 64, 680));
 });
 
 test('controller shares listeners, settles RAF, resets preferences and cleans up', async () => {
@@ -141,13 +148,13 @@ test('controller shares listeners, settles RAF, resets preferences and cleans up
   const before = measurements;
   flush();
   assert.equal(measurements, before, 'No layout measurements inside RAF');
-  assert.equal(motifs[0].values.get('--hero-track-x'), '-7.000px');
-  assert.equal(motifs[1].values.get('--hero-track-x'), '8.000px');
+  assert.equal(motifs[0].values.get('--hero-track-x'), '-42.000px');
+  assert.equal(motifs[1].values.get('--hero-track-x'), '45.000px');
   hero.dispatchEvent(new Event('pointerleave')); flush();
   assert.equal(motifs[1].values.get('--hero-track-x'), '0.000px');
   window.scrollY = 350; window.dispatchEvent(new Event('scroll')); flush();
-  assert.equal(motifs[1].values.get('--hero-track-x'), '7.000px');
-  assert.equal(motifs[4].values.get('--hero-track-y'), '6.000px');
+  assert.equal(motifs[1].values.get('--hero-track-x'), '15.000px');
+  assert.equal(motifs[4].values.get('--hero-track-y'), '15.000px');
   const reduced = media.get('(prefers-reduced-motion: reduce)');
   reduced.matches = true; reduced.dispatchEvent(new Event('change'));
   assert(motifs.every(element => element.values.size === 0));

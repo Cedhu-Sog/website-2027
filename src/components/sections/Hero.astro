@@ -14,6 +14,7 @@ interface Props { page: PageData; }
 ---
 <section class="hero container" aria-labelledby="hero-title">
   <HeroDecorations variant="background" />
+  <HeroDecorations variant="photo" />
   <div class="hero__copy">
     <p class="eyebrow"><span class="hero__point" aria-hidden="true"></span> {page.heroEyebrow}</p>
     <h1 id="hero-title">
@@ -55,7 +56,6 @@ interface Props { page: PageData; }
     </div>
   </div>
   <div class="hero__visual">
-    <HeroDecorations variant="photo" />
     <div class="hero__caption-top"><span>{content.collageLabel}</span></div>
     <figure class="hero__photo"><Photo name={page.heroImage!} priority sizes="(min-width: 1440px) 560px, (min-width: 768px) 42vw, 90vw" /><figcaption><span>{content.photoCaption}<br /><strong>{content.photoCaptionEmphasis}</strong></span><HeroDecorations variant="ribbon" /></figcaption></figure>
     <div class="hero__moments">
