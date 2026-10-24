@@ -38,9 +38,7 @@ desactivado y no se han generado secretos.
 
 ## Configuración aún requerida (no inventar valores)
 
-**<u>PENDIENTE DE CONFIRMAR</u>** Dominio real de Google Workspace utilizado por
-docentes y directivas. El dominio web público `cedhu.edu.co` no constituye prueba
-del dominio de identidad. Configurar `PROYECTOS_GOOGLE_DOMAIN` con el real.
+**Dominio confirmado por el administrador:** `cedhu.edu.co`. Configurar `PROYECTOS_GOOGLE_DOMAIN=cedhu.edu.co`. Cuenta para prueba humana autorizada: `alexis.patarroyo@cedhu.edu.co`; no registrar contraseñas ni tokens.
 
 **<u>PENDIENTE DE CONFIRMAR</u>** Crear/identificar en Google Cloud un cliente OAuth
 para aplicación de tipo Web, gestionado por la organización institucional, con
