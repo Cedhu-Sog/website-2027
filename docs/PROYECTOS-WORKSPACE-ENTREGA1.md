@@ -1,6 +1,6 @@
 # Entrega 1 — Acceso de Google Workspace al repositorio CEDHU
 
-Estado al 24/10/2026 (Colombia): **publicación expresamente autorizada por el responsable del proyecto, pendiente de finalizar checks, integración y smoke canónico.** Las correcciones de seguridad `b9f2c3b` están en la rama remota de PR #2 y aprobaron Actions/Preview. No se declara certificación integral de los 14 criterios.
+Estado al 24/10/2026 (Colombia): **PR #2 fusionada en master (`7298525`) y Production READY (`dpl_8sE3MTKB2yXHxtvdQAZJAHKSnhP6`).** Publicación autorizada por el responsable con pendientes explícitos. Actions de PR y master aprobados; sitio/CMS, ADMIN/DOCENTE reales, rechazo de cuenta inactiva y logout comprobados en el canónico con el alcance del informe vigente. No se declara certificación integral de los 14 criterios.
 
 Informe vigente: [auditoría de sesiones y decisión de publicación](PROYECTOS-SESIONES-AUDITORIA.md). El vencimiento real de una hora queda pendiente de validación posterior en Production, sin bloquear esta publicación. La posible reutilización de cookies conservadas queda aceptada temporalmente por el responsable del proyecto; no está resuelta ni implica aprobación administrativa institucional adicional. Se mantiene la hora configurada y no se añaden servicios. No se abrirá el ensayo temporal de 75 minutos.
 
@@ -25,9 +25,9 @@ El primer build real falló en STS. Se contrastó `GCP_PROJECT_NUMBER` con el re
 | 9. Rol y estado | APROBADO | Ausencia inicial rechazada. Alta expresamente autorizada DOCENTE/ACTIVO; revocación real rechazada en la petición siguiente. Registro temporal cerrado INACTIVO. |
 | 10. ADMIN y DOCENTE | APROBADO | Dos identidades institucionales distintas y autorizadas; ADMIN existente activo y DOCENTE temporal, comprobados por separado. |
 | 11. Seguridad de sesiones | PARCIAL / RIESGO ACEPTADO POR RESPONSABLE | Cifrado autenticado, vencimiento tras consultar permisos, logout de ambas cookies y controles de origen. 25 pruebas Workspace/ejecutor aprobadas. Vencimiento real pendiente posterior; reutilización de cookies aceptada temporalmente, sin aprobación institucional adicional. |
-| 12. Actions y Preview | APROBADO EN b9f2c3b / REVISIÓN FINAL PENDIENTE | Actions 40106951563 success y Vercel Preview success. Deben pasar también los checks de la revisión documental que registra la decisión antes de integrar. |
+| 12. Actions y Preview | APROBADO | b9f2c3b y revisión final 9c7b63a: Actions/Preview success. Actions master 40107336746 success y Production 7298525 READY. Enlaces y pasos en el informe vigente. |
 | 13. Retirada del ensayo y diagnóstico | APROBADO | Callback temporal retirado, cinco hosts de prueba denegados por WAF, logout de ambas sesiones del portal y de CLI. Diagnóstico HTTP nunca activado, canónico 404/no-store, sin token ni expiry. |
-| 14. Condiciones para publicar | AUTORIZADO / VERIFICACIÓN CANÓNICA PENDIENTE | Responsable autoriza expresamente integrar PR #2 en master y Production con los dos pendientes registrados, sin nueva confirmación. Detener o revertir exclusivamente esta integración ante una falla crítica. Registrar checks y smoke reales. |
+| 14. Condiciones para publicar | PUBLICADO CON PENDIENTES EXPLÍCITOS | Autorización del responsable, PR #2 fusionada y Production READY. Callback canónico, ADMIN/DOCENTE reales, rechazo INACTIVO, logout y sitio/CMS comprobados con límites registrados. Vencimiento real posterior y riesgo temporal de cookies no se presentan como resueltos ni con aprobación institucional adicional. |
 
 ## Evidencia remota reproducible
 

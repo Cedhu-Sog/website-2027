@@ -12,6 +12,41 @@ La decisión habilita la publicación con pendientes explícitos; **no convierte
 
 `b9f2c3be574c97661eb1bd61371467350b6d6504` se verificó como último commit de seguridad de la rama existente y se subió sin crear otra PR. GitHub confirmó ese SHA como head de PR #2. [Actions 40106951563](https://github.com/Cedhu-Sog/website-2027/actions/runs/40106951563) y [Vercel Preview](https://vercel.com/cedhu-webmasters-projects/website-2027/8b7z4HhUJ3H1f1gYujgXJUczjUp7) aprobaron ese commit. La revisión documental que registra esta decisión debe pasar sus propios checks antes de la fusión.
 
+## Publicación y comprobaciones canónicas — 24/10/2026
+
+La revisión final de PR #2 fue `9c7b63a3953483a269918a1ac871870c8ac8e835`: [Actions 40107156293](https://github.com/Cedhu-Sog/website-2027/actions/runs/40107156293) y [Preview 6CYuRSt9XEHuCiWLKXu74bchuFaC](https://vercel.com/cedhu-webmasters-projects/website-2027/6CYuRSt9XEHuCiWLKXu74bchuFaC) aprobaron antes de la fusión. Se usó un commit de fusión con SHA esperado del head, conservando b9f2c3b en el historial. La PR quedó fusionada a las 15:31:04 UTC (10:31:04 Colombia) en **`7298525a415cf74dd2716e17fa711e79b0cf1ac1`**. No se creó otra PR ni se reescribió el historial.
+
+Vercel asignó Production al despliegue **`dpl_8sE3MTKB2yXHxtvdQAZJAHKSnhP6`**, [detalle](https://vercel.com/cedhu-webmasters-projects/website-2027/8sE3MTKB2yXHxtvdQAZJAHKSnhP6), URL propia `https://website-2027-ldo7e5zom-cedhu-webmasters-projects.vercel.app`, estado **READY**, fuente `master` y SHA 7298525. El canónico `https://website-2027-seven.vercel.app` y el alias git-master corresponden a ese despliegue. El alias auxiliar de equipo permanece en el despliegue anterior; no se reasignó manualmente ni se usó para autenticación. El sitio público, CMS y su configuración canónicos conservaron exactamente sus hashes de respuesta anteriores a la integración.
+
+[Actions de master 40107336746](https://github.com/Cedhu-Sog/website-2027/actions/runs/40107336746) terminó success. Se consultaron los pasos del job: npm ci, test:cms, test:proyectos:workspace, build y check-personal, todos success. No se atribuye a CI la suite backend Google o la heredada que solo constan en la auditoría local previa. master no tenía protección ni rulesets al consultar GitHub; se esperaron los checks configurados igualmente y no se alteró esa configuración preexistente.
+
+| Smoke canónico realizado | Evidencia y alcance |
+| --- | --- |
+| Sitio y CMS por HTTP | `/`, `/admin/` y `/admin/config.yml`: 200, hashes idénticos antes/después. `cedhu.edu.co/`: 200 y título institucional. No se cambió contenido desde el CMS |
+| Inicio OAuth CMS | 302 a GitHub, callback canónico exacto y cookie de flujo Secure/HttpOnly de diez minutos. No acredita una sesión editorial autenticada ni una operación de escritura |
+| Interfaz de repositorio | 200, entrada Workspace presente, contraseña compartida retirada |
+| Inicio Workspace | 302 a Google; callback canónico exacto, sin callbacks temporales. Cookie de flujo __Host-, Secure/HttpOnly, Lax y Max-Age=600 |
+| ADMIN real | OAuth completado con una cuenta ya autorizada; interfaz Administrador. API session devolvió authenticated=true, rol ADMIN, expiresAt y solo las seis claves permitidas. Recarga de esa API mantuvo el mismo expiresAt |
+| DOCENTE real | El responsable completó el ingreso de una cuenta DOCENTE/ACTIVO que él registró en la lista. Interfaz Docente y API authenticated=true/role=DOCENTE; mismas seis claves permitidas. El agente no realizó el alta ni cambió permisos |
+| Cierre ADMIN | Botón real devolvió la interfaz de acceso y el mensaje Sesión cerrada. La eliminación de ambas cookies se comprobó además en las cabeceras HTTP de logout; no se leyó ni exportó el valor de cookies |
+| Cierre DOCENTE y navegador sin sesión | Botón real mostró Sesión cerrada. Navegar después a la API session en el mismo navegador devolvió únicamente el mensaje Inicia sesión para continuar, sin authenticated ni contenido privado |
+| Cuenta institucional INACTIVO | Se seleccionó una identidad real ya abierta en Google con ese estado, sin modificarlo. Volvió a la pantalla de acceso, sin área privada; session en el mismo navegador siguió exigiendo inicio de sesión. No se prueba una cuenta externa diferente ni se afirma un código HTTP no observado en esa navegación |
+| Rechazo sin sesión o con cookie sintética alterada | 401, no-store y eliminación de la cookie de sesión. Sin campos de identidad en la respuesta |
+| Origen ajeno y logout sin defensas | 403. Logout válido: 200, no-store, dos cookies Max-Age=0 con sus atributos originales |
+| Login heredado y diagnóstico | 410 y 404/no-store, respectivamente |
+| Errores de ejecución | Consulta agrupada error/fatal, acotada al nuevo despliegue, devolvió cero grupos. No es una garantía sobre todas las peticiones futuras |
+| CMS en navegador | Cargó el logo, botón Iniciar sesión con GitHub y enlace de regreso; consulta final de consola vacía. No se abrió sesión editorial ni se creó/editó/publicó contenido |
+
+El smoke interactivo anterior se completó entre las 15:33 y 15:45 UTC (10:33–10:45 Colombia). El navegador se bloqueó transitoriamente y se recuperó mediante su API documentada; no se trató de una falla de autenticación o de Production. El responsable completó personalmente el acceso DOCENTE y confirmó que él había registrado la cuenta. El agente no alteró filas, roles ni estados; el registro DOCENTE/INACTIVO protegido no fue reactivado y solo se utilizó para comprobar rechazo. No se compartieron contraseñas ni se cerraron sesiones generales de Google. Las sesiones del portal usadas para el smoke terminaron cerradas.
+
+No se afirma inspección directa del almacén de cookies HttpOnly: se observaron el efecto real de logout en el navegador, la respuesta privada que después exige iniciar sesión y las cabeceras de eliminación de ambas cookies, sin extraer sus valores. El texto de acceso denegado no se conservó en la interfaz del ensayo negativo; la evidencia de rechazo es que no apareció el área privada y la API siguió sin sesión. Es una limitación de presentación, no una concesión de acceso.
+
+El único recurso privado de esta entrega sigue siendo la respuesta de sesión/bienvenida. No hay catálogo ni documentos privados implementados para probar descarga o escritura. La autenticación ADMIN real sí exige la lectura ordinaria de la lista autorizada mediante WIF; no se repitieron diagnósticos generales de Drive/Sheets.
+
+La publicación queda realizada con los pendientes expresamente aceptados por el responsable. Se conserva el vencimiento de una hora y no se esperó su expiración real. No se detectó una falla crítica en las comprobaciones efectuadas; no se ejecutó rollback. La evidencia original `qa/proyectos-sesiones-2026-10-24.json` es una instantánea de b9f2c3b, no una certificación de este despliegue ni del documento actualizado.
+
+Evidencia del cierre: [publicación y smoke canónico](qa/proyectos-publicacion-2026-10-24.json). Capturas sin identidad y salidas sanitizadas permanecen localmente en `.vercel/entrega1-production-*.png` y `.vercel/entrega1-release-*.json`, ignoradas por Git. Esta actualización final modifica solo documentación/evidencia en master; los checks y el despliegue de su commit documental deben comprobarse al cerrar, sin repetir los logins si el código ejecutable sigue idéntico al integrado.
+
 ## Dictamen histórico de la auditoría de b9f2c3b
 
 La recomendación original fue no certificar ni publicar hasta resolver los pendientes. La decisión anterior del responsable sustituye ese bloqueo de publicación, manteniendo las limitaciones técnicas y la falta de comprobación real de una hora. Lo que sigue describe la auditoría original y no debe interpretarse como una prohibición vigente de la integración expresamente autorizada.
@@ -88,12 +123,12 @@ Checks remotos consultados para la base `8f88675`: [Actions 40057370811](https:/
 | --- | --- |
 | Vencimiento real de 60 minutos | PENDIENTE posterior en Production por decisión expresa; no esperar una hora en esta publicación ni reabrir el ensayo temporal |
 | Logout y reactivación de permisos | Riesgo aceptado temporalmente por el responsable del proyecto. Revocación persistente pendiente de mejora; sin aprobación administrativa institucional adicional |
-| Pruebas remotas de esta revisión | b9f2c3b subido y Actions/Preview aprobados. Comprobar también los checks de la revisión documental final antes de integrar |
+| Pruebas remotas de esta revisión | b9f2c3b, 9c7b63a y master 7298525 aprobados según evidencia anterior. Verificar también el commit documental de cierre, sin atribuirle pruebas de una hora no realizadas |
 | Clave heredada por ensayos anteriores | Los hosts previos deben seguir cerrados. Evaluar rotación controlada del secreto del portal antes de publicar; no se afirma compromiso de la clave |
 | Acceso compartido temporal preexistente | La consulta de alias detectó una entrada shareable-link en el alias canónico que vence el 25/10/2026 a las 02:14:25 UTC (24/10 21:14:25 Colombia). No se usó, extendió ni modificó; no se publica su valor. No sustituye autenticación privada. Revisar su necesidad o constatar su expiración antes de la publicación |
-| Publicación canónica | Autorización expresa recibida del responsable; comprobar despliegue y registrar únicamente los smoke realmente realizados |
+| Publicación canónica | REALIZADA: Production READY, sitio/CMS y callback canónico comprobados, ADMIN/DOCENTE reales y rechazo de cuenta inactiva, logout y límites de alcance registrados arriba |
 
-Los criterios 1–10 y 13 conservan la evidencia de aprobación anterior. El 11 sigue parcial, con riesgo aceptado por el responsable y prueba real pendiente; el 12 aprobó en b9f2c3b y debe comprobarse para la revisión final; el 14 tiene autorización de publicación, con comprobaciones canónicas aún por registrar. Se puede avanzar a producción conforme a la decisión del responsable, sin declarar certificación integral de los 14 criterios.
+Los criterios 1–10 y 13 conservan su evidencia previa; ADMIN/DOCENTE y rechazo se comprobaron además en el canónico. El 11 sigue parcial, con riesgo aceptado por el responsable y prueba real pendiente; el 12 aprobó en la PR final y en master; el 14 queda publicado con autorización y smoke documentado. Se puede continuar al siguiente entregable conforme a la decisión del responsable, sin declarar certificación integral de los 14 criterios ni aprobación administrativa institucional adicional.
 
 ## Protocolo histórico del ensayo aislado (no ejecutar en esta publicación)
 

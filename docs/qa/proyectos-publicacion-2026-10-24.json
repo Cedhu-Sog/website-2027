@@ -1,0 +1,528 @@
+{
+  "schemaVersion": 1,
+  "recordedAtUtc": "2026-10-24T15:47:27.9497403Z",
+  "timezone": "America/Bogota",
+  "pullRequest": "https://github.com/Cedhu-Sog/website-2027/pull/2",
+  "securityCommit": "b9f2c3be574c97661eb1bd61371467350b6d6504",
+  "reviewedHead": "9c7b63a3953483a269918a1ac871870c8ac8e835",
+  "integrationCommit": "7298525a415cf74dd2716e17fa711e79b0cf1ac1",
+  "mergedAtUtc": "2026-10-24T15:31:04Z",
+  "authorization": {
+    "source": "explicit_project_owner_instruction_in_chat",
+    "mergeAndProduction": true,
+    "sixtyMinuteTestDeferred": true,
+    "retainedCookieReplayTemporarilyAccepted": true,
+    "riskResolved": false,
+    "additionalInstitutionalAdministrativeAcceptanceAsserted": false
+  },
+  "checks": [
+    {
+      "commit": "b9f2c3be574c97661eb1bd61371467350b6d6504",
+      "actions": 40106951563,
+      "conclusion": "success",
+      "vercel": "success"
+    },
+    {
+      "commit": "9c7b63a3953483a269918a1ac871870c8ac8e835",
+      "actions": 40107156293,
+      "conclusion": "success",
+      "vercel": "success"
+    },
+    {
+      "commit": "7298525a415cf74dd2716e17fa711e79b0cf1ac1",
+      "actions": 40107336746,
+      "conclusion": "success",
+      "steps": [
+        "npm ci",
+        "npm run test:cms",
+        "npm run test:proyectos:workspace",
+        "npm run build",
+        "node scripts/check-personal.mjs"
+      ]
+    }
+  ],
+  "production": {
+    "deploymentId": "dpl_8sE3MTKB2yXHxtvdQAZJAHKSnhP6",
+    "state": "READY",
+    "target": "production",
+    "sourceBranch": "master",
+    "sourceCommit": "7298525a415cf74dd2716e17fa711e79b0cf1ac1",
+    "canonical": "https://website-2027-seven.vercel.app",
+    "deploymentUrl": "https://website-2027-ldo7e5zom-cedhu-webmasters-projects.vercel.app",
+    "canonicalAndGitMasterAliasVerified": true,
+    "teamAuxiliaryAliasLeftOnPreviousDeployment": true
+  },
+  "publicContentUnchanged": {
+    "home": true,
+    "cms": true,
+    "cmsConfig": true
+  },
+  "baselineAtUtc": "2026-10-24T15:30:07.176Z",
+  "httpSmokeAtUtc": "2026-10-24T15:32:14.378Z",
+  "httpSmoke": [
+    {
+      "check": "home",
+      "path": "/",
+      "method": "GET",
+      "status": 200,
+      "noStore": false,
+      "cookies": [],
+      "redirectOrigin": null,
+      "redirectPath": null,
+      "callbackCanonical": null,
+      "jsonKeys": null,
+      "sensitiveResponseKeys": false,
+      "bodySha256": "2e1994b1700253d7d9466335728b3f53301ee2c63abac866d0c31a07ef218f23",
+      "titlePresent": true,
+      "googleEntry": false,
+      "passwordEntry": false,
+      "cmsConfigExpected": null
+    },
+    {
+      "check": "cms",
+      "path": "/admin/",
+      "method": "GET",
+      "status": 200,
+      "noStore": false,
+      "cookies": [],
+      "redirectOrigin": null,
+      "redirectPath": null,
+      "callbackCanonical": null,
+      "jsonKeys": null,
+      "sensitiveResponseKeys": false,
+      "bodySha256": "e3fb0903190389881c79e483ebfd001daa84e1838ff3ae3ce6a0d26c2afe8f0d",
+      "titlePresent": true,
+      "googleEntry": false,
+      "passwordEntry": false,
+      "cmsConfigExpected": null
+    },
+    {
+      "check": "cmsConfig",
+      "path": "/admin/config.yml",
+      "method": "GET",
+      "status": 200,
+      "noStore": false,
+      "cookies": [],
+      "redirectOrigin": null,
+      "redirectPath": null,
+      "callbackCanonical": null,
+      "jsonKeys": null,
+      "sensitiveResponseKeys": false,
+      "bodySha256": "29f63dcabc92b65f375e031616f43aeee3962fcb8b9149b36f4b300ecfd133dc",
+      "titlePresent": false,
+      "googleEntry": false,
+      "passwordEntry": false,
+      "cmsConfigExpected": true
+    },
+    {
+      "check": "cmsAuth",
+      "path": "/api/cms/auth",
+      "method": "GET",
+      "status": 302,
+      "noStore": true,
+      "cookies": [
+        {
+          "name": "__Secure-cedhu-cms-oauth",
+          "maxAge": 600,
+          "httpOnly": true,
+          "secure": true,
+          "hostOnly": true,
+          "sameSite": "Lax"
+        }
+      ],
+      "redirectOrigin": "https://github.com",
+      "redirectPath": "/login/oauth/authorize",
+      "callbackCanonical": true,
+      "jsonKeys": null,
+      "sensitiveResponseKeys": false,
+      "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "titlePresent": false,
+      "googleEntry": false,
+      "passwordEntry": false,
+      "cmsConfigExpected": null
+    },
+    {
+      "check": "projects",
+      "path": "/proyectos/",
+      "method": "GET",
+      "status": 200,
+      "noStore": false,
+      "cookies": [],
+      "redirectOrigin": null,
+      "redirectPath": null,
+      "callbackCanonical": null,
+      "jsonKeys": null,
+      "sensitiveResponseKeys": false,
+      "bodySha256": "7f387ecd0c8f2ef325340693e59b6562e37ae45c729c23e53d33816e06c51887",
+      "titlePresent": true,
+      "googleEntry": true,
+      "passwordEntry": false,
+      "cmsConfigExpected": null
+    },
+    {
+      "check": "sessionMissing",
+      "path": "/api/proyectos/session",
+      "method": "GET",
+      "status": 401,
+      "noStore": true,
+      "cookies": [
+        {
+          "name": "__Host-cedhu-proyectos",
+          "maxAge": 0,
+          "httpOnly": true,
+          "secure": true,
+          "hostOnly": true,
+          "sameSite": "Strict"
+        }
+      ],
+      "redirectOrigin": null,
+      "redirectPath": null,
+      "callbackCanonical": null,
+      "jsonKeys": [
+        "message"
+      ],
+      "sensitiveResponseKeys": false,
+      "bodySha256": "1fa6ad7568bf0ab49e8d25bdf4398a4414ec02e83507287d65fb39e6c7c0252f",
+      "titlePresent": false,
+      "googleEntry": false,
+      "passwordEntry": false,
+      "cmsConfigExpected": null
+    },
+    {
+      "check": "sessionTampered",
+      "path": "/api/proyectos/session",
+      "method": "GET",
+      "status": 401,
+      "noStore": true,
+      "cookies": [
+        {
+          "name": "__Host-cedhu-proyectos",
+          "maxAge": 0,
+          "httpOnly": true,
+          "secure": true,
+          "hostOnly": true,
+          "sameSite": "Strict"
+        }
+      ],
+      "redirectOrigin": null,
+      "redirectPath": null,
+      "callbackCanonical": null,
+      "jsonKeys": [
+        "message"
+      ],
+      "sensitiveResponseKeys": false,
+      "bodySha256": "1fa6ad7568bf0ab49e8d25bdf4398a4414ec02e83507287d65fb39e6c7c0252f",
+      "titlePresent": false,
+      "googleEntry": false,
+      "passwordEntry": false,
+      "cmsConfigExpected": null
+    },
+    {
+      "check": "sessionCrossOrigin",
+      "path": "/api/proyectos/session",
+      "method": "GET",
+      "status": 403,
+      "noStore": true,
+      "cookies": [],
+      "redirectOrigin": null,
+      "redirectPath": null,
+      "callbackCanonical": null,
+      "jsonKeys": [
+        "message"
+      ],
+      "sensitiveResponseKeys": false,
+      "bodySha256": "2ab5fd7c7eaa0083fe2044aa6f12fca9fa16f86b23f1f3e5a87d093dc9c7fa25",
+      "titlePresent": false,
+      "googleEntry": false,
+      "passwordEntry": false,
+      "cmsConfigExpected": null
+    },
+    {
+      "check": "googleStart",
+      "path": "/api/proyectos/google/start",
+      "method": "GET",
+      "status": 302,
+      "noStore": true,
+      "cookies": [
+        {
+          "name": "__Host-cedhu-google-flow",
+          "maxAge": 600,
+          "httpOnly": true,
+          "secure": true,
+          "hostOnly": true,
+          "sameSite": "Lax"
+        }
+      ],
+      "redirectOrigin": "https://accounts.google.com",
+      "redirectPath": "/o/oauth2/v2/auth",
+      "callbackCanonical": true,
+      "jsonKeys": null,
+      "sensitiveResponseKeys": false,
+      "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "titlePresent": false,
+      "googleEntry": false,
+      "passwordEntry": false,
+      "cmsConfigExpected": null
+    },
+    {
+      "check": "googleInvalidCallback",
+      "path": "/api/proyectos/google/callback",
+      "method": "GET",
+      "status": 302,
+      "noStore": true,
+      "cookies": [
+        {
+          "name": "__Host-cedhu-google-flow",
+          "maxAge": 0,
+          "httpOnly": true,
+          "secure": true,
+          "hostOnly": true,
+          "sameSite": "Lax"
+        },
+        {
+          "name": "__Host-cedhu-proyectos",
+          "maxAge": 0,
+          "httpOnly": true,
+          "secure": true,
+          "hostOnly": true,
+          "sameSite": "Strict"
+        }
+      ],
+      "redirectOrigin": "https://website-2027-seven.vercel.app",
+      "redirectPath": "/proyectos/",
+      "callbackCanonical": null,
+      "jsonKeys": null,
+      "sensitiveResponseKeys": false,
+      "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "titlePresent": false,
+      "googleEntry": false,
+      "passwordEntry": false,
+      "cmsConfigExpected": null
+    },
+    {
+      "check": "logout",
+      "path": "/api/proyectos/logout",
+      "method": "POST",
+      "status": 200,
+      "noStore": true,
+      "cookies": [
+        {
+          "name": "__Host-cedhu-proyectos",
+          "maxAge": 0,
+          "httpOnly": true,
+          "secure": true,
+          "hostOnly": true,
+          "sameSite": "Strict"
+        },
+        {
+          "name": "__Host-cedhu-google-flow",
+          "maxAge": 0,
+          "httpOnly": true,
+          "secure": true,
+          "hostOnly": true,
+          "sameSite": "Lax"
+        }
+      ],
+      "redirectOrigin": null,
+      "redirectPath": null,
+      "callbackCanonical": null,
+      "jsonKeys": [
+        "authenticated"
+      ],
+      "sensitiveResponseKeys": false,
+      "bodySha256": "3e58c6fcf10a31770582814c2babfd1ff71bb1a72cae32cdb1c1a428f406d47f",
+      "titlePresent": false,
+      "googleEntry": false,
+      "passwordEntry": false,
+      "cmsConfigExpected": null
+    },
+    {
+      "check": "logoutRejected",
+      "path": "/api/proyectos/logout",
+      "method": "POST",
+      "status": 403,
+      "noStore": true,
+      "cookies": [],
+      "redirectOrigin": null,
+      "redirectPath": null,
+      "callbackCanonical": null,
+      "jsonKeys": [
+        "message"
+      ],
+      "sensitiveResponseKeys": false,
+      "bodySha256": "2ab5fd7c7eaa0083fe2044aa6f12fca9fa16f86b23f1f3e5a87d093dc9c7fa25",
+      "titlePresent": false,
+      "googleEntry": false,
+      "passwordEntry": false,
+      "cmsConfigExpected": null
+    },
+    {
+      "check": "retiredLogin",
+      "path": "/api/proyectos/login",
+      "method": "POST",
+      "status": 410,
+      "noStore": true,
+      "cookies": [],
+      "redirectOrigin": null,
+      "redirectPath": null,
+      "callbackCanonical": null,
+      "jsonKeys": [
+        "message"
+      ],
+      "sensitiveResponseKeys": false,
+      "bodySha256": "b826cabc3eccb68013c7817f9a348fa04740fe1fc7505e88816ce8eae5a148de",
+      "titlePresent": false,
+      "googleEntry": false,
+      "passwordEntry": false,
+      "cmsConfigExpected": null
+    },
+    {
+      "check": "diagnostic",
+      "path": "/api/proyectos/google-diagnostic",
+      "method": "GET",
+      "status": 404,
+      "noStore": true,
+      "cookies": [],
+      "redirectOrigin": null,
+      "redirectPath": null,
+      "callbackCanonical": null,
+      "jsonKeys": [
+        "code"
+      ],
+      "sensitiveResponseKeys": false,
+      "bodySha256": "18f47cfa221732572c31e81975dc1267c98b98fb3cfd2cf99a8e13602c8f1d90",
+      "titlePresent": false,
+      "googleEntry": false,
+      "passwordEntry": false,
+      "cmsConfigExpected": null
+    }
+  ],
+  "officialSite": {
+    "atUtc": "2026-10-24T15:39:13.831Z",
+    "url": "https://cedhu.edu.co/",
+    "status": 200,
+    "redirectOrigin": null,
+    "institutionalTitle": true
+  },
+  "browserSmoke": [
+    {
+      "check": "ADMIN",
+      "authenticated": true,
+      "role": "ADMIN",
+      "expiresAt": 1792859599000,
+      "observedAtUtc": "2026-10-24T15:34:24.135Z",
+      "keys": [
+        "authenticated",
+        "expiresAt",
+        "message",
+        "role",
+        "title",
+        "welcome"
+      ]
+    },
+    {
+      "check": "ADMIN_reload",
+      "authenticated": true,
+      "sameExpiresAt": true
+    },
+    {
+      "check": "ADMIN_logout",
+      "ui": "Sesión cerrada.",
+      "observedAtUtc": "2026-10-24T15:37:53.453Z"
+    },
+    {
+      "check": "DOCENTE_UI",
+      "authenticated": true,
+      "role": "DOCENTE",
+      "observedAtUtc": "2026-10-24T15:42:08.471Z"
+    },
+    {
+      "check": "DOCENTE_API",
+      "authenticated": true,
+      "role": "DOCENTE",
+      "expiresAt": 1792860063000,
+      "observedAtUtc": "2026-10-24T15:42:14.129Z",
+      "keys": [
+        "authenticated",
+        "expiresAt",
+        "message",
+        "role",
+        "title",
+        "welcome"
+      ]
+    },
+    {
+      "check": "DOCENTE_logout",
+      "ui": "Sesión cerrada.",
+      "observedAtUtc": "2026-10-24T15:42:45.608Z"
+    },
+    {
+      "check": "browser_session_after_logout",
+      "authenticated": false,
+      "keys": [
+        "message"
+      ],
+      "messageExpected": true
+    },
+    {
+      "check": "inactive_account_UI",
+      "privateHeadingVisible": false,
+      "loginVisible": true,
+      "observedAtUtc": "2026-10-24T15:44:00.469Z"
+    },
+    {
+      "check": "inactive_account_API",
+      "authenticated": false,
+      "messageExpected": true,
+      "keys": [
+        "message"
+      ]
+    },
+    {
+      "check": "CMS_UI",
+      "loginButtonVisible": true,
+      "observedAtUtc": "2026-10-24T15:45:03.965Z",
+      "editorialWriteTested": false
+    }
+  ],
+  "logging": {
+    "runtimeQuery": "error/fatal grouped by level, production deployment scoped, last 30m",
+    "groupsReturned": 0,
+    "cmsConsoleEntriesReturned": 0,
+    "exhaustiveAbsenceOfErrorsAsserted": false
+  },
+  "pending": {
+    "realSixtyMinuteExpiryObserved": false,
+    "retainedExpiredRealCookieReplayObserved": false,
+    "persistentPerSessionRevocationImplemented": false,
+    "directHttpOnlyCookieStoreInspectionPerformed": false,
+    "cmsEditorialLoginOrWritesTested": false,
+    "privateCatalogueDownloadsTested": false,
+    "privateCatalogueImplemented": false
+  },
+  "constraints": {
+    "sessionLifetimeConfigurationSeconds": 3600,
+    "newServices": false,
+    "permissionRowsChangedByAgent": false,
+    "protectedInactiveAccountReactivated": false,
+    "temporaryCallbacksAdded": false,
+    "closedTrialHostsReopened": false,
+    "rollbackExecuted": false
+  },
+  "certification": "published_by_project_owner_authorization_with_explicit_pending_validation_and_accepted_residual_risk",
+  "originalLocalAuditSnapshot": "proyectos-sesiones-2026-10-24.json",
+  "localEvidenceDigests": [
+    {
+      "sha256": "788cf11cc842786a29ccb0c2c136aa6df2fbd442aba92020e38e9f99f13b092e",
+      "path": ".vercel/entrega1-release-smoke-baseline.json"
+    },
+    {
+      "sha256": "ffa4c0df39c17ee0af2ef1949374ee3968697a8d62704cbb52401c0fb7a68342",
+      "path": ".vercel/entrega1-release-smoke-production.json"
+    },
+    {
+      "sha256": "59e81adcd3768fd1145bb831f548ce469b2c18bbd6f80a3b2b460d763d2ec2eb",
+      "path": ".vercel/entrega1-release-browser.json"
+    }
+  ]
+}
