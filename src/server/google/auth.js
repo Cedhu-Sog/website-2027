@@ -6,13 +6,24 @@ export const GOOGLE_READ_SCOPES = Object.freeze([
   'https://www.googleapis.com/auth/drive.readonly',
   'https://www.googleapis.com/auth/spreadsheets.readonly',
 ]);
+// Only server-side management operations request write scopes. The existing
+// teacher OAuth and all read clients keep their original scopes.
+export const GOOGLE_WRITE_SCOPES = Object.freeze([
+  'https://www.googleapis.com/auth/drive.readonly',
+  'https://www.googleapis.com/auth/drive.file',
+  'https://www.googleapis.com/auth/spreadsheets',
+]);
+export function writesEnabled(env = process.env) {
+  return env.PROYECTOS_WRITES_ENABLED === 'true' && env.PROYECTOS_TRANSFER_VERIFIED === 'v1';
+}
 
 /** Create inside an authorized function invocation. No ADC, key files or global
  * token cache. The SDK keeps temporary Google credentials in this client only.
  * Dependencies are injectable for offline tests; HTTP requests never set them.
  */
 export function createGoogleClient({ env = process.env, now = Date.now, signal,
-  getToken = getVercelOidcToken, verifyToken = verifyVercelOidcToken } = {}) {
+  getToken = getVercelOidcToken, verifyToken = verifyVercelOidcToken, write = false } = {}) {
+  if (write && !writesEnabled(env)) throw new GoogleConnectionError('writes_disabled');
   const config = googleIdentityConfig(env);
   const projectId = requireGoogleProduction(env);
   return new IdentityPoolClient({
@@ -23,7 +34,7 @@ export function createGoogleClient({ env = process.env, now = Date.now, signal,
     token_url: 'https://sts.googleapis.com/v1/token',
     service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${config.serviceAccount}:generateAccessToken`,
     service_account_impersonation: { token_lifetime_seconds: 600 },
-    scopes: [...GOOGLE_READ_SCOPES],
+    scopes: [...(write ? GOOGLE_WRITE_SCOPES : GOOGLE_READ_SCOPES)],
     transporterOptions: { timeout: 4000, retry: false, signal },
     subject_token_supplier: {
       async getSubjectToken() {

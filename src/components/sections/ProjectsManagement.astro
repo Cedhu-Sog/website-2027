@@ -1,0 +1,39 @@
+---
+const fields = [
+  ['titulo', 'Título', 300], ['autores', 'Autores', 1500], ['docente_asesor', 'Docente asesor', 200],
+  ['area', 'Área académica', 120], ['resumen', 'Resumen', 6000], ['palabras_clave', 'Palabras clave', 800],
+];
+---
+<section class="repository-management" data-management aria-label="Gestión de investigaciones">
+  <div class="repository-actions"><button class="button" type="button" data-register>Registrar proyecto</button><button class="button button--outline" type="button" data-bulk>Subir varios proyectos</button><button class="button button--outline" type="button" data-activity hidden>Historial de actividad</button></div>
+  <p role="status" data-management-status></p>
+  <dialog class="repository-detail" data-management-dialog aria-labelledby="management-title">
+    <form method="dialog"><button class="button button--outline" autofocus>Cerrar gestión</button></form>
+    <h2 id="management-title">Registrar proyecto</h2>
+    <p>Completa la información de investigaciones ya finalizadas. Revisa cada registro antes de guardar.</p>
+    <form data-upload-form>
+      <label class="repository-file-label">Documentos PDF (hasta 100 MiB por archivo)<input type="file" accept="application/pdf,.pdf" required data-upload-files /></label>
+      <p data-resume-message role="status"></p>
+      <div data-upload-rows></div>
+      <div class="repository-actions"><button class="button" type="submit" data-review>Revisar información</button><button class="button" type="button" data-import hidden>Guardar proyectos revisados</button><button class="button button--outline" type="button" data-correct hidden>Corregir información</button><button class="button button--outline" type="button" data-cancel-import hidden>Detener después del archivo actual</button></div>
+    </form>
+    <p role="status" aria-live="polite" aria-atomic="true" data-import-summary></p>
+  </dialog>
+  <dialog class="repository-detail" data-edit-dialog aria-labelledby="edit-title">
+    <form method="dialog"><button class="button button--outline" autofocus>Cerrar edición</button></form>
+    <h2 id="edit-title">Editar información</h2>
+    <form data-edit-form><div data-edit-fields></div><button class="button" type="submit">Revisar cambios</button></form>
+    <div data-edit-review hidden></div><button class="button" type="button" data-edit-save hidden>Guardar cambios revisados</button><button class="button button--outline" type="button" data-edit-correct hidden>Corregir información</button><p role="status" data-edit-status></p>
+  </dialog>
+  <dialog class="repository-detail" data-activity-dialog aria-labelledby="activity-title">
+    <form method="dialog"><button class="button button--outline" autofocus>Cerrar historial</button></form><h2 id="activity-title">Historial de actividad</h2>
+    <p data-activity-status role="status"></p><div data-activity-results></div><div class="repository-actions"><button class="button button--outline" data-activity-previous type="button">Anterior</button><button class="button button--outline" data-activity-next type="button">Siguiente</button></div>
+  </dialog>
+  <template data-academic-template>
+    <fieldset class="repository-academic"><legend>Información académica</legend>
+      <label>Año<input name="anio" type="number" min="1900" max={new Date().getUTCFullYear() + 1} required /></label>
+      <label>Grado<select name="grado" required><option value="">Selecciona un grado</option>{['Prejardín', 'Jardín', 'Transición', ...Array.from({ length: 12 }, (_, i) => String(i))].map(grade => <option value={grade}>{/^\d+$/.test(grade) ? `Grado ${grade}` : grade}</option>)}</select></label>
+      {fields.map(([name, label, max]) => <label class:list={{ 'repository-wide': name === 'resumen' || name === 'titulo' || name === 'autores' }}>{label}{name === 'resumen' || name === 'autores' ? <textarea name={name} maxlength={max} rows={name === 'resumen' ? 5 : 2} required /> : <input name={name} maxlength={max} required />}</label>)}
+    </fieldset>
+  </template>
+</section>

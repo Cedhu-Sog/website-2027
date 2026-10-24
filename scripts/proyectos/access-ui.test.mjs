@@ -35,7 +35,7 @@ function environment(code = '', initial = () => Response.json({ code: 'sin_sesio
   const calls = [];
   let respond = initial;
   const timers = new Map();
-  vm.runInNewContext(source, { mountCatalog: () => ({ dispose() {} }), mountDocuments: () => ({ dispose() {} }), document, window, URL, URLSearchParams, AbortSignal, Date, setTimeout: fn => { timers.set(1, fn); return 1; },
+  vm.runInNewContext(source, { mountCatalog: () => ({ dispose() {} }), mountDocuments: () => ({ dispose() {} }), mountManagement: () => ({ dispose() {} }), document, window, URL, URLSearchParams, AbortSignal, Date, setTimeout: fn => { timers.set(1, fn); return 1; },
     clearTimeout: id => timers.delete(id), fetch: (url, options) => { calls.push({ url, options }); return respond(url); } });
   return { nodes, document, window, calls, timers, get active() { return active; }, get cleaned() { return cleaned; },
     respond: next => { respond = next; }, refresh: () => document.dispatchEvent(new Event('visibilitychange')) };

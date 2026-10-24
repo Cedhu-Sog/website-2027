@@ -1,10 +1,12 @@
 ---
 const fields = [['anio', 'Año'], ['grado', 'Grado'], ['area', 'Área académica']];
+import ProjectsManagement from './ProjectsManagement.astro';
 ---
 <section class="repository" data-catalog hidden aria-labelledby="catalog-heading">
   <header class="repository-heading">
     <div><p class="eyebrow">Memoria académica · CEDHU</p><h2 id="catalog-heading" tabindex="-1">Explora nuestras investigaciones</h2><p>Conocimiento que nace en el aula y crece con nuestra comunidad.</p></div>
   </header>
+  <ProjectsManagement />
   <form class="repository-filters" data-catalog-filters role="search" aria-label="Buscar proyectos">
     <label class="repository-search">Buscar proyectos<input name="q" type="search" maxlength="200" placeholder="Título, autores, resumen o palabras clave" /></label>
     {fields.map(([name, label]) => <label>{label}<select name={name}><option value="">Todos</option></select></label>)}
