@@ -1,3 +1,5 @@
+import { repositoryFetch } from '../utils/projects-network';
+
 export interface AcademicProject {
   id_proyecto: string; anio: string; grado: string; titulo: string; autores: string; docente_asesor: string;
   area: string; estado: string; fecha_registro: string; resumen?: string; palabras_clave?: string;
@@ -9,8 +11,7 @@ export function element<K extends keyof HTMLElementTagNameMap>(tag: K, value = '
   const node = document.createElement(tag); node.textContent = value; node.className = className; return node;
 }
 export async function repositoryRequest(url: string, options: RequestInit = {}) {
-  const response = await fetch(url, { credentials: 'same-origin', cache: 'no-store', redirect: 'error', ...options,
-    signal: options.signal ?? AbortSignal.timeout(55000) });
+  const response = await repositoryFetch(url, options);
   if (response.status === 401 || response.status === 403) {
     const data = await response.json();
     if (response.status === 401 || data.code === 'denegado') document.dispatchEvent(new Event('projects-access-lost'));

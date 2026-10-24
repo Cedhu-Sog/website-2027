@@ -1,4 +1,5 @@
 import { element, repositoryRequest, type AcademicProject } from './projects-catalog';
+import { repositoryFetch } from '../utils/projects-network';
 
 type Academic = Record<string, string>;
 type Row = { file: File; root: HTMLElement; fields: HTMLFieldSetElement; status: HTMLElement; progress: HTMLProgressElement; review: HTMLElement; operation: string; ticket?: string; hash?: string; state: 'pending' | 'success' | 'failed'; confirmed: string[]; storageKey?: string; snapshot?: string };
@@ -20,7 +21,7 @@ export function mountManagement(root: HTMLElement, role: 'ADMIN' | 'DOCENTE', re
   const template = query<HTMLTemplateElement>('[data-academic-template]');
   let rows: Row[] = []; let batch = ''; let selectedProject: AcademicProject | undefined; let editAcademic: Academic; let editOperation = ''; let editConfirmed: string[] = []; let editBusy = false; let opener: HTMLElement | undefined;
   async function api(input: object) {
-    const response = await fetch('/api/proyectos/manage', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CEDHU-Projects': '1' },
+    const response = await repositoryFetch('/api/proyectos/manage', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CEDHU-Projects': '1' },
       credentials: 'same-origin', cache: 'no-store', redirect: 'error', body: JSON.stringify(input), signal: AbortSignal.any([controller.signal, AbortSignal.timeout(55000)]) });
     const data = await response.json();
     if (!response.ok) {

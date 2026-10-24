@@ -54,7 +54,8 @@ test('upload sessions enforce subject, expiry, institutional context, URI allowl
   assert.equal((await e.api({ action: 'chunk', ticket, offset: 1, data: bytes.toString('base64') })).status, 400);
   assert((await e.api({ action: 'commit', ticket })).status >= 400); assert.equal((await e.store.projects()).length, 0);
   e.identity({ ...syntheticTeacher, sub: '987654321098765432109' }); assert.equal((await e.api({ action: 'status', ticket })).status, 409);
-  for (const uri of ['https://evil.invalid/upload?upload_id=abcdefghijk', 'https://www.googleapis.com/drive/v3/files?uploadType=resumable&upload_id=abcdefghijk', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&upload_id=abcdefghijk&arbitrary=1']) assert(!validUploadUri(uri));
+  for (const uri of ['https://evil.invalid/upload?upload_id=abcdefghijk', 'https://www.googleapis.com/drive/v3/files?uploadType=resumable&upload_id=abcdefghijk', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&upload_id=abcdefghijk&upload_id=duplicated123']) assert(!validUploadUri(uri));
+  assert(validUploadUri('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&upload_id=abcdefghijk%3D%3D&provider_parameter=opaque'));
   const now = Date.now(); const sealed = sealUploadTicket({ uri: null, completed: true }, syntheticTeacher, fixtureEnv, now);
   assert.throws(() => readUploadTicket(sealed, syntheticTeacher, { ...fixtureEnv, PROYECTOS_METADATA_SPREADSHEET_ID: 'other_synthetic_catalog' }, now));
   assert.throws(() => readUploadTicket(sealed, syntheticTeacher, fixtureEnv, now + 86400000));
@@ -63,11 +64,14 @@ test('upload sessions enforce subject, expiry, institutional context, URI allowl
 test('teachers edit their own records; administrator edits/archives; stale revisions, retries and injected identity fields cannot corrupt originals', async () => {
   const e = setup(); const { ticket } = await upload(e, syntheticPdf(1024)); await e.api({ action: 'commit', ticket });
   const before = (await e.store.projects())[0]; const revision = revisionOf(before);
-  const edit = { action: 'edit', operation: randomUUID(), id: before.id_proyecto, revision, academic: { ...academicFixture, titulo: '=Proyecto actualizado' }, confirmedDuplicates: [] };
+  const edit = { action: 'edit', operation: randomUUID(), id: before.id_proyecto, revision, academic: { ...academicFixture, titulo: '=Proyecto actualizado', anio: '2025', grado: '10' }, confirmedDuplicates: [] };
   e.identity({ ...syntheticTeacher, email: 'otra@example.invalid', sub: '987654321098765432109' }); assert.equal((await e.api(edit)).status, 403);
   e.identity(syntheticTeacher); assert.equal((await e.api({ ...edit, academic: { ...edit.academic, id_proyecto: 'evil' } })).status, 400);
   assert.equal((await e.api(edit)).status, 200); assert.equal((await e.api(edit)).status, 200);
   const after = (await e.store.projects())[0]; assert.equal(after.titulo, '=Proyecto actualizado');
+  assert.equal(after.anio, '2025'); assert.equal(after.grado, '10');
+  const document = createDocumentHandler({ requireSession: async () => ({ identity: syntheticTeacher }), storeFactory: async () => e.store });
+  assert.equal((await document(new Request(PROJECTS_ORIGIN + '/api/proyectos/document?id=' + after.id_proyecto))).status, 200);
   for (const key of ['id_proyecto', 'fecha_registro', 'registrado_por', 'id_pdf_drive', 'hash_pdf']) assert.equal(after[key], before[key]);
   assert.equal((await e.api({ ...edit, operation: randomUUID() })).status, 409);
   const archive = { action: 'archive', operation: randomUUID(), id: after.id_proyecto, revision: revisionOf(after) };

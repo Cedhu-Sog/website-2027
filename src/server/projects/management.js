@@ -73,7 +73,7 @@ export function createManagementHandler({ env = process.env, requireSession = cr
         if (!prior) {
           requireDuplicateConfirmation(duplicateCandidates(await store.projects(), ticket.academic, ticket.sha256, identity), ticket.confirmedDuplicates);
           const candidate = { ...ticket.academic, id_proyecto: ticket.projectId, id_pdf_drive: ticket.fileId, hash_pdf: ticket.sha256 };
-          const file = await verifiedDocument(store, candidate);
+          const file = await verifiedDocument(store, candidate, { exactAcademicLocation: true });
           if (file.sha256Checksum !== ticket.sha256 || file.size !== ticket.size) throw new ProjectError(409, 'upload_integrity', 'No fue posible verificar la integridad del PDF. Reintenta la carga.');
           const at = new Date(now()).toISOString();
           await writer.create({ ...candidate, nombre_pdf: file.name, fecha_registro: at, registrado_por: identity.email, fecha_modificacion: at, modificado_por: identity.email, estado: 'FINALIZADO', id_lote: ticket.batch || '' }, operation, ticket.fingerprint);
@@ -88,7 +88,6 @@ export function createManagementHandler({ env = process.env, requireSession = cr
         if (!canEdit(before, identity) || (input.action === 'archive' && identity.role !== 'ADMIN') || (input.action === 'edit' && isArchived(before))) throw new ProjectError(403, 'not_owner', 'No tienes permiso para modificar este proyecto.');
         operationContext = { operation: input.operation, projectId: input.id, action: 'INCIDENCIA_GESTION' };
         const academic = input.action === 'edit' ? academicInput(input.academic, now()) : {};
-        if (input.action === 'edit' && (academic.anio !== before.anio || academic.grado !== before.grado)) throw new ProjectError(409, 'document_relocation_required', 'Para cambiar el año o grado y conservar la ubicación del documento, comunícate con Tecnología CEDHU. Puedes actualizar los demás campos.');
         const fingerprint = digest([input.action, input.id, input.revision, academic]);
         const operation = `mutate:${identity.sub}:${input.operation}`;
         const prior = await writer.marker('catalog', operation);

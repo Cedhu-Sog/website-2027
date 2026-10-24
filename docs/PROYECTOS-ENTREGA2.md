@@ -49,11 +49,127 @@ Fuentes oficiales:
 - https://developers.google.com/workspace/drive/api/guides/manage-uploads
 - https://developers.google.com/workspace/drive/api/guides/manage-downloads
 
-## Validación pendiente de infraestructura
+## Bloque B — documentos
 
-El cliente WIF actual solicita exclusivamente drive.readonly y spreadsheets.readonly.
-Las escrituras requieren un cliente separado con los scopes mínimos viables y
-verificar el rol real de la cuenta de servicio. No se han cambiado permisos.
-No se efectuarán ensayos de escritura sobre el catálogo institucional.
-La carga real permanecerá deshabilitada hasta verificar tamaños variados y
-reintentos con recursos aislados y autorización administrativa específica.
+La PR #5 implementa lectura de PDF por fragmentos binarios de 1 MiB. No es una
+redirección a Drive ni una descarga completa dentro de una Function. Cada
+petición comprueba sesión/rol/estado, relación con el catálogo, unidad, cadena
+de carpetas permitida, MIME, firma PDF, tamaño máximo de 100 MiB, permisos sin
+`anyone`, versión antes/después de la lectura y SHA-256 si está disponible.
+El navegador verifica longitud e integridad y crea un Blob local para visor y
+descarga. Las URL Blob se revocan al cerrar la ficha o perder la sesión.
+En navegadores sin visor PDF integrado se conserva el enlace de guardar.
+El archivo se ensambla en memoria; 100 MiB es un límite, no una certificación
+de todos los modelos de iPhone/iPad. No se añadieron lectores PDF externos.
+
+## Bloque C — registro y edición
+
+`/api/proyectos/manage` concentra capacidades, registro, carga, edición e
+historial para no multiplicar Functions. Todos sus métodos reutilizan la
+sesión Workspace. Las escrituras exigen además Origin canónico, cabecera
+`X-CEDHU-Projects`, JSON acotado a 1.500.000 bytes y los controles de activación.
+Identidad, fechas, identificador y estado inicial FINALIZADO se generan en el
+servidor. Se respetan los demás estados existentes; no hay aprobación académica.
+
+Los PDF se suben con sesiones reanudables Google y fragmentos de 1 MiB,
+codificados en base64 dentro de peticiones menores de 1,5 MB. La URI Google
+es opaca: se conserva exacta, con origen HTTPS y ruta permitidos, sin redirecciones.
+Viaja únicamente dentro de un ticket AES-GCM con propósito independiente,
+vinculado a sujeto, recursos institucionales, información revisada y expiración
+de 24 horas. El ticket nunca sustituye la revalidación del usuario. No se
+entregan tokens Google ni URI de carga en claro al navegador.
+
+Antes de aceptar un fragmento se consulta el avance confirmado por Google.
+Un reenvío ya recibido devuelve el avance sin repetirlo. El primer fragmento
+debe tener firma PDF. El commit comprueba MIME, ubicación original exacta,
+tamaño y SHA-256 calculado por Drive. Los documentos incompletos no entran en
+el catálogo. Los IDs de archivos son preasignados por Drive para poder reintentar.
+
+Cada operación tiene UUID y huella semántica. Una marca `developerMetadata`
+única y el cambio de fila se ejecutan en el mismo `spreadsheets.batchUpdate`
+atómico. Una respuesta perdida se reconcilia por la marca; nunca provoca un
+append libre. Las colisiones de marca con otra huella fallan cerradas. Los
+campos se escriben como `stringValue`, sin evaluar fórmulas. El catálogo y
+la bitácora son hojas distintas: no existe transacción entre ambas. Se registra
+intento antes de modificar y resultado después; un reintento completa la
+bitácora si el catálogo ya se confirmó. Los intentos sin cierre quedan visibles
+al administrador.
+
+El registro individual y los lotes ofrecen revisión previa; cada archivo tiene
+metadatos, avance y resultado. Se procesan secuencialmente, con máximo de 30 por
+selección. Reintentar omite los exitosos. `id_lote` agrupa la importación.
+SessionStorage guarda solo tickets cifrados y datos técnicos de reanudación,
+nunca PDF ni metadatos académicos en claro. Tras recargar hay que volver a
+seleccionar los archivos; se recupera la información original para revisarla.
+
+Se advierten coincidencias exactas de PDF y combinaciones significativas de
+título/contexto/autores/resumen. Se muestran los registros para revisión y se
+exige una confirmación explícita; un título parecido por sí solo no bloquea.
+
+DOCENTE solo edita registros cuyo `registrado_por` corresponde a su identidad;
+ADMIN edita cualquiera. Se conservan ID, PDF, fecha y responsable originales.
+Una marca de revisión atómica impide sobrescribir una edición concurrente. Los
+cambios de año/grado corrigen el catálogo y conservan la carpeta histórica del
+PDF original; nuevas cargas se organizan siempre por su año/grado de registro.
+La descarga sigue verificando que esa carpeta histórica pertenece a la
+estructura autorizada. No se necesita ampliar a `drive` completo para mover
+archivos históricos ajenos a la aplicación.
+
+## Bloque D — administración
+
+Solo ADMIN puede archivar: cambia estado a ARCHIVADO sin borrar el PDF. El
+historial muestra eventos paginados, intentos, resultados de importación,
+ediciones con información anterior/posterior e incidencias. Permite documentar
+la resolución de una incidencia. Archivar un duplicado y reintentar una carga
+son operaciones disponibles; no se implementa borrado físico ordinario.
+El historial no devuelve `usuario_google_id`. Errores Google, cabeceras,
+cookies, tickets, URI de carga y credenciales nunca se guardan en los eventos.
+
+## Ensayo aislado y permisos
+
+El usuario autorizó expresamente crear recursos sintéticos dentro de
+`02_Importaciones_Temporales` y los scopes backend `drive.readonly`, `drive.file`
+y `spreadsheets`. El cliente de consulta conserva sus dos scopes de lectura;
+OAuth docente conserva `openid email profile`. No se cambió IAM ni permisos.
+El ensayo real confirmó `canAddChildren` en la carpeta temporal y `canEdit`
+en catálogo/bitácora. Esto acredita capacidad técnica, no una ampliación nueva.
+
+`scripts/proyectos/transfer-probe.mjs` es un comando administrativo explícito,
+no parte del build normal y nunca una API. Crea una carpeta QA con hojas vacías,
+sus encabezados canónicos y PDF sintéticos. Nunca escribe en las hojas reales.
+Reutiliza los servicios candidatos con un almacén restringido al sandbox.
+La matriz de roles usa identidades sintéticas inyectadas en el ensayo; no se
+presenta como un nuevo inicio de sesión real de ADMIN/DOCENTE.
+
+La copia se despliega con CLI oficial ya instalada, `--prod --skip-domain`,
+identidad WIF de Production y sin archivos locales privados. Se comprueban los
+alias reales; no se modifica el callback OAuth ni se abre un diagnóstico HTTP.
+Las primeras ejecuciones detectaron un validador demasiado restrictivo de la
+URI opaca y el 429 de Sheets. La corrección conserva el endpoint HTTPS exacto,
+reduce comprobaciones estructurales duplicadas dentro de cada almacén y añade
+reintentos de interfaz acotados para errores temporales. No hay caché de roles.
+
+La activación requiere ambas variables de servidor:
+`PROYECTOS_WRITES_ENABLED=true` y `PROYECTOS_TRANSFER_VERIFIED=v1`.
+Por defecto están cerradas; una revisión Preview no puede usar WIF Production.
+
+## Evidencia de publicación
+
+- Bloque A: PR #4; commit `06d4c9b`, merge `b964a74`; Actions 40112569597 aprobado.
+- Bloque B: PR #5; commit `189cb6e`, merge `981b41a`; Actions 40112902077 aprobado.
+- Production A+B: `dpl_8GErN48zthAVZZnA7gYScxTE7Txr`, READY, dominio canónico verificado por alias.
+- Ensayos remotos: `FwB8HWWszTvaPFKTw37wL83846Eb`, `8XYdirEp6BHhE36JZ6pBbiJg5N5C`,
+  `AiQjVv62ZzNGje9rUMRJEdLMUyvE`, `9F51WoD4TebzPfZUhq5ov7WsL7nx`,
+  `HxSL6aWWS3XgXqZDL9iMPgqrgGQM`: builds aislados ERROR, sin promoción.
+  El cuarto aprobó 1 KiB; el quinto aprobó 1 KiB y más de 5 MiB antes de un 429.
+  Se conservan los recursos QA privados para inspección; no se purgaron.
+
+Pruebas locales: 33 Workspace, 24 Google, 13 CMS, 6 catálogo/documentos y 6
+gestión, además de build, comprobación de contenido y escaneo de salida pública.
+El compilador TypeScript ya incluido en la CLI instalada comprobó los módulos
+de navegador sin instalar paquetes. El navegador local recorrió registro y
+edición de un PDF válido de más de 5 MiB, ficha, preparación de descarga y búsqueda
+sin acentos; viewport móvil sin desbordamiento horizontal.
+
+Los resultados remotos y la activación definitiva se actualizarán al cerrar
+el ensayo; no interpretar las pruebas locales como certificación de Production.

@@ -8,16 +8,22 @@ const cells = values => ({ values: values.map(value => ({ userEnteredValue: { st
 export const markerId = value => (parseInt(digest(value).slice(0, 8), 16) & 0x7fffffff) || 1;
 
 export function createProjectWriter(store) {
-  const checked = new Map();
+  // Per-store invocation only. Reuse structural checks already performed when
+  // opening this store; never cache authorization rows or catalog contents.
+  const checked = store.sheetInfo ||= new Map();
   async function sheet(key) {
     if (checked.has(key)) return checked.get(key);
     const cfg = store.config.sheets.find(s => s.key === key);
     if (!cfg || !['catalog', 'audit'].includes(key)) throw Error('write_sheet_not_allowed');
-    await store.repository.checkSheet(key, store.systemId);
-    const result = await call(`${SHEETS}/${cfg.id}`, 'GET', undefined, { fields: 'sheets(properties(sheetId,title))' });
-    const matches = result.data.sheets.filter(s => s.properties.title === cfg.tab);
-    if (matches.length !== 1) throw Error('write_tab_mismatch');
-    const value = { ...cfg, tabId: matches[0].properties.sheetId }; checked.set(key, value); return value;
+    const verified = await store.repository.checkSheet(key, store.systemId);
+    let tabId = verified?.tabId;
+    if (!Number.isSafeInteger(tabId)) {
+      const result = await call(`${SHEETS}/${cfg.id}`, 'GET', undefined, { fields: 'sheets(properties(sheetId,title))' });
+      const matches = result.data.sheets.filter(s => s.properties.title === cfg.tab);
+      if (matches.length !== 1) throw Error('write_tab_mismatch');
+      tabId = matches[0].properties.sheetId;
+    }
+    const value = { ...cfg, tabId }; checked.set(key, value); return value;
   }
   async function call(url, method, data, params) {
     return store.client.request({ url, method, ...(data ? { data } : {}), ...(params ? { params } : {}), timeout: 10000, retry: false, maxRedirects: 0, maxContentLength: 16 * 1024 * 1024 });
@@ -69,7 +75,7 @@ export function createProjectWriter(store) {
   }
   async function activity() {
     const cfg = await sheet('audit');
-    const response = await call(`${SHEETS}/${cfg.id}/values/${encodeURIComponent("'Actividad'!A2:I10002")}`, 'GET', undefined, { valueRenderOption: 'FORMATTED_VALUE' });
+    const response = await call(`${SHEETS}/${cfg.id}/values/${encodeURIComponent("'Actividad'!A2:I")}`, 'GET', undefined, { valueRenderOption: 'FORMATTED_VALUE' });
     const rows = response.data.values ?? [];
     if (rows.length > 10000) throw new ProjectError(503, 'audit_capacity', 'El historial requiere mantenimiento. Comunícate con Tecnología CEDHU.');
     return rows.filter(row => row[0]).map(row => Object.fromEntries(cfg.headers.map((key, index) => [key, String(row[index] ?? '')])));

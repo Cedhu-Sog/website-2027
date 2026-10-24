@@ -26,7 +26,7 @@ function fixture(size, change = {}) {
       return { status: change.ignoreRange ? 200 : 206, data: change.signature ? Buffer.alloc(Number(end) - Number(start) + 1) : pdf.subarray(Number(start), Number(end) + 1), headers: new Headers({ 'content-range': `bytes ${start}-${end}/${size}` }) };
     }
     if (id === project.id_pdf_drive) metadataReads++;
-    return { data: { ...files[id], driveId: change.outside ? 'outside_drive_001' : 'synthetic_drive_001', ...(change.moved && id === 'synthetic_grade_001' ? { name: 'Grado 10' } : {}), ...(change.modified && metadataReads > 1 && id === project.id_pdf_drive ? { version: '2' } : {}) } };
+    return { data: { ...files[id], driveId: change.outside ? 'outside_drive_001' : 'synthetic_drive_001', ...(change.moved && id === 'synthetic_research_001' ? { name: 'Carpeta ajena' } : {}), ...(change.modified && metadataReads > 1 && id === project.id_pdf_drive ? { version: '2' } : {}) } };
   } } };
   return { store, pdf };
 }

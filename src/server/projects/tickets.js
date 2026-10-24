@@ -19,6 +19,13 @@ export function readUploadTicket(value, identity, env, now = Date.now()) {
 export function validUploadUri(value) {
   try {
     const url = new URL(value);
-    return url.origin === 'https://www.googleapis.com' && url.pathname === '/upload/drive/v3/files' && !url.username && !url.password && !url.hash && url.searchParams.get('uploadType') === 'resumable' && /^[A-Za-z0-9_.~-]{10,2000}$/.test(url.searchParams.get('upload_id') || '') && [...url.searchParams.keys()].every(key => ['uploadType', 'upload_id', 'supportsAllDrives', 'fields'].includes(key));
+    const uploadId = url.searchParams.get('upload_id') || '';
+    // Google owns this opaque query string. Do not reconstruct it or assume
+    // base64url without padding. SSRF protection comes from the exact HTTPS
+    // origin/path, authenticated encryption and disabled redirects.
+    return url.origin === 'https://www.googleapis.com' && url.pathname === '/upload/drive/v3/files' && !url.username && !url.password && !url.hash &&
+      (url.searchParams.get('uploadType') === 'resumable' || url.searchParams.get('upload_protocol') === 'resumable') &&
+      uploadId.length >= 10 && uploadId.length <= 4096 && /^[\x21-\x7e]+$/.test(uploadId) &&
+      [...url.searchParams.keys()].every(key => url.searchParams.getAll(key).length === 1);
   } catch { return false; }
 }

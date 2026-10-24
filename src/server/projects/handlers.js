@@ -3,9 +3,11 @@ import { projectsJson } from '../proyectos-session.js';
 import { openProjectStore } from '../google/project-store.js';
 import { ProjectError, queryCatalog, findProject, projectView } from './catalog.js';
 import { revisionOf } from './validation.js';
+import { safeGoogleFailure } from '../google/config.js';
 
 export function projectFailure(error) {
   if (error instanceof ProjectError) return projectsJson({ code: error.code, message: error.message, ...error.extra }, error.status);
+  if (safeGoogleFailure(error).code.endsWith('rate_limited')) return projectsJson({ code: 'service_busy', message: 'El repositorio está atendiendo varias consultas. Espera unos segundos y vuelve a intentarlo.' }, 503, { 'Retry-After': '30' });
   // Never serialize provider errors, request configs, tokens or private rows.
   return projectsJson({ code: 'service_unavailable', message: 'No fue posible completar la operación. Inténtalo nuevamente. Comunícate con Tecnología CEDHU si el problema continúa.' }, 503);
 }

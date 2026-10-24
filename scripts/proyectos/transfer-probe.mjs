@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { createGoogleClient, authenticateGoogle } from '../../src/server/google/auth.js';
 import { googleRepositoryConfig, requireGoogleProduction, safeGoogleFailure } from '../../src/server/google/config.js';
 import { createGoogleRepository } from '../../src/server/google/repository.js';
-import { parseProjects } from '../../src/server/projects/catalog.js';
+import { parseProjects, ProjectError } from '../../src/server/projects/catalog.js';
 import { createManagementHandler } from '../../src/server/projects/management.js';
 import { createDocumentHandler } from '../../src/server/projects/document-handler.js';
 import { createProjectWriter } from '../../src/server/google/project-writer.js';
@@ -66,7 +66,7 @@ export async function transferProbe(env = process.env) {
   const isolatedRepository = createGoogleRepository(client, isolated);
   const store = { client, config: isolated, systemId: sandboxSystem, structureRootId: sandbox, repository: isolatedRepository, projects: async () => {
     const catalog = sheets.find(s => s.key === 'catalog');
-    const rows = await call(`${SHEETS}/${catalog.id}/values/${encodeURIComponent("'Proyectos'!A2:R10002")}`, 'GET', null, { valueRenderOption: 'UNFORMATTED_VALUE' });
+    const rows = await call(`${SHEETS}/${catalog.id}/values/${encodeURIComponent("'Proyectos'!A2:R")}`, 'GET', null, { valueRenderOption: 'UNFORMATTED_VALUE' });
     return parseProjects(rows.values ?? [], catalog.headers);
   } };
   let identity = { email: 'qa-sintetico@example.invalid', sub: '123456789012345678901', role: 'DOCENTE' };
@@ -74,7 +74,8 @@ export async function transferProbe(env = process.env) {
   const options = { env: isolatedEnv, requireSession: async () => ({ identity }), storeFactory: async () => store, onFailure(error) {
     const knownReasons = ['invalid', 'invalidParameter', 'badRequest', 'insufficientFilePermissions', 'notFound', 'rateLimitExceeded', 'userRateLimitExceeded', 'storageQuotaExceeded', 'domainPolicy', 'appNotAuthorizedToFile'];
     const reasons = error?.response?.data?.error?.errors?.map(item => item.reason).filter(reason => knownReasons.includes(reason));
-    lastFailure = { code: safeGoogleFailure(error).code, status: Number(error?.response?.status) || undefined, destination: error.probeDestination, reasons };
+    const internalCodes = ['write_tab_mismatch', 'write_sheet_not_allowed', 'generated_id_invalid', 'upload_location_invalid', 'upload_folder_ambiguous', 'upload_folder_missing', 'upload_uri_invalid', 'upload_result_invalid', 'upload_range_invalid', 'upload_offset_invalid'];
+    lastFailure = { code: error instanceof ProjectError ? error.code : internalCodes.includes(error.message) ? error.message : error instanceof TypeError ? 'provider_response_shape' : safeGoogleFailure(error).code, status: Number(error?.response?.status) || undefined, destination: error.probeDestination, reasons };
   } };
   const management = createManagementHandler(options); const download = createDocumentHandler(options);
   async function api(input) {
@@ -87,7 +88,7 @@ export async function transferProbe(env = process.env) {
   const checks = []; const batch = randomUUID();
   for (const size of [1024, 5 * 1024 * 1024 + 77, 17 * 1024 * 1024 + 19]) {
     const pdf = syntheticPdf(size); const hash = createHash('sha256').update(pdf).digest('hex');
-    const prepared = await api({ action: 'prepare', operation: randomUUID(), batch, academic: { anio: '2026', grado: '11', titulo: `Prueba sintética ${size} bytes`, autores: 'Equipo QA sintético', docente_asesor: 'Docente sintético', area: 'Prueba técnica', resumen: 'Este documento se creó exclusivamente para comprobar cargas privadas de software; no es una investigación institucional.', palabras_clave: 'prueba, aislamiento, transferencia' }, size, sha256: hash, mime: 'application/pdf', name: `Prueba-${size}.pdf` });
+    const prepared = await api({ action: 'prepare', operation: randomUUID(), batch, academic: { anio: '2026', grado: '11', titulo: `Prueba sintética ${size} bytes`, autores: `Equipo QA sintético ${size}`, docente_asesor: 'Docente sintético', area: 'Prueba técnica', resumen: `Documento sintético de ${size} bytes, creado exclusivamente para comprobar cargas privadas de software; no es una investigación institucional.`, palabras_clave: 'prueba, aislamiento, transferencia' }, size, sha256: hash, mime: 'application/pdf', name: `Prueba-${size}.pdf` });
     let last;
     for (let offset = 0; offset < size; offset += 1048576) {
       const data = pdf.subarray(offset, Math.min(offset + 1048576, size)).toString('base64');

@@ -26,7 +26,7 @@ async function metadata(store, id) {
 /** Follow only the catalog's PDF and verify every ancestor before reading bytes.
  * Deliberately reject legacy misplaced files instead of following Drive links.
  */
-export async function verifiedDocument(store, project) {
+export async function verifiedDocument(store, project, { exactAcademicLocation = false } = {}) {
   const file = await metadata(store, project.id_pdf_drive);
   const size = Number(file.size);
   if (file.mimeType !== 'application/pdf' || file.capabilities?.canDownload !== true || !Number.isSafeInteger(size) || size < 8 || size > PDF_MAX_BYTES || !/^\d{1,30}$/.test(file.version || '')) throw unavailable();
@@ -34,7 +34,8 @@ export async function verifiedDocument(store, project) {
   const year = await metadata(store, grade.parents[0]);
   const researches = await metadata(store, year.parents[0]);
   if ([grade, year, researches].some(folder => folder.mimeType !== FOLDER) ||
-      normalize(grade.name) !== normalize(gradeFolderName(project.grado)) || year.name !== project.anio ||
+      !/^grado (?:[0-9]|10|11|transicion|jardin|prejardin)$/.test(normalize(grade.name)) || !/^\d{4}$/.test(year.name) || Number(year.name) < 1900 || Number(year.name) > new Date().getUTCFullYear() + 1 ||
+      (exactAcademicLocation && (normalize(grade.name) !== normalize(gradeFolderName(project.grado)) || year.name !== project.anio)) ||
       researches.name !== '01_Investigaciones' || researches.parents[0] !== (store.structureRootId || store.config.rootId)) throw unavailable();
   // Check effective permissions explicitly; never serve an accidentally public file.
   const permissions = await store.client.request({ url: `${DRIVE}/${file.id}/permissions`, params: {

@@ -70,7 +70,7 @@ export function createGoogleRepository(client, config, { signal } = {}) {
     }
     // Check membership BEFORE accessing Sheets. No shortcuts, external sheets,
     // named ranges, arbitrary tabs or row data are followed.
-    const spreadsheet = await get(`${SHEETS}/${sheet.id}`, { fields: 'sheets(properties(title,sheetType))', includeGridData: false });
+    const spreadsheet = await get(`${SHEETS}/${sheet.id}`, { fields: 'sheets(properties(sheetId,title,sheetType))', includeGridData: false });
     const tabs = spreadsheet.sheets?.filter(item => item.properties?.title === sheet.tab);
     if (tabs?.length !== 1 || tabs[0].properties.sheetType !== 'GRID') throw new GoogleConnectionError('sheet_tab_mismatch');
     const range = encodeURIComponent(`'${sheet.tab}'!1:1`);
@@ -81,6 +81,7 @@ export function createGoogleRepository(client, config, { signal } = {}) {
     if (row.values?.length !== 1 || !Array.isArray(headers) || headers.length !== sheet.headers.length ||
         headers.some((value, index) => value !== sheet.headers[index])) throw new GoogleConnectionError('sheet_headers_mismatch');
     // No headers or metadata leave this server-side check.
+    return { tabId: tabs[0].properties.sheetId };
   }
 
   return { checkServiceAccount, checkDrive, checkStructure, checkSheet };
