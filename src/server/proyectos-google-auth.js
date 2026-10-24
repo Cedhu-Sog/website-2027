@@ -218,7 +218,7 @@ export function createWorkspaceHandlers({ env = process.env, now = Date.now,
       authenticated: true, expiresAt: access.identity.exp * 1000, role: access.identity.role,
       title: 'Repositorio de investigación CEDHU',
       welcome: 'Bienvenido al repositorio institucional.',
-      message: 'Tu cuenta institucional está autorizada. El catálogo estará disponible en la siguiente entrega.',
+      message: 'Consulta las investigaciones de nuestra comunidad académica.',
     });
   }
   function logout(request) {

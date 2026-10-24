@@ -2,6 +2,7 @@
 import Icon from '../common/Icon.astro';
 import { media } from '../../data/media';
 import googleLogo from '../../assets/icons/google-g.svg';
+import ProjectsCatalog from './ProjectsCatalog.astro';
 ---
 <section class="projects-card" aria-labelledby="projects-title" data-projects-access>
   <header class="projects-brand">
@@ -22,6 +23,7 @@ import googleLogo from '../../assets/icons/google-g.svg';
   </div>
   <p class="projects-status" id="projects-status" role="status" aria-live="polite" aria-atomic="true" data-projects-status></p>
   <div data-projects-private></div>
+  <div data-catalog-parking hidden><ProjectsCatalog /></div>
   <dialog class="projects-notice" aria-labelledby="projects-notice-title" aria-describedby="projects-notice-message projects-notice-guidance" data-projects-notice>
     <span class="projects-notice__icon" aria-hidden="true">!</span>
     <h2 id="projects-notice-title" data-notice-title>Cuenta no autorizada</h2>
