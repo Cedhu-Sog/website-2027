@@ -106,20 +106,25 @@ export function resolveWorkspaceRole(rows, { sub, email } = {}) {
   return role;
 }
 
-export async function authorizedWorkspaceRole({ env = process.env, sub, email, signal } = {}) {
+export async function authorizedWorkspaceRole({ env = process.env, sub, email, signal,
+  clientFactory = createGoogleClient } = {}) {
   // The same WIF identity as Phase B reads only the institutional access list.
   // Check the file belongs to the approved shared drive before reading its rows.
   const cfg = googleRepositoryConfig(env);
-  const client = createGoogleClient({ env, signal });
+  const client = clientFactory({ env, signal });
   await authenticateGoogle(client);
   const repository = createGoogleRepository(client, cfg, { signal });
+  await repository.checkServiceAccount();
   await repository.checkDrive();
   const systemId = await repository.checkStructure();
   await repository.checkSheet('users', systemId);
   const sheet = cfg.sheets.find(item => item.key === 'users');
   const result = await client.request({
     url: 'https://sheets.googleapis.com/v4/spreadsheets/' + sheet.id +
-      '/values/' + encodeURIComponent("'Usuarios'!A2:E1001"),
+      // Read the complete permission columns, bounded by maxContentLength below.
+      // A fixed row range could hide duplicates after blank rows. The resolver
+      // rejects results over 1000 rows; oversized responses fail closed too.
+      '/values/' + encodeURIComponent("'Usuarios'!A2:E"),
     params: { majorDimension: 'ROWS', valueRenderOption: 'FORMATTED_VALUE' },
     method: 'GET', timeout: 5000, retry: false, signal, maxRedirects: 0, maxContentLength: 262144,
   });

@@ -1,8 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createHash, randomBytes } from 'node:crypto';
-import { GOOGLE_IDENTITY } from '../../src/server/google/config.js';
-import { createWorkspaceHandlers, resolveWorkspaceRole } from '../../src/server/proyectos-google-auth.js';
+import { createHash, generateKeyPairSync, randomBytes, sign } from 'node:crypto';
+import { OAuth2Client } from 'google-auth-library';
+import { GOOGLE_IDENTITY, googleRepositoryConfig } from '../../src/server/google/config.js';
+import { authorizedWorkspaceRole, createWorkspaceHandlers, resolveWorkspaceRole } from '../../src/server/proyectos-google-auth.js';
 import { PROJECTS_ORIGIN } from '../../src/server/proyectos-session.js';
 import legacy from '../../api/proyectos/login.js';
 
@@ -39,9 +40,23 @@ const req = (route, opts = {}) => new Request(PROJECTS_ORIGIN + path + route + (
   },
 });
 
-function fixture({ claimChanges = {}, role = 'ADMIN', overrideEnv = {}, clock = () => Date.now() } = {}) {
+function fixture({ claimChanges = {}, role = 'ADMIN', overrideEnv = {}, clock = () => Date.now(),
+  signedToken = false, tamperSignature = false } = {}) {
   let auth;
   let lastVerifier;
+  // The official verifier runs unchanged; only Google's certificate transport
+  // is replaced with a locally generated public key. No real token or network.
+  const keys = signedToken ? generateKeyPairSync('rsa', { modulusLength: 2048 }) : null;
+  const verifier = signedToken ? new OAuth2Client() : null;
+  if (verifier) verifier.getFederatedSignonCertsAsync = async () => ({
+    certs: { fixture: keys.publicKey.export({ type: 'spki', format: 'pem' }) }, format: 'PEM',
+  });
+  const claims = () => ({
+    sub, email, hd: domain, nonce: auth.nonce, email_verified: true,
+    iss: 'https://accounts.google.com', aud: env.PROYECTOS_GOOGLE_OAUTH_CLIENT_ID,
+    iat: Math.floor(Date.now() / 1000), exp: Math.floor(Date.now() / 1000) + 600,
+    ...claimChanges,
+  });
   const factory = () => ({
     generateAuthUrl(options) {
       auth = options;
@@ -51,14 +66,22 @@ function fixture({ claimChanges = {}, role = 'ADMIN', overrideEnv = {}, clock = 
       assert.equal(code, 'one-time-code');
       assert.equal(redirect_uri, PROJECTS_ORIGIN + path + 'callback');
       lastVerifier = codeVerifier;
-      return { tokens: { id_token: 'synthetic-id-token' } };
+      let idToken = 'synthetic-id-token';
+      if (signedToken) {
+        const header = Buffer.from(JSON.stringify({ alg: 'RS256', kid: 'fixture' })).toString('base64url');
+        const payload = Buffer.from(JSON.stringify(claims())).toString('base64url');
+        const body = header + '.' + payload;
+        const signature = sign('RSA-SHA256', Buffer.from(body), keys.privateKey);
+        if (tamperSignature) signature[0] ^= 1;
+        idToken = body + '.' + signature.toString('base64url');
+      }
+      return { tokens: { id_token: idToken } };
     },
     async verifyIdToken({ idToken, audience }) {
-      assert.equal(idToken, 'synthetic-id-token');
       assert.equal(audience, env.PROYECTOS_GOOGLE_OAUTH_CLIENT_ID);
-      return { getPayload: () => ({
-        sub, email, hd: domain, nonce: auth.nonce, email_verified: true, ...claimChanges,
-      }) };
+      if (signedToken) return verifier.verifyIdToken({ idToken, audience });
+      assert.equal(idToken, 'synthetic-id-token');
+      return { getPayload: claims };
     },
   });
   let currentRole = role;
@@ -196,4 +219,113 @@ test('authorized user sheet enforces exact Google subject, unique email, active 
     [[email, sub, '', 'ADMIN', '']],
     Array.from({ length: 1001 }, () => good),
   ]) assert.equal(resolveWorkspaceRole(rows, account), null);
+});
+
+test('official ID-token verifier rejects invalid signature, audience, issuer and expiry before authorization', async () => {
+  const expiredAt = Math.floor(Date.now() / 1000) - 600;
+  for (const scenario of [
+    { allowed: true },
+    { tamperSignature: true },
+    { claimChanges: { aud: 'other-client.apps.googleusercontent.com' } },
+    { claimChanges: { iss: 'https://evil.invalid' } },
+    { claimChanges: { iat: expiredAt - 600, exp: expiredAt } },
+  ]) {
+    const f = fixture({ signedToken: true, ...scenario });
+    const response = await complete(f, await begin(f));
+    assert.equal(response.headers.get('location'), PROJECTS_ORIGIN +
+      (scenario.allowed ? '/proyectos/' : '/proyectos/?acceso=denegado'));
+    if (!scenario.allowed) {
+      assert(response.headers.getSetCookie().every(value => value.includes('Max-Age=0')));
+      assert.equal(await response.text(), '', 'provider errors and tokens must not reach the response');
+    }
+  }
+});
+
+test('ADMIN and DOCENTE sessions persist separately, expire at the exact boundary and clear on logout', async () => {
+  const start = Math.floor(Date.now() / 1000) * 1000;
+  for (const role of ['ADMIN', 'DOCENTE']) {
+    let time = start;
+    const f = fixture({ role, clock: () => time });
+    const sessionCookie = cookieNamed(await complete(f, await begin(f)), '__Host-cedhu-proyectos');
+    const request = cookie => new Request(PROJECTS_ORIGIN + '/api/proyectos/session', {
+      headers: cookie ? { Cookie: cookie } : {},
+    });
+    for (const elapsed of [0, 1000, 3599999]) {
+      time = start + elapsed;
+      const response = await f.handler.session(request(sessionCookie));
+      assert.equal(response.status, 200);
+      assert.match(response.headers.get('cache-control'), /no-store/);
+      const data = await response.json();
+      assert.equal(data.role, role);
+      assert.equal(data.expiresAt, start + 3600000, 'refresh must not extend expiration');
+      assert.deepEqual(Object.keys(data).sort(), ['authenticated', 'expiresAt', 'message', 'role', 'title', 'welcome']);
+    }
+    const closed = f.handler.logout(new Request(PROJECTS_ORIGIN + '/api/proyectos/logout', {
+      method: 'POST', headers: { Origin: PROJECTS_ORIGIN, 'X-CEDHU-Projects': '1' },
+    }));
+    assert.equal(closed.status, 200);
+    assert.match(closed.headers.get('set-cookie'), /Max-Age=0/);
+    assert.equal((await f.handler.session(request())).status, 401);
+    time = start + 3600000;
+    const expired = await f.handler.session(request(sessionCookie));
+    assert.equal(expired.status, 401);
+    assert.match(expired.headers.get('set-cookie'), /Max-Age=0/);
+  }
+});
+
+function accessListClient({ account = GOOGLE_IDENTITY.serviceAccount, rows = [], transform = value => value } = {}) {
+  const cfg = googleRepositoryConfig(env);
+  const system = 'system_fixture_folder';
+  const sheet = cfg.sheets.find(item => item.key === 'users');
+  const calls = [];
+  const client = {
+    async getAccessToken() { return { token: 'synthetic-backend-access-token' }; },
+    async request(options) {
+      calls.push(options);
+      assert.equal(options.method, 'GET');
+      assert.equal(options.maxRedirects, 0);
+      const path = decodeURIComponent(new URL(options.url).pathname);
+      let data;
+      if (path.endsWith('/about')) data = { user: { emailAddress: account } };
+      else if (path.includes('/drives/')) data = { id: cfg.rootId, name: 'Repo Investigación' };
+      else if (path.endsWith('/files')) data = { incompleteSearch: false, files:
+        ['00_Sistema', '01_Investigaciones', '02_Importaciones_Temporales'].map((name, i) => ({
+          id: i === 0 ? system : 'folder_fixture_' + i, name, mimeType: 'application/vnd.google-apps.folder',
+          parents: [cfg.rootId], driveId: cfg.rootId, trashed: false,
+        })) };
+      else if (path.includes('/files/')) {
+        assert(path.endsWith('/' + sheet.id), 'only the configured access list may be read');
+        data = { id: sheet.id, name: sheet.name, mimeType: 'application/vnd.google-apps.spreadsheet',
+          parents: [system], driveId: cfg.rootId, trashed: false };
+      } else {
+        assert(path.includes('/' + sheet.id), 'no personal or unrelated spreadsheet reads');
+        if (path.endsWith("/values/'Usuarios'!1:1")) data = { values: [sheet.headers] };
+        else if (path.endsWith("/values/'Usuarios'!A2:E")) data = { values: rows };
+        else data = { sheets: [{ properties: { title: 'Usuarios', sheetType: 'GRID' } }] };
+      }
+      return { data: transform(data, path) };
+    },
+  };
+  return { client, calls };
+}
+
+test('access-list reader verifies backend identity and repository membership before reading bounded rows', async () => {
+  const good = [email, sub, 'Prueba sintética', 'DOCENTE', 'ACTIVO'];
+  for (const scenario of [
+    { rows: [good], expected: 'DOCENTE' },
+    { rows: [], expected: null },
+    { rows: [[email, sub, '', 'ADMIN', 'INACTIVO']], expected: null },
+    { rows: [...Array.from({ length: 999 }, () => ['other@cedhu.edu.co']), good, good], expected: null },
+    { rows: [good, ...Array.from({ length: 1000 }, () => []), good], expected: null },
+    { account: 'personal@example.invalid', rejected: true },
+    { transform: (data, path) => path.includes('/files/') ? { ...data, parents: ['wrong_folder'] } : data, rejected: true },
+  ]) {
+    const { client, calls } = accessListClient(scenario);
+    const lookup = () => authorizedWorkspaceRole({ env, sub, email, clientFactory: () => client });
+    if (scenario.rejected) {
+      await assert.rejects(lookup);
+      assert(!calls.some(item => item.url.includes('/values/')), 'deny before reading sheet values');
+    } else assert.equal(await lookup(), scenario.expected);
+    assert(calls[0].url.endsWith('/about'), 'check actual account before Drive or Sheets');
+  }
 });
