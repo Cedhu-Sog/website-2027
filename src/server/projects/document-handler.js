@@ -1,11 +1,11 @@
 import { createWorkspaceHandlers } from '../proyectos-google-auth.js';
 import { projectsJson, privateHeaders } from '../proyectos-session.js';
 import { openProjectStore } from '../google/project-store.js';
-import { findProject, ProjectError } from './catalog.js';
+import { findProject, ProjectError, ensureCurrentSession } from './catalog.js';
 import { projectFailure } from './handlers.js';
 import { verifiedDocument, documentChunk, PDF_CHUNK_BYTES, safePdfName } from './documents.js';
 
-export function createDocumentHandler({ requireSession = createWorkspaceHandlers().requireSession, storeFactory = openProjectStore } = {}) {
+export function createDocumentHandler({ requireSession = createWorkspaceHandlers().requireSession, storeFactory = openProjectStore, onFailure = () => {} } = {}) {
   return async request => {
     if (request.method !== 'GET') return projectsJson({ message: 'Método no permitido.' }, 405, { Allow: 'GET' });
     const access = await requireSession(request); if (access.response) return access.response;
@@ -15,6 +15,7 @@ export function createDocumentHandler({ requireSession = createWorkspaceHandlers
       const store = await storeFactory();
       const project = findProject(await store.projects(), params.get('id'), access.identity);
       const file = await verifiedDocument(store, project);
+      ensureCurrentSession(access.identity);
       if (!params.has('offset')) return projectsJson({ size: file.size, version: file.version, name: safePdfName(file.name), chunkSize: PDF_CHUNK_BYTES, sha256: file.sha256Checksum || '' });
       const offset = Number(params.get('offset'));
       if (!/^\d+$/.test(params.get('offset')) || !Number.isSafeInteger(offset) || offset < 0 || offset >= file.size || offset % PDF_CHUNK_BYTES || params.get('version') !== file.version) throw new ProjectError(409, 'document_changed', 'El documento ha cambiado. Vuelve a abrirlo.');
@@ -22,9 +23,10 @@ export function createDocumentHandler({ requireSession = createWorkspaceHandlers
       // Re-read metadata to detect concurrent replacement during the range read.
       const current = await verifiedDocument(store, project);
       if (current.version !== file.version) throw new ProjectError(409, 'document_changed', 'El documento ha cambiado. Vuelve a abrirlo.');
+      ensureCurrentSession(access.identity);
       const headers = privateHeaders();
       headers.set('Content-Type', 'application/octet-stream'); headers.set('Content-Length', String(data.length));
       return new Response(data, { headers });
-    } catch (error) { return projectFailure(error); }
+    } catch (error) { try { onFailure(error); } catch { /* No diagnostic changes the response. */ } return projectFailure(error); }
   };
 }

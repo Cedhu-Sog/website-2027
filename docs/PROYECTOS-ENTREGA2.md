@@ -163,13 +163,27 @@ Por defecto están cerradas; una revisión Preview no puede usar WIF Production.
   `HxSL6aWWS3XgXqZDL9iMPgqrgGQM`: builds aislados ERROR, sin promoción.
   El cuarto aprobó 1 KiB; el quinto aprobó 1 KiB y más de 5 MiB antes de un 429.
   Se conservan los recursos QA privados para inspección; no se purgaron.
+- Ensayo completo aprobado: `dpl_2QzMT2HEGxvjuQYejkNzzXmrHRCR`, READY,
+  sin alias. Los tamaños 1.024, 5.242.957 y 17.825.811 bytes aprobaron carga,
+  reintento y descarga SHA-256; tres registros, diez eventos, edición y archivo.
+  Se recuperó un error temporal de descarga mediante espera y reintento acotado.
+  La prueba llama a los handlers desde el build de Vercel y usa Google real;
+  no se presenta como transferencia HTTP autenticada por la Function pública.
+- Preflight final solo lectura: `dpl_BeqkBFerpKY4m8PiE479LPHVnXU7`, READY,
+  confirmó escritura ya concedida en ambas carpetas y ambas hojas. La columna
+  estado institucional está vacía, sin valores previos que migrar. No hubo
+  modificación de datos institucionales.
 
-Pruebas locales: 33 Workspace, 24 Google, 13 CMS, 6 catálogo/documentos y 6
-gestión, además de build, comprobación de contenido y escaneo de salida pública.
+Pruebas locales: 33 Workspace, 24 Google, 13 CMS, 7 catálogo/documentos y 9
+gestión/red, además de build, comprobación de contenido y escaneo de salida pública.
 El compilador TypeScript ya incluido en la CLI instalada comprobó los módulos
 de navegador sin instalar paquetes. El navegador local recorrió registro y
 edición de un PDF válido de más de 5 MiB, ficha, preparación de descarga y búsqueda
-sin acentos; viewport móvil sin desbordamiento horizontal.
+sin acentos; viewport móvil sin desbordamiento horizontal. Un lote con dos
+archivos terminó inicialmente con un éxito y una coincidencia pendiente;
+tras confirmación explícita pasó a dos éxitos sin repetir el registro guardado.
+Se consultó el historial de las operaciones realizadas.
 
-Los resultados remotos y la activación definitiva se actualizarán al cerrar
-el ensayo; no interpretar las pruebas locales como certificación de Production.
+La activación definitiva está pendiente de autorización para configurar los dos
+controles de Production, conforme al punto 14 del encargo. No se han activado
+escrituras institucionales ni se han usado proyectos reales para ensayos.

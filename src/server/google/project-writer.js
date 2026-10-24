@@ -58,7 +58,7 @@ export function createProjectWriter(store) {
     const key = `audit:${identity.sub}:${operation}:${phase}`;
     const value = { fingerprint: fingerprint || digest([identity.sub, operation, phase, action, projectId, batch, details]), ...receipt };
     const record = { id_evento: 'EVT-' + digest(key).slice(0, 40), fecha_hora: new Date().toISOString(), usuario_email: identity.email,
-      usuario_google_id: identity.sub, accion: action, id_proyecto: projectId, id_lote: batch, detalles: JSON.stringify(details), resultado: result };
+      usuario_google_id: identity.sub, accion: action, id_proyecto: projectId, id_lote: batch, detalles: JSON.stringify({ ...details, operation }), resultado: result };
     return atomic('audit', key, value, [{ appendCells: { sheetId: cfg.tabId, rows: [cells(cfg.headers.map(key => record[key]))], fields: 'userEnteredValue' } }]);
   }
   async function create(project, operation, fingerprint) {

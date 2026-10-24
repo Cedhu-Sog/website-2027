@@ -11,6 +11,7 @@ import { revisionOf } from '../../src/server/projects/validation.js';
 import { PROJECTS_ORIGIN } from '../../src/server/proyectos-session.js';
 import { syntheticPdf } from './fixtures/pdf.mjs';
 import { createHash } from 'node:crypto';
+import { setTimeout as delay } from 'node:timers/promises';
 
 // Administrative, explicit one-off build command. Never in normal builds or an
 // HTTP route. Run only in a --prod --skip-domain deployment after user approval.
@@ -43,6 +44,18 @@ export async function transferProbe(env = process.env) {
   for (const key of ['catalog', 'audit']) {
     const sheet = config.sheets.find(s => s.key === key);
     permissions[key + 'Write'] = (await call(`${DRIVE}/${sheet.id}`, 'GET', null, { supportsAllDrives: true, fields: 'capabilities(canEdit)' })).capabilities?.canEdit === true;
+  }
+  const research = await call(DRIVE, 'GET', null, { corpora: 'drive', driveId: config.rootId, supportsAllDrives: true, includeItemsFromAllDrives: true,
+    q: `'${config.rootId}' in parents and trashed = false and mimeType = 'application/vnd.google-apps.folder' and name = '01_Investigaciones'`, fields: 'files(id,parents,driveId,capabilities(canAddChildren)),incompleteSearch,nextPageToken' });
+  if (research.incompleteSearch || research.nextPageToken || research.files?.length !== 1 || research.files[0].parents?.[0] !== config.rootId || research.files[0].driveId !== config.rootId) throw Error('research_parent_invalid');
+  permissions.researchFolderWrite = research.files[0].capabilities?.canAddChildren === true;
+  if (env.PROYECTOS_ISOLATED_PROBE_MODE === 'readiness') {
+    const catalog = config.sheets.find(sheet => sheet.key === 'catalog');
+    const states = await call(`${SHEETS}/${catalog.id}/values/${encodeURIComponent("'Proyectos'!Q2:Q")}`, 'GET', null, { valueRenderOption: 'FORMATTED_VALUE' });
+    const known = new Set(['FINALIZADO', 'ARCHIVADO', 'ACTIVO', 'INACTIVO', 'PUBLICADO', 'VALIDADO', 'DISPONIBLE', 'BORRADOR', 'APROBADO']);
+    const existingStates = {}; let otherStates = 0;
+    for (const row of states.values || []) { const state = String(row[0] || '').trim().toUpperCase(); if (!state) continue; if (known.has(state)) existingStates[state] = (existingStates[state] || 0) + 1; else otherStates++; }
+    return { probe: 'institutional_write_readiness', ok: Object.values(permissions).every(Boolean), permissions, existingStates, otherStates, institutionalWrites: false };
   }
   if (!permissions.temporaryFolderWrite) return { probe: 'isolated_transfer', ok: false, stage: 'permissions', code: 'sandbox_writer_required', permissions, institutionalWrites: false };
   console.log(JSON.stringify({ probe: 'isolated_transfer', stage: 'permissions', permissions, institutionalWrites: false }));
@@ -80,10 +93,22 @@ export async function transferProbe(env = process.env) {
   const management = createManagementHandler(options); const download = createDocumentHandler(options);
   async function api(input) {
     const encoded = JSON.stringify(input); if (Buffer.byteLength(encoded) > 1500000) throw Error('probe_request_limit');
-    const response = await management(new Request(PROJECTS_ORIGIN + '/api/proyectos/manage', { method: 'POST', headers: { Origin: PROJECTS_ORIGIN, 'Content-Type': 'application/json', 'X-CEDHU-Projects': '1' }, body: encoded }));
-    const data = await response.json();
-    if (!response.ok) throw Object.assign(Error('probe_operation_failed'), { probeCode: lastFailure.code || data.code, probeStatus: lastFailure.status || response.status, probeStage: input.action, probeDestination: lastFailure.destination, probeReasons: lastFailure.reasons });
-    return data;
+    for (let attempt = 0; ; attempt++) {
+      const response = await management(new Request(PROJECTS_ORIGIN + '/api/proyectos/manage', { method: 'POST', headers: { Origin: PROJECTS_ORIGIN, 'Content-Type': 'application/json', 'X-CEDHU-Projects': '1' }, body: encoded }));
+      const data = await response.json();
+      if (response.ok) return data;
+      if (response.status === 503 && attempt < 3) { console.log(JSON.stringify({ probe: 'isolated_transfer', stage: 'bounded_retry', action: input.action, code: lastFailure.code || data.code })); await delay(30000); continue; }
+      throw Object.assign(Error('probe_operation_failed'), { probeCode: lastFailure.code || data.code, probeStatus: lastFailure.status || response.status, probeStage: input.action, probeDestination: lastFailure.destination, probeReasons: lastFailure.reasons });
+    }
+  }
+  async function downloadRequest(query) {
+    for (let attempt = 0; ; attempt++) {
+      const response = await download(new Request(PROJECTS_ORIGIN + '/api/proyectos/document?' + query));
+      if (response.ok) return response;
+      const data = await response.json();
+      if (response.status === 503 && attempt < 3) { console.log(JSON.stringify({ probe: 'isolated_transfer', stage: 'bounded_retry', action: 'download', code: lastFailure.code || data.code })); await delay(30000); continue; }
+      throw Object.assign(Error('probe_download_failed'), { probeCode: lastFailure.code || data.code, probeStatus: lastFailure.status || response.status, probeStage: 'download', probeDestination: lastFailure.destination });
+    }
   }
   const checks = []; const batch = randomUUID();
   for (const size of [1024, 5 * 1024 * 1024 + 77, 17 * 1024 * 1024 + 19]) {
@@ -98,11 +123,11 @@ export async function transferProbe(env = process.env) {
     if (!last.complete) throw Error('probe_upload_incomplete');
     const committed = await api({ action: 'commit', ticket: prepared.ticket }); await api({ action: 'commit', ticket: prepared.ticket });
     const returned = [];
-    const metadataResponse = await download(new Request(PROJECTS_ORIGIN + '/api/proyectos/document?id=' + committed.projectId));
-    if (!metadataResponse.ok) throw Error('probe_download_metadata'); const meta = await metadataResponse.json();
+    const metadataResponse = await downloadRequest('id=' + committed.projectId);
+    const meta = await metadataResponse.json();
     for (let offset = 0; offset < size; offset += 1048576) {
-      const response = await download(new Request(PROJECTS_ORIGIN + '/api/proyectos/document?id=' + committed.projectId + '&offset=' + offset + '&version=' + meta.version));
-      if (!response.ok) throw Error('probe_download_chunk'); const bytes = Buffer.from(await response.arrayBuffer()); if (bytes.length > 1048576) throw Error('probe_response_limit'); returned.push(bytes);
+      const response = await downloadRequest('id=' + committed.projectId + '&offset=' + offset + '&version=' + meta.version);
+      const bytes = Buffer.from(await response.arrayBuffer()); if (bytes.length > 1048576) throw Error('probe_response_limit'); returned.push(bytes);
     }
     checks.push({ size, upload: true, retry: true, download: createHash('sha256').update(Buffer.concat(returned)).digest('hex') === hash });
     console.log(JSON.stringify({ probe: 'isolated_transfer', stage: 'file_verified', check: checks.at(-1) }));

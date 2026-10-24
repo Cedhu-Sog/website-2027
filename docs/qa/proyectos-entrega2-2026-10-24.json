@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-24",
+  "timezone": "America/Bogota",
+  "baseCommit": "1e364afba66fe5f1d299be73f890bf30aa3d61a0",
+  "pullRequests": [4, 5, 6],
+  "isolatedGoogleTransfer": {
+    "deployment": "dpl_2QzMT2HEGxvjuQYejkNzzXmrHRCR",
+    "state": "READY",
+    "assignedAliases": [],
+    "transport": "handlers_from_vercel_build_with_real_google_not_function_http",
+    "fileBytes": [1024, 5242957, 17825811],
+    "upload": true,
+    "retryWithoutDuplicate": true,
+    "downloadSha256": true,
+    "edit": true,
+    "archive": true,
+    "syntheticRecords": 3,
+    "auditEvents": 10,
+    "institutionalWrites": false
+  },
+  "readiness": {
+    "deployment": "dpl_BeqkBFerpKY4m8PiE479LPHVnXU7",
+    "state": "READY",
+    "temporaryFolderWrite": true,
+    "researchFolderWrite": true,
+    "catalogWrite": true,
+    "auditWrite": true,
+    "existingInstitutionalStates": {},
+    "unknownInstitutionalStates": 0,
+    "institutionalWrites": false,
+    "iamChanges": false,
+    "drivePermissionChanges": false,
+    "teacherOAuthScopeChanges": false
+  },
+  "localTests": { "workspace": 33, "google": 24, "cms": 13, "catalogAndDocuments": 7, "managementAndNetwork": 9 },
+  "browserSynthetic": { "individualRegistration": true, "edit": true, "searchWithoutAccents": true, "bulkPartialFailure": true, "explicitDuplicateConfirmation": true, "retryOnlyFailed": true, "activity": true, "mobileOverflow": false },
+  "limitations": [
+    "No new real ADMIN or DOCENTE Google sign-in performed in this delivery.",
+    "Real Google transfer was exercised from the isolated Vercel build; public Function HTTP transfer still requires a signed-in institutional smoke test.",
+    "PDF assembly uses browser memory, capped at 100 MiB; native iPhone/iPad PDF viewer behavior is not certified.",
+    "Google quotas can require waiting and retrying; no quota increase was requested.",
+    "Physical PDF folders preserve original registration year and grade after academic corrections."
+  ],
+  "productionWritesEnabled": false
+}

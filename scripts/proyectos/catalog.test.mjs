@@ -73,3 +73,9 @@ test('real session guard denies inactive users and role changes on each catalog 
   role = null; assert.equal((await handlers.catalog(req())).status, 403); assert.equal(reads, 1);
   role = 'ADMIN'; assert.equal((await handlers.catalog(req())).status, 403); assert.equal(reads, 1);
 });
+
+test('catalog reads cannot release private content if the session expires during the data lookup', async () => {
+  const identity = { ...teacher, exp: Math.floor(Date.now() / 1000) + 3600 };
+  const handlers = createProjectHandlers({ requireSession: async () => ({ identity }), storeFactory: async () => ({ projects: async () => { identity.exp = 1; return projects; } }) });
+  assert.equal((await handlers.catalog(request('catalog'))).status, 401);
+});

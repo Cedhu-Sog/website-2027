@@ -11,6 +11,9 @@ export const normalize = value => String(value ?? '').normalize('NFD').replace(/
 export const validProjectId = value => typeof value === 'string' && /^[A-Za-z0-9_-]{1,100}$/.test(value);
 export const canEdit = (project, identity) => identity.role === 'ADMIN' || project.registrado_por.trim().toLowerCase() === identity.email;
 export const isArchived = project => normalize(project.estado) === 'archivado';
+export function ensureCurrentSession(identity, now = Date.now()) {
+  if (identity.exp !== undefined && identity.exp * 1000 <= now) throw new ProjectError(401, 'sesion_vencida', 'Tu sesión ha expirado. Inicia sesión nuevamente.');
+}
 
 export function parseProjects(rows, headers) {
   if (!Array.isArray(rows) || rows.length > 10000) throw new ProjectError(503, 'catalog_capacity', 'El catálogo requiere mantenimiento. Comunícate con Tecnología CEDHU.');

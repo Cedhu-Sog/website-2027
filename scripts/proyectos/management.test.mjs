@@ -77,6 +77,9 @@ test('teachers edit their own records; administrator edits/archives; stale revis
   const archive = { action: 'archive', operation: randomUUID(), id: after.id_proyecto, revision: revisionOf(after) };
   assert.equal((await e.api(archive)).status, 403);
   e.identity({ ...syntheticTeacher, role: 'ADMIN' }); assert.equal((await e.api(archive)).status, 200); assert.equal((await e.store.projects())[0].estado, 'ARCHIVADO');
+  const archived = (await e.store.projects())[0];
+  assert.equal((await e.api({ ...edit, operation: randomUUID(), revision: revisionOf(archived), academic: { ...edit.academic, titulo: 'Corrección del registro archivado' } })).status, 200);
+  assert.equal((await e.store.projects())[0].estado, 'ARCHIVADO');
   assert.equal(e.files.has(before.id_pdf_drive), true);
   const events = await createProjectWriter(e.store).activity(); const intent = events.find(event => event.accion === 'EDICION_PROYECTO' && event.resultado === 'INICIADO');
   assert.equal(JSON.parse(intent.detalles).before.titulo, before.titulo); assert.equal(JSON.parse(intent.detalles).after.titulo, '=Proyecto actualizado');

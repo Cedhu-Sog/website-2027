@@ -4,7 +4,7 @@ import { writesEnabled } from '../google/auth.js';
 import { openProjectStore } from '../google/project-store.js';
 import { createProjectWriter } from '../google/project-writer.js';
 import { createProjectUploader } from '../google/project-upload.js';
-import { ProjectError, canEdit, findProject, projectView, isArchived } from './catalog.js';
+import { ProjectError, canEdit, findProject, ensureCurrentSession } from './catalog.js';
 import { projectFailure } from './handlers.js';
 import { academicInput, uploadInput, duplicateCandidates, requireDuplicateConfirmation, digest, revisionOf, operationId } from './validation.js';
 import { sealUploadTicket, readUploadTicket } from './tickets.js';
@@ -38,9 +38,11 @@ export function createManagementHandler({ env = process.env, requireSession = cr
         const page = Number(params.get('page') || 1); if (!Number.isSafeInteger(page) || page < 1 || page > 1000) throw new ProjectError(400, 'invalid_page', 'La página no es válida.');
         const store = await storeFactory({ write: false }); const writer = writerFactory(store);
         const events = (await writer.activity()).reverse();
+        ensureCurrentSession(identity, now());
         const resolved = new Set(events.filter(e => e.accion === 'INCIDENCIA_RESUELTA').map(e => { try { return JSON.parse(e.detalles).eventId; } catch { return ''; } }));
-        const finished = new Set(events.filter(e => e.resultado === 'EXITO').map(e => e.id_proyecto).filter(Boolean));
-        const items = events.slice((page - 1) * 30, page * 30).map(({ usuario_google_id: _sub, ...event }) => ({ ...event, needsAttention: !resolved.has(event.id_evento) && (event.resultado === 'FALLIDO' || (event.resultado === 'INICIADO' && !finished.has(event.id_proyecto))) }));
+        const operationKey = event => { try { const operation = JSON.parse(event.detalles).operation; return typeof operation === 'string' ? event.usuario_google_id + ':' + operation : ''; } catch { return ''; } };
+        const finished = new Set(events.filter(e => e.resultado === 'EXITO').map(operationKey).filter(Boolean));
+        const items = events.slice((page - 1) * 30, page * 30).map(event => ({ ...Object.fromEntries(Object.entries(event).filter(([key]) => key !== 'usuario_google_id')), needsAttention: !resolved.has(event.id_evento) && ['FALLIDO', 'INICIADO'].includes(event.resultado) && !finished.has(operationKey(event)) }));
         return projectsJson({ events: items, total: events.length, page, pages: Math.max(1, Math.ceil(events.length / 30)) });
       }
       if (!allowedRequest(request, { origin: PROJECTS_ORIGIN }, true)) throw new ProjectError(403, 'csrf', 'Solicitud no permitida.');
@@ -48,6 +50,7 @@ export function createManagementHandler({ env = process.env, requireSession = cr
       if (new URL(request.url).search) throw new ProjectError(400, 'invalid_request', 'La solicitud no es válida.');
       const input = await jsonBody(request);
       const store = await storeFactory({ write: true }); const writer = writerFactory(store);
+      ensureCurrentSession(identity, now());
       auditWriter = writer;
       const uploader = uploaderFactory(store, writer, env);
       if (input.action === 'prepare') {
@@ -57,6 +60,7 @@ export function createManagementHandler({ env = process.env, requireSession = cr
         operationContext = { operation: input.operation, batch: input.batch || '', action: 'INCIDENCIA_IMPORTACION' };
         requireDuplicateConfirmation(duplicateCandidates(await store.projects(), academic, input.sha256, identity), input.confirmedDuplicates);
         const ticket = await uploader.prepare({ ...input, academic }, identity);
+        ensureCurrentSession(identity, now());
         return projectsJson({ ticket: sealUploadTicket(ticket, identity, env, now()), projectId: ticket.projectId, chunkSize: 1048576 });
       }
       if (['resume', 'status', 'chunk', 'commit'].includes(input.action)) {
@@ -65,8 +69,10 @@ export function createManagementHandler({ env = process.env, requireSession = cr
         const ticket = readUploadTicket(input.ticket, identity, env, now());
         operationContext = { operation: ticket.operation, batch: ticket.batch || '', projectId: ticket.projectId, action: 'INCIDENCIA_IMPORTACION' };
         if (input.action === 'resume') return projectsJson({ academic: ticket.academic, sha256: ticket.sha256, projectId: ticket.projectId });
-        if (input.action === 'status') return projectsJson(await uploader.state(ticket));
-        if (input.action === 'chunk') return projectsJson(await uploader.chunk(ticket, input.offset, input.data));
+        if (input.action === 'status' || input.action === 'chunk') {
+          const result = input.action === 'status' ? await uploader.state(ticket) : await uploader.chunk(ticket, input.offset, input.data);
+          ensureCurrentSession(identity, now()); return projectsJson(result);
+        }
         const operation = `create:${identity.sub}:${ticket.operation}`;
         const prior = await writer.marker('catalog', operation);
         if (prior && prior.fingerprint !== ticket.fingerprint) throw new ProjectError(409, 'operation_conflict', 'La operación ya se utilizó con otros datos.');
@@ -76,6 +82,7 @@ export function createManagementHandler({ env = process.env, requireSession = cr
           const file = await verifiedDocument(store, candidate, { exactAcademicLocation: true });
           if (file.sha256Checksum !== ticket.sha256 || file.size !== ticket.size) throw new ProjectError(409, 'upload_integrity', 'No fue posible verificar la integridad del PDF. Reintenta la carga.');
           const at = new Date(now()).toISOString();
+          ensureCurrentSession(identity, now());
           await writer.create({ ...candidate, nombre_pdf: file.name, fecha_registro: at, registrado_por: identity.email, fecha_modificacion: at, modificado_por: identity.email, estado: 'FINALIZADO', id_lote: ticket.batch || '' }, operation, ticket.fingerprint);
         }
         await writer.audit({ operation: ticket.operation, phase: 'success', identity, action: ticket.batch ? 'RESULTADO_IMPORTACION' : 'CREACION_PROYECTO', projectId: prior?.projectId || ticket.projectId, batch: ticket.batch || '', details: { sha256: ticket.sha256, size: ticket.size }, result: 'EXITO' });
@@ -85,7 +92,7 @@ export function createManagementHandler({ env = process.env, requireSession = cr
         const allowed = ['action', 'operation', 'id', 'revision', 'academic', 'confirmedDuplicates'];
         if (Object.keys(input).some(k => !allowed.includes(k)) || !operationId(input.operation) || !/^[a-f0-9]{64}$/.test(input.revision || '')) throw new ProjectError(400, 'invalid_request', 'Vuelve a abrir el proyecto antes de editar.');
         const projects = await store.projects(); const before = findProject(projects, input.id, identity);
-        if (!canEdit(before, identity) || (input.action === 'archive' && identity.role !== 'ADMIN') || (input.action === 'edit' && isArchived(before))) throw new ProjectError(403, 'not_owner', 'No tienes permiso para modificar este proyecto.');
+        if (!canEdit(before, identity) || (input.action === 'archive' && identity.role !== 'ADMIN')) throw new ProjectError(403, 'not_owner', 'No tienes permiso para modificar este proyecto.');
         operationContext = { operation: input.operation, projectId: input.id, action: 'INCIDENCIA_GESTION' };
         const academic = input.action === 'edit' ? academicInput(input.academic, now()) : {};
         const fingerprint = digest([input.action, input.id, input.revision, academic]);
@@ -97,15 +104,18 @@ export function createManagementHandler({ env = process.env, requireSession = cr
           if (input.action === 'edit') requireDuplicateConfirmation(duplicateCandidates(projects, academic, '', identity, input.id), input.confirmedDuplicates);
           const after = { ...before, ...academic, ...(input.action === 'archive' ? { estado: 'ARCHIVADO' } : {}), fecha_modificacion: new Date(now()).toISOString(), modificado_por: identity.email };
           await writer.audit({ operation: input.operation, phase: 'start', identity, action: input.action === 'archive' ? 'ARCHIVO_PROYECTO' : 'EDICION_PROYECTO', projectId: input.id, fingerprint, details: { before: Object.fromEntries(store.config.sheets[0].headers.map(k => [k, before[k]])), after: Object.fromEntries(store.config.sheets[0].headers.map(k => [k, after[k]])) }, result: 'INICIADO' });
+          ensureCurrentSession(identity, now());
           await writer.update(before, after, operation, fingerprint);
         }
         await writer.audit({ operation: input.operation, phase: 'success', identity, action: input.action === 'archive' ? 'ARCHIVO_PROYECTO' : 'EDICION_PROYECTO', projectId: input.id, details: { operation: input.operation }, result: 'EXITO' });
         return projectsJson({ message: input.action === 'archive' ? 'Proyecto archivado correctamente.' : 'Información actualizada correctamente.', projectId: input.id });
       }
       if (input.action === 'resolve' && identity.role === 'ADMIN') {
+        if (Object.keys(input).some(key => !['action', 'operation', 'eventId', 'note'].includes(key))) throw new ProjectError(400, 'invalid_resolution', 'La resolución no es válida.');
         if (!operationId(input.operation) || !/^EVT-[a-f0-9]{40}$/.test(input.eventId || '') || typeof input.note !== 'string' || input.note.trim().length < 10 || input.note.length > 1000) throw new ProjectError(400, 'invalid_resolution', 'Explica cómo se resolvió la incidencia (entre 10 y 1000 caracteres).');
         const event = (await writer.activity()).find(e => e.id_evento === input.eventId);
         if (!event) throw new ProjectError(404, 'event_not_found', 'No se encontró la incidencia.');
+        ensureCurrentSession(identity, now());
         await writer.audit({ operation: input.operation, phase: 'resolved', identity, action: 'INCIDENCIA_RESUELTA', projectId: event.id_proyecto, batch: event.id_lote, details: { eventId: input.eventId, note: input.note.trim() }, result: 'EXITO' });
         return projectsJson({ message: 'Resolución registrada correctamente.' });
       }

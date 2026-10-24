@@ -1,5 +1,6 @@
 import { element, repositoryRequest, type AcademicProject } from './projects-catalog';
 import { repositoryFetch } from '../utils/projects-network';
+import { dateLabel, gradeLabel, actionLabel, resultLabel } from '../utils/projects-format';
 
 type Academic = Record<string, string>;
 type Row = { file: File; root: HTMLElement; fields: HTMLFieldSetElement; status: HTMLElement; progress: HTMLProgressElement; review: HTMLElement; operation: string; ticket?: string; hash?: string; state: 'pending' | 'success' | 'failed'; confirmed: string[]; storageKey?: string; snapshot?: string };
@@ -41,7 +42,7 @@ export function mountManagement(root: HTMLElement, role: 'ADMIN' | 'DOCENTE', re
     }
   }
   function newFields() { return (template.content.cloneNode(true) as DocumentFragment).firstElementChild as HTMLFieldSetElement; }
-  function preview(values: Academic) { const list = element('dl', '', 'repository-metadata'); names.forEach((name, i) => list.append(element('dt', labels[i]), element('dd', values[name]))); return list; }
+  function preview(values: Academic) { const list = element('dl', '', 'repository-metadata'); names.forEach((name, i) => list.append(element('dt', labels[i]), element('dd', name === 'grado' ? gradeLabel(values[name]) : values[name]))); return list; }
   function closeToFocus(target: HTMLDialogElement) { target.addEventListener('close', () => opener?.focus()); }
   [dialog, editDialog, activityDialog].forEach(closeToFocus);
   function open(multiple: boolean, button: HTMLElement) {
@@ -142,14 +143,14 @@ export function mountManagement(root: HTMLElement, role: 'ADMIN' | 'DOCENTE', re
     const p = (event as CustomEvent<AcademicProject>).detail; const body = event.target as HTMLElement;
     if (!p.canEdit || !canWrite) return;
     const actions = element('div', '', 'repository-actions');
-    const edit = element('button', 'Editar información', 'button button--outline'); edit.type = 'button'; edit.disabled = p.estado === 'ARCHIVADO';
+    const edit = element('button', 'Editar información', 'button button--outline'); edit.type = 'button';
     edit.addEventListener('click', () => {
       selectedProject = p; editOperation = crypto.randomUUID(); editConfirmed = []; opener = edit;
       query<HTMLDialogElement>('[data-project-detail]').close();
       const fields = newFields(); fill(fields, p as unknown as Academic); query('[data-edit-fields]').replaceChildren(fields);
       query('[data-edit-form]').hidden = false; query('[data-edit-review]').hidden = true; query('[data-edit-save]').hidden = true; query('[data-edit-correct]').hidden = true; query('[data-edit-status]').textContent = ''; editDialog.showModal();
     }); actions.append(edit);
-    if (role === 'ADMIN' && p.estado !== 'ARCHIVADO') {
+    if (role === 'ADMIN' && p.estado.toUpperCase() !== 'ARCHIVADO') {
       const archive = element('button', 'Archivar proyecto', 'button button--outline'); archive.type = 'button';
       archive.addEventListener('click', async () => {
         if (!window.confirm('¿Archivar este proyecto? Se conservarán el documento y su historial.')) return; archive.disabled = true;
@@ -161,6 +162,7 @@ export function mountManagement(root: HTMLElement, role: 'ADMIN' | 'DOCENTE', re
   });
   query<HTMLFormElement>('[data-edit-form]').addEventListener('submit', event => {
     event.preventDefault(); editAcademic = academic(query('[data-edit-fields]')); query('[data-edit-review]').replaceChildren(preview(editAcademic)); query('[data-edit-form]').hidden = true; query('[data-edit-review]').hidden = false; query('[data-edit-save]').hidden = false; query('[data-edit-correct]').hidden = false;
+    query('[data-edit-save]').focus();
   });
   query('[data-edit-correct]').addEventListener('click', () => { query('[data-edit-form]').hidden = false; query('[data-edit-review]').hidden = true; query('[data-edit-save]').hidden = true; query('[data-edit-correct]').hidden = true; });
   query<HTMLButtonElement>('[data-edit-save]').addEventListener('click', async () => {
@@ -175,7 +177,7 @@ export function mountManagement(root: HTMLElement, role: 'ADMIN' | 'DOCENTE', re
     try {
       const data = await (await repositoryRequest('/api/proyectos/manage?view=activity&page=' + activityPage, { signal: controller.signal })).json();
       if (!alive) return; query('[data-activity-results]').replaceChildren(...data.events.map((event: Record<string, string | boolean>) => {
-        const article = element('article', '', 'repository-import-row'); article.append(element('h3', String(event.accion)), element('p', `${event.fecha_hora} · ${event.usuario_email} · ${event.resultado}`), element('p', String(event.id_proyecto || event.id_lote || '')));
+        const article = element('article', '', 'repository-import-row'); article.append(element('h3', actionLabel(String(event.accion))), element('p', `${dateLabel(String(event.fecha_hora), true)} · ${event.usuario_email} · ${resultLabel(String(event.resultado))}`), element('p', String(event.id_proyecto || event.id_lote || '')));
         const details = element('details'); details.append(element('summary', 'Ver detalles'), element('pre', String(event.detalles))); article.append(details);
         if (event.needsAttention && canWrite) {
           const label = element('label', 'Cómo se resolvió la incidencia'); const note = element('textarea'); note.maxLength = 1000; note.minLength = 10; label.append(note);

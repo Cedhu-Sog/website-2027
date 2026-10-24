@@ -1,4 +1,5 @@
 import { repositoryFetch } from '../utils/projects-network';
+import { dateLabel, gradeLabel } from '../utils/projects-format';
 
 export interface AcademicProject {
   id_proyecto: string; anio: string; grado: string; titulo: string; autores: string; docente_asesor: string;
@@ -48,7 +49,8 @@ export function mountCatalog(host: HTMLElement, role: 'ADMIN' | 'DOCENTE') {
       const title = element('h2', p.titulo); title.id = 'project-detail-title';
       const list = element('dl', '', 'repository-metadata');
       for (const [key, label] of Object.entries({ id_proyecto: 'Código institucional', anio: 'Año', grado: 'Grado', autores: 'Autores', docente_asesor: 'Docente asesor', area: 'Área académica', estado: 'Estado', fecha_registro: 'Fecha de registro' })) {
-        list.append(element('dt', label), element('dd', p[key as keyof AcademicProject] as string || 'Sin información'));
+        const value = p[key as keyof AcademicProject] as string;
+        list.append(element('dt', label), element('dd', value ? key === 'fecha_registro' ? dateLabel(value) : key === 'grado' ? gradeLabel(value) : value : 'Sin información'));
       }
       body.replaceChildren(title, list, element('h3', 'Resumen'), element('p', p.resumen || 'Sin resumen registrado.'), element('h3', 'Palabras clave'), element('p', p.palabras_clave || 'Sin palabras clave registradas.'));
       body.dispatchEvent(new CustomEvent('project-opened', { bubbles: true, detail: p }));
@@ -80,13 +82,13 @@ export function mountCatalog(host: HTMLElement, role: 'ADMIN' | 'DOCENTE') {
       if (page > data.pages) { page = data.pages; void load(); return; }
       for (const key of ['anio', 'grado', 'area']) {
         const select = form.elements.namedItem(key) as HTMLSelectElement; const selected = select.value;
-        select.replaceChildren(new Option('Todos', ''), ...data.facets[key].map(value => new Option(value, value)));
+        select.replaceChildren(new Option('Todos', ''), ...data.facets[key].map(value => new Option(key === 'grado' ? gradeLabel(value) : value, value)));
         select.value = selected;
       }
       results.replaceChildren(...data.projects.map(p => {
         const card = element('article', '', 'repository-card');
         const title = element('h3'); const button = element('button', p.titulo, 'repository-title'); button.type = 'button'; button.addEventListener('click', () => void detail(p.id_proyecto, button)); title.append(button);
-        card.append(element('p', `${p.anio} · ${p.grado} · ${p.area}`, 'eyebrow'), title, element('p', p.autores), element('p', `Asesor: ${p.docente_asesor || 'Sin información'}`, 'repository-muted'), element('span', p.estado || 'Sin estado', 'tag'));
+        card.append(element('p', `${p.anio} · ${gradeLabel(p.grado)} · ${p.area}`, 'eyebrow'), title, element('p', p.autores), element('p', `Asesor: ${p.docente_asesor || 'Sin información'}`, 'repository-muted'), element('span', p.estado || 'Sin estado', 'tag'));
         return card;
       }));
       status.textContent = data.total ? `${data.total} proyecto${data.total === 1 ? '' : 's'} encontrado${data.total === 1 ? '' : 's'}.` : 'No se encontraron proyectos. Prueba con otros términos o limpia los filtros.';
