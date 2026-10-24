@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash, randomBytes } from 'node:crypto';
 import { GOOGLE_IDENTITY } from '../../src/server/google/config.js';
-import { createWorkspaceHandlers } from '../../src/server/proyectos-google-auth.js';
+import { createWorkspaceHandlers, resolveWorkspaceRole } from '../../src/server/proyectos-google-auth.js';
 import { PROJECTS_ORIGIN } from '../../src/server/proyectos-session.js';
 import legacy from '../../api/proyectos/login.js';
 
@@ -182,4 +182,18 @@ test('logout enforces same-origin POST and clears Google session cookie', async 
   const r = f.handler.logout(allowed);
   assert.equal(r.status, 200);
   assert.match(r.headers.get('set-cookie'), /^__Host-cedhu-proyectos=; Path=\/; Max-Age=0/);
+});
+
+test('authorized user sheet enforces exact Google subject, unique email, active status and role', () => {
+  const account = { sub, email };
+  const good = [email, sub, 'Docente Prueba', 'ADMIN', 'ACTIVO'];
+  assert.equal(resolveWorkspaceRole([good], account), 'ADMIN');
+  assert.equal(resolveWorkspaceRole([[email.toUpperCase(), sub, '', 'DOCENTE', 'activo']], account), 'DOCENTE');
+  for (const rows of [
+    [], [good, good], [[email, '987654321012345678901', '', 'ADMIN', 'ACTIVO']],
+    [[email, sub, '', 'ESTUDIANTE', 'ACTIVO']],
+    [[email, sub, '', 'ADMIN', 'INACTIVO']],
+    [[email, sub, '', 'ADMIN', '']],
+    Array.from({ length: 1001 }, () => good),
+  ]) assert.equal(resolveWorkspaceRole(rows, account), null);
 });
