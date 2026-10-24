@@ -17,6 +17,7 @@ const privateNames = [
   'PROYECTOS_DRIVE_ROOT_ID', 'PROYECTOS_METADATA_SPREADSHEET_ID',
   'PROYECTOS_AUTH_SPREADSHEET_ID', 'PROYECTOS_AUDIT_SPREADSHEET_ID',
   'PROYECTOS_PASSWORD_HASH', 'PROYECTOS_SESSION_SECRET',
+  'PROYECTOS_GOOGLE_OAUTH_CLIENT_SECRET',
   'PROYECTOS_GOOGLE_DIAGNOSTICS_TOKEN', 'CMS_OAUTH_COOKIE_SECRET',
   'GITHUB_OAUTH_CLIENT_SECRET', 'VERCEL_OIDC_TOKEN',
 ];
@@ -72,6 +73,7 @@ const forbidden = [password, passwordHash, secret, ...privateValues, ...Object.k
   ...Object.keys(cmsSettings), ...Object.values(cmsSettings),
   '@vercel/oidc', 'google-auth-library', '/api/proyectos/google-diagnostic',
   'PROYECTOS_PASSWORD_HASH', 'PROYECTOS_SESSION_SECRET',
+  'PROYECTOS_GOOGLE_OAUTH_CLIENT_SECRET',
   'Repositorio de investigación CEDHU', 'Bienvenido al repositorio institucional de proyectos de investigación.',
   'El repositorio de proyectos estará disponible próximamente.'];
 let count = 0;
@@ -82,7 +84,7 @@ for (const file of await files('dist')) {
 }
 const html = await readFile('dist/proyectos/index.html', 'utf8');
 assert(html.includes('name="robots" content="noindex, nofollow"'));
-assert(html.includes('data-projects-form') && html.includes('type="password"'));
+assert(html.includes('data-workspace-login') && !html.includes('type="password"'));
 assert(!/<style\b|\bstyle\s*=/.test(html), 'La CSP exige CSS externo.');
 assert(!/<script(?![^>]*\bsrc=)[^>]*>\s*\S/.test(html), 'La CSP exige scripts externos.');
 for (const file of (await files('dist')).filter(file => file.endsWith('.html') && !file.startsWith('dist/proyectos/'))) {

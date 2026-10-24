@@ -1,4 +1,136 @@
-# Fase B — preparación, incidencia y cierre
+# Fase B — conexión real verificada y ensayo cerrado
+
+## Resultado vigente — cierre 24/10/2026 UTC
+
+**Conexión real APROBADA. OAuth real ADMIN y DOCENTE APROBADO en copia aislada. No se autoriza todavía la publicación canónica ni se declara completo el entregable.**
+
+La CLI oficial 65.1.0 fue instalada temporalmente y autorizada por el usuario, fuera de las dependencias del repositorio. El usuario completó el Device Authorization oficial. Se comprobó proyecto/equipo antes de actuar, carga limpia y supresión de alias por solicitud con --prod --skip-domain. Al terminar se cerró la sesión CLI oficialmente. No repetir el mecanismo del conector que reasignó alias auxiliares.
+
+La primera ejecución efectiva de google-build-probe falló con federation_exchange_failed. Se comparó GCP_PROJECT_NUMBER con el recurso real del pool y se encontró una discrepancia. Se corrigió esa variable solo en Production, sin cambiar IAM, scopes, emisor, audiencia ni condición del proveedor. El siguiente build aprobó los ocho checks: configuración, federación STS, cuenta de servicio efectiva, Drive, carpetas y los tres Sheets con sus pestañas/encabezados. No hubo escritura de datos desde la cuenta de servicio.
+
+| Ejecución | Evidencia |
+| --- | --- |
+| STS antes de la corrección | [BFS2m8jgDrxUwGXt5hWQjVZct9Ce](https://vercel.com/cedhu-webmasters-projects/website-2027/BFS2m8jgDrxUwGXt5hWQjVZct9Ce), ERROR; configuración true, federación false. |
+| Conexión real corregida | [DQrgipCeJaseF4jgMk2yX3uWRXQm](https://vercel.com/cedhu-webmasters-projects/website-2027/DQrgipCeJaseF4jgMk2yX3uWRXQm), READY; ocho checks true. |
+| Lectura inicial de autorización | [ajzgNuyDrCBscgnU1ti2XaodmGhS](https://vercel.com/cedhu-webmasters-projects/website-2027/ajzgNuyDrCBscgnU1ti2XaodmGhS), READY; cuenta de pruebas ausente, sin datos de filas en salida. |
+| OAuth real aislado | [8hoQQVTqfwrianVw4zWrZG87a6cw](https://vercel.com/cedhu-webmasters-projects/website-2027/8hoQQVTqfwrianVw4zWrZG87a6cw), READY; dos identidades y roles distintos, rechazo inicial, revocación, persistencia y logout comprobados. |
+
+La fuente fue el commit 115f4b0 de PR #2, con overlays administrativos limitados a la copia de carga; no se cambió el código candidato para admitir orígenes arbitrarios. OAuth empleó una URI temporal exacta tras autorización específica, en una ventana 02:55:11.040Z–03:15:11.040Z del 24/10. El origen dependía únicamente del VERCEL_URL validado del propio deployment y el acceso fallaba cerrado fuera de esa ventana. No era Preview y no se amplió el sujeto WIF.
+
+La cuenta DOCENTE no tenía autorización y fue rechazada realmente después de verificar su ID token. Tras autorización expresa se añadió la fila institucional de pruebas DOCENTE/ACTIVO, se probó acceso, se revocó y se comprobó rechazo en la petición siguiente. El estado final de esa fila nueva es INACTIVO. El perfil ADMIN se comprobó con otra identidad existente y activa. No se restauró historial ni se cambió el estado Workspace de un antiguo trabajador.
+
+Cierre: URI temporal retirada; sesiones del portal y CLI cerradas; WAF versión 7 con cinco hosts de pruebas denegados y reglas previas conservadas; host OAuth comprobado con 403 y x-vercel-mitigated=deny. Diagnóstico canónico 404/no-store, ENABLED=false y sin TOKEN/EXPIRES_AT. Nunca se abrió el diagnóstico HTTP ni se creó su bearer temporal. Los tres alias Production siguen en dpl_45na8koSAGfXJxnsrKdi7gr6v5gi; master, CMS y sitio oficial conservados.
+
+El ensayo heredó el secreto de sesión Production existente y no constituye un entorno permanente con claves independientes. Sus hosts no deben reabrirse ni promocionarse. El vencimiento de una hora se contrastó en los metadatos reales, sin renovarse al recargar; el rechazo al límite exacto sigue probado solo localmente. Faltan la decisión de publicación, la comprobación canónica y resolver/aceptar los límites de sesión documentados en [Entrega 1](PROYECTOS-WORKSPACE-ENTREGA1.md).
+
+## Historial anterior — estados sustituidos por el resultado vigente
+
+Los apartados siguientes conservan intentos y cierres anteriores. Sus frases de conexión pendiente, procedimientos de publicación y estados remotos no describen la situación actual. No aplicar el procedimiento histórico de cambio temporal de master ni el control global de autoasignación como garantía de aislamiento. Usar el resultado vigente y la tabla de Entrega 1.
+
+## Reanudación del 23/10/2026: comprobación real en un build aislado
+
+**Resultado de esta reanudación: configuración OAuth completada; conexión real
+NO COMPROBADA. El mecanismo de staging mediante el conector no quedó aislado en
+todos sus alias y NO debe repetirse sin resolverlo.**
+
+La autorización vigente permite configurar OAuth y ejecutar lecturas reales, pero
+prohíbe sustituir Production o fusionar la PR #2 antes de verificar y autorizar la
+publicación. El procedimiento histórico de push temporal a master que aparece
+más abajo NO se aplica a esta reanudación.
+
+Se verificó acceso a Google Cloud con `web@cedhu.edu.co` y el proyecto correcto.
+El cliente Web institucional existente conserva Audience Interno. Se corrigió el
+callback Vercel a `/api/proyectos/google/callback`; la otra redirección histórica
+no se modificó. Los scopes declarados son solo openid, userinfo.email y
+userinfo.profile. El código solicita sus equivalentes `openid email profile`.
+
+Se inspeccionó el pool habilitado `vercel-cedhu-prod` y su proveedor habilitado
+`vercel-team-cedhu`: emisor `https://oidc.vercel.com/cedhu-webmasters-projects`,
+audiencia `https://vercel.com/cedhu-webmasters-projects`, `google.subject=assertion.sub`
+y condición exacta del sujeto `owner:cedhu-webmasters-projects:project:website-2027:environment:production`.
+La cuenta de servicio está habilitada, sin claves y con Workload Identity User
+otorgado al mismo sujeto. Son lecturas administrativas reales, todavía no un
+intercambio STS ni una lectura del repositorio desde Vercel.
+
+### Ejecución independiente de la publicación
+
+`scripts/proyectos/google-build-probe.mjs` ejecuta el diagnóstico reutilizable en
+un build de Vercel con target Production, limitado al proyecto y rama de la PR.
+No forma parte de `npm run build`: se invoca expresamente en el comando de un
+despliegue de prueba. Exige que el diagnóstico HTTP esté apagado y sin token ni
+fecha de activación; no crea credenciales ni activa una ruta. El OIDC se obtiene
+del contexto real del build y se valida antes de STS/IAM. Salida: exclusivamente
+los ocho booleanos y códigos sanitizados. Límite de abortar red: 25 segundos.
+
+Antes de crear el despliegue, comprobar ausencia de otros builds y desactivar
+temporalmente Auto-assign Custom Production Domains. La documentación de Vercel
+describe este control como staging sin servir tráfico de Production. Verificar
+la desactivación en el panel; no basta el éxito de una mutación de API. Crear
+solo el commit exacto de la PR, con comando de build explícito, target Production
+y sin promoción. Verificar después que el alias canónico sigue asignado al
+despliegue inicial. Restaurar la configuración original al terminar, sin promover
+el despliegue de prueba. Ante cualquier duda de aislamiento, no crear el build.
+
+La comprobación resultante acredita solo el contexto real de build. No acredita
+el transporte HTTP del diagnóstico, la identidad OIDC por petición de Function,
+los tokens OAuth de un usuario, los roles ni las sesiones del sitio. Los tests
+locales del ejecutor usan inyección de dependencias y se identifican como tales.
+
+Si se requiere posteriormente activar el endpoint HTTP, siguen siendo obligatorios
+WAF, credencial independiente, ventana absoluta máxima de 20 minutos, negativos
+reales y cierre completo incluso tras un fallo, según las secciones históricas.
+No activar ese endpoint durante el build aislado.
+
+Fuente: [Vercel: staging desde el panel](https://vercel.com/docs/deployments/promoting-a-deployment#dashboard).
+
+### Resultado observado y cierre de la tentativa
+
+Commit del ejecutor: `f138eee8f261f860ba65a69f6d60ac933a1f67df`, PR #2.
+GitHub Actions [run 40053858518](https://github.com/Cedhu-Sog/website-2027/actions/runs/40053858518)
+terminó success; Preview `dpl_5NJiQXrSivYqnnqgzq886jwjQeok`, READY.
+
+Se verificó en el panel Auto-assign Custom Production Domains=Disabled antes de
+crear `dpl_EvvZnoN1km5no3NEu1GPT1exRTP2`, target Production, commit exacto de la PR.
+El dominio canónico conservó en todo momento `dpl_45na8koSAGfXJxnsrKdi7gr6v5gi`.
+Sin embargo, Vercel sí reasignó el alias auxiliar del proyecto y el de la rama al
+nuevo despliegue. Esta observación limita la garantía documental del control de
+autoasignación: no basta para el aislamiento requerido con este conector.
+
+El build terminó READY, pero `vercel.json` mantuvo el comando `npm run build`:
+la opción buildCommand de la solicitud no ejecutó el probe. No hubo JSON de
+`google_production_build` ni evidencia STS/IAM/Drive/Sheets. Una solicitud posterior
+con hook de instalación fue rechazada; el reintento forzado fue rechazado por la
+revisión automática debido al riesgo de repetir la reasignación de alias. No se
+intentó eludir ese bloqueo con otro transporte.
+
+Cierre verificado:
+
+- Alias auxiliar `website-2027-cedhu-webmasters-projects.vercel.app` restaurado
+  al despliegue original; alias de la rama restaurado al Preview de `f138eee`.
+- El despliegue de prueba no conserva alias. No se promocionó ni fusionó la PR.
+- Autoasignación restaurada a Enabled, su estado original, y verificada en panel.
+  Los overrides de build e instalación del proyecto siguen desactivados.
+- WAF activo versión 5: se conservan las dos reglas anteriores y se añade
+  `CEDHU Closed build probe`, que deniega únicamente el host único del intento.
+  Respuesta remota 403 con `x-vercel-mitigated=deny`.
+- Diagnóstico canónico: HTTP 404 `not_found`, no-store. ENABLED=false verificado;
+  TOKEN y EXPIRES_AT ausentes del inventario. No se generó credencial temporal,
+  no comenzó una ventana y no se activó el endpoint.
+- Los tres alias de Production siguen en el despliegue original de `f870d75`.
+  No se modificaron DNS, hosting del sitio oficial, master, CMS ni contenido.
+
+Client ID y dominio se configuraron por el conector exclusivamente en Production.
+El administrador guardó el Client Secret mediante el campo oculto: metadatos
+`type=sensitive`, target Production. No se leyó su valor ni se comprobó todavía
+un intercambio OAuth con él. No se rotaron secretos existentes ni permisos IAM.
+
+El siguiente intento requiere una vía que suprima los alias por despliegue y un
+comando que ejecute efectivamente el probe. La CLI oficial con `--prod --skip-domain`
+es una alternativa a preparar, sin instalarla ni ejecutar otro Production hasta
+obtener autorización y verificar el aislamiento. El callback canónico exige,
+además, resolver el ensayo OAuth sin sustituir la versión que hoy sirve ese alias.
+
+---
 
 Fecha: 2026-10-22. La ventana autorizada venció sin ejecutar la consulta real a
 Workspace. Se retira el diagnóstico del código desplegable y se publica el cierre.

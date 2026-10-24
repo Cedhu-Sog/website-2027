@@ -1,5 +1,7 @@
 # Acceso privado a proyectos — Fase 1
 
+> Documento histórico del acceso por contraseña. El candidato actual de PR #2 usa Workspace y retira login por contraseña (410). Para el estado vigente, las cookies de una hora y las condiciones de certificación, consultar [Entrega 1](PROYECTOS-WORKSPACE-ENTREGA1.md) y [auditoría de sesiones](PROYECTOS-SESIONES-AUDITORIA.md). Las ocho horas descritas aquí no aplican al acceso Workspace.
+
 Ruta prevista: `https://website-2027-seven.vercel.app/proyectos/`.
 Implementación local; requiere configuración y comprobación en el despliegue real.
 No se han realizado commit, push, despliegue ni cambios en Vercel.

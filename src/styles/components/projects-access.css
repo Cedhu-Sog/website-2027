@@ -29,3 +29,7 @@
 .projects-private__empty { margin-block: var(--space-sm); padding: var(--space-md); border-left: 3px solid var(--color-accent); border-radius: var(--radius-xs); background: var(--color-background); }
 .projects-private .button { width: fit-content; border-radius: var(--radius-sm); }
 @media (max-width: 30rem) { .projects-navigation { flex-basis: 100%; margin-left: 0; } }
+
+/* Google Workspace login is a link, not a shared-password form. */
+.projects-card a.projects-submit { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-xs); margin-top: var(--space-lg); width: 100%; text-align: center; text-decoration: none; min-height: 3.25rem; }
+.projects-card a.projects-submit:focus-visible { outline: 3px solid var(--color-primary); outline-offset: 3px; }

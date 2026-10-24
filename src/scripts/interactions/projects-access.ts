@@ -1,183 +1,119 @@
 export {};
 
-interface PrivateSession {
+interface WorkspaceSession {
   authenticated: true;
   expiresAt: number;
+  role: 'ADMIN' | 'DOCENTE';
   title: string;
   welcome: string;
   message: string;
 }
 
-const card = document.querySelector<HTMLElement>('[data-projects-access]');
-if (card) initializeAccess(card);
+const root = document.querySelector<HTMLElement>('[data-projects-access]');
+if (root) initialize(root);
 
-function initializeAccess(root: HTMLElement) {
-  const form = root.querySelector<HTMLFormElement>('[data-projects-form]')!;
-  const input = root.querySelector<HTMLInputElement>('#projects-password')!;
-  const toggle = root.querySelector<HTMLButtonElement>('[data-projects-toggle]')!;
-  const submit = root.querySelector<HTMLButtonElement>('[data-projects-submit]')!;
+function initialize(root: HTMLElement) {
   const login = root.querySelector<HTMLElement>('[data-projects-login]')!;
   const status = root.querySelector<HTMLElement>('[data-projects-status]')!;
   const privateArea = root.querySelector<HTMLElement>('[data-projects-private]')!;
   const title = root.querySelector<HTMLHeadingElement>('#projects-title')!;
-  const loginTitle = title.textContent;
-  let expiryTimer: ReturnType<typeof setTimeout> | undefined;
-  let authenticated = false;
-  let revalidateActive = false;
-  let busy = false;
-  // Generation prevents stale requests restoring UI after expiry/logout/navigation.
+  const originalTitle = title.textContent;
   let generation = 0;
+  let authenticated = false;
+  let expiry: ReturnType<typeof setTimeout> | undefined;
+  let closing = false;
 
-  function message(text: string, error = false) {
-    status.textContent = text;
-    status.dataset.error = String(error);
+  function message(value: string, isError = false) {
+    status.textContent = value;
+    status.dataset.error = String(isError);
   }
-
-  function controls(disabled: boolean) {
-    input.disabled = toggle.disabled = submit.disabled = disabled;
-    form.setAttribute('aria-busy', String(disabled));
-  }
-
-  function clearPrivate() {
-    clearTimeout(expiryTimer);
-    authenticated = false;
+  function clear() {
+    if (expiry) clearTimeout(expiry);
+    expiry = undefined;
     privateArea.replaceChildren();
+    title.textContent = originalTitle;
     login.hidden = false;
-    title.textContent = loginTitle;
+    authenticated = false;
   }
-
-  function showLogin(text = '', error = false) {
-    clearPrivate();
-    controls(false);
-    message(text, error);
+  function text<K extends keyof HTMLElementTagNameMap>(tag: K, value: string, className = '') {
+    const node = document.createElement(tag);
+    node.textContent = value;
+    node.className = className;
+    return node;
   }
-
-  async function api(route: string, body?: object) {
-    return fetch(`/api/proyectos/${route}`, {
-      method: body === undefined ? 'GET' : 'POST',
-      credentials: 'same-origin', cache: 'no-store', redirect: 'error',
-      headers: body === undefined ? { Accept: 'application/json' } : {
-        Accept: 'application/json', 'Content-Type': 'application/json', 'X-CEDHU-Projects': '1',
-      },
-      body: body === undefined ? undefined : JSON.stringify(body),
-      signal: AbortSignal.timeout(15000),
+  async function fetchSession() {
+    return fetch('/api/proyectos/session', {
+      method: 'GET', credentials: 'same-origin', cache: 'no-store',
+      redirect: 'error', headers: { Accept: 'application/json' },
+      signal: AbortSignal.timeout(20000),
     });
   }
-
-  function node<K extends keyof HTMLElementTagNameMap>(tag: K, text: string, className = '') {
-    const element = document.createElement(tag);
-    element.textContent = text;
-    element.className = className;
-    return element;
-  }
-
-  function showPrivate(data: PrivateSession, focus: boolean) {
-    clearPrivate();
-    authenticated = true;
-    login.hidden = true;
-    input.value = '';
-    input.type = 'password';
-    toggle.setAttribute('aria-pressed', 'false');
-    toggle.setAttribute('aria-label', 'Mostrar contraseña');
-    toggle.textContent = 'Mostrar';
-    const section = node('section', '', 'projects-private');
-    title.textContent = data.title;
-    const empty = node('section', '', 'projects-private__empty');
-    empty.setAttribute('aria-label', 'Disponibilidad del repositorio');
-    empty.append(node('p', data.message));
-    const logout = node('button', 'Cerrar sesión', 'button button--outline');
-    logout.type = 'button';
-    logout.addEventListener('click', () => void closeSession(logout));
-    section.append(node('p', 'Sesión activa', 'projects-private__status'), node('p', data.welcome), empty, logout);
-    privateArea.append(section);
-    message('Sesión iniciada.');
-    expiryTimer = setTimeout(() => {
-      generation++;
-      showLogin('Tu sesión ha expirado. Ingresa nuevamente.', true);
-      input.focus();
-    }, Math.max(0, data.expiresAt - Date.now()));
-    if (focus) title.focus();
-  }
-
-  async function checkSession(focus = false, previouslyActive = authenticated) {
-    const current = ++generation;
-    clearPrivate();
-    controls(true);
-    message('Comprobando sesión…');
+  async function refresh() {
+    const request = ++generation;
+    const previous = authenticated;
+    clear();
+    message('Comprobando cuenta institucional…');
     try {
-      const response = await api('session');
-      if (current !== generation) return;
-      if (response.status === 401) return showLogin(previouslyActive ? 'Tu sesión ha expirado. Ingresa nuevamente.' : '', previouslyActive);
-      if (!response.ok) return showLogin('El acceso no está disponible temporalmente. Intenta más tarde.', true);
-      const data: PrivateSession = await response.json();
-      if (current !== generation) return;
-      if (data.authenticated !== true || !Number.isSafeInteger(data.expiresAt) || data.expiresAt <= Date.now() ||
+      const result = await fetchSession();
+      if (request !== generation) return;
+      if (result.status === 401 || result.status === 403) {
+        message(previous ? 'La sesión ha finalizado. Ingresa de nuevo con Google.' : '', previous);
+        return;
+      }
+      if (!result.ok) { message('La conexión institucional no está disponible temporalmente.', true); return; }
+      const data: WorkspaceSession = await result.json();
+      if (request !== generation) return;
+      if (data.authenticated !== true || !['ADMIN', 'DOCENTE'].includes(data.role) ||
+          !Number.isSafeInteger(data.expiresAt) || data.expiresAt <= Date.now() ||
           ![data.title, data.welcome, data.message].every(value => typeof value === 'string')) throw new Error('session');
-      showPrivate(data, focus);
+      authenticated = true;
+      login.hidden = true;
+      title.textContent = data.title;
+      const section = text('section', '', 'projects-private');
+      const badge = text('p', 'Sesión institucional · ' + (data.role === 'ADMIN' ? 'Administrador' : 'Docente'), 'projects-private__status');
+      const detail = text('section', '', 'projects-private__empty');
+      detail.append(text('p', data.message));
+      const logout = text('button', 'Cerrar sesión', 'button button--outline');
+      logout.type = 'button';
+      logout.addEventListener('click', () => void closeSession(logout));
+      section.append(badge, text('p', data.welcome), detail, logout);
+      privateArea.append(section);
+      message('Cuenta institucional verificada.');
+      expiry = setTimeout(() => { generation++; clear(); message('La sesión ha expirado.', true); },
+        Math.max(0, data.expiresAt - Date.now()));
     } catch {
-      if (current === generation) showLogin('No fue posible conectar. Revisa tu conexión e intenta nuevamente.', true);
+      if (request === generation) message('No fue posible comprobar tu acceso.', true);
     }
   }
-
   async function closeSession(button: HTMLButtonElement) {
-    if (busy) return;
-    busy = true;
-    const current = ++generation;
+    if (closing) return;
+    closing = true;
     button.disabled = true;
-    message('Cerrando sesión…');
+    const request = ++generation;
     try {
-      const response = await api('logout', {});
-      if (current !== generation) return;
+      const response = await fetch('/api/proyectos/logout', {
+        method: 'POST', credentials: 'same-origin', cache: 'no-store',
+        redirect: 'error', headers: { 'X-CEDHU-Projects': '1' },
+        signal: AbortSignal.timeout(12000),
+      });
+      if (request !== generation) return;
       if (!response.ok) throw new Error('logout');
-      showLogin('Sesión cerrada.');
-      input.focus();
+      clear();
+      message('Sesión cerrada.');
     } catch {
-      // Do not claim successful logout if the server did not clear the cookie.
-      if (current === generation) { button.disabled = false; message('No se pudo cerrar la sesión. Revisa tu conexión y vuelve a intentarlo.', true); }
-    } finally { busy = false; }
+      if (request === generation) { button.disabled = false; message('No fue posible cerrar la sesión.', true); }
+    } finally { closing = false; }
   }
-
-  toggle.addEventListener('click', () => {
-    const visible = input.type === 'password';
-    input.type = visible ? 'text' : 'password';
-    toggle.textContent = visible ? 'Ocultar' : 'Mostrar';
-    toggle.setAttribute('aria-label', visible ? 'Ocultar contraseña' : 'Mostrar contraseña');
-    toggle.setAttribute('aria-pressed', String(visible));
-  });
-
-  form.addEventListener('submit', async event => {
-    event.preventDefault();
-    if (busy || !form.reportValidity()) return;
-    busy = true;
-    const current = ++generation;
-    controls(true);
-    submit.textContent = 'Validando…';
-    input.removeAttribute('aria-invalid');
-    message('Validando acceso…');
-    try {
-      const pending = api('login', { password: input.value });
-      input.value = '';
-      const response = await pending;
-      if (current !== generation) return;
-      if (response.status === 401) {
-        input.setAttribute('aria-invalid', 'true');
-        showLogin('Contraseña incorrecta. Intenta nuevamente.', true);
-        input.focus();
-      } else if (response.status === 429) showLogin('Demasiados intentos. Espera un momento antes de intentar nuevamente.', true);
-      else if (!response.ok) showLogin('No fue posible iniciar sesión. Intenta más tarde.', true);
-      else await checkSession(true);
-    } catch {
-      if (current === generation) showLogin('No fue posible conectar. Revisa tu conexión e intenta nuevamente.', true);
-    } finally { busy = false; submit.textContent = 'Ingresar'; }
-  });
-
-  // Revalidate after tab switches and back/forward navigation. No persistent
-  // browser storage contains authentication or private response data.
-  window.addEventListener('pagehide', () => { revalidateActive = authenticated; generation++; clearPrivate(); controls(true); input.value = ''; });
-  window.addEventListener('pageshow', event => { if (event.persisted) void checkSession(false, revalidateActive); });
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('acceso') === 'denegado') {
+    message('Acceso denegado. Verifica que tu cuenta esté autorizada por el CEDHU.', true);
+    window.history.replaceState(null, '', '/proyectos/');
+  }
+  window.addEventListener('pagehide', () => { generation++; clear(); });
+  window.addEventListener('pageshow', event => { if (event.persisted) void refresh(); });
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) { revalidateActive = authenticated; generation++; clearPrivate(); controls(true); }
-    else void checkSession(false, revalidateActive);
+    if (document.hidden) { generation++; clear(); }
+    else void refresh();
   });
-  void checkSession();
+  void refresh();
 }

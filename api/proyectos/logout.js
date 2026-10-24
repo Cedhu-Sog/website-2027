@@ -1,2 +1,2 @@
-import { createProjectsHandlers } from '../../src/server/proyectos-auth.js';
-export default { fetch: createProjectsHandlers().logout };
+import { createWorkspaceHandlers } from '../../src/server/proyectos-google-auth.js';
+export default { fetch: createWorkspaceHandlers().logout };

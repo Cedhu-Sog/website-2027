@@ -60,6 +60,15 @@ for (const [route, page] of pages) {
     if (!value.startsWith('/') && !value.startsWith('#')) continue;
     const url = new URL(value, `https://cedhu.edu.co${route}`);
     if (url.origin !== 'https://cedhu.edu.co') continue;
+    // API endpoints are Vercel functions, not files in Astro dist.
+    // Verify the precise route implementation exists instead of ignoring APIs.
+    if (url.pathname === '/api/proyectos/google/start') {
+      try {
+        assert((await stat(path.resolve('api/proyectos/google/start.js'))).isFile());
+      } catch { errors.push(`${route}: missing Workspace OAuth endpoint ${value}`); }
+      references++;
+      continue;
+    }
     const destination = pages.get(url.pathname);
     references++;
     if (destination) {
