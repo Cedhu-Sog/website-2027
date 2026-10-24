@@ -1,5 +1,6 @@
 export {};
 import { mountCatalog } from './projects-catalog';
+import { mountDocuments } from './projects-documents';
 
 interface WorkspaceSession {
   authenticated: true;
@@ -52,12 +53,15 @@ function initialize(root: HTMLElement) {
   let expiry: ReturnType<typeof setTimeout> | undefined;
   let closing = false;
   let catalog: ReturnType<typeof mountCatalog> | undefined;
+  let documents: ReturnType<typeof mountDocuments> | undefined;
 
   function message(value: string, isError = false) {
     status.textContent = value;
     status.dataset.error = String(isError);
   }
   function clear() {
+    documents?.dispose();
+    documents = undefined;
     catalog?.dispose();
     catalog = undefined;
     if (expiry) clearTimeout(expiry);
@@ -114,6 +118,7 @@ function initialize(root: HTMLElement) {
       section.append(badge, text('p', data.welcome), detail, logout);
       privateArea.append(section);
       catalog = mountCatalog(detail, data.role);
+      documents = mountDocuments(catalog.root);
       message('Cuenta institucional verificada.');
       expiry = setTimeout(() => { generation++; clear(); message(''); showNotice('sesion_vencida'); },
         Math.max(0, data.expiresAt - Date.now()));

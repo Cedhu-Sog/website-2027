@@ -16,7 +16,7 @@
     "check:cms": "node scripts/cms/check-config.mjs",
     "test:cms": "node --test scripts/cms/*.test.mjs",
     "test:proyectos": "node --test scripts/proyectos/auth.test.mjs",
-    "test:proyectos:catalog": "node --test scripts/proyectos/catalog.test.mjs",
+    "test:proyectos:catalog": "node --test scripts/proyectos/catalog.test.mjs scripts/proyectos/documents.test.mjs",
     "test:proyectos:google": "node --test scripts/proyectos/google.test.mjs",
     "test:proyectos:workspace": "node --test scripts/proyectos/google-login.test.mjs scripts/proyectos/workspace-session.test.mjs scripts/proyectos/google-build-probe.test.mjs scripts/proyectos/access-ui.test.mjs",
     "test:images": "node --test scripts/image-processing.test.mjs",
