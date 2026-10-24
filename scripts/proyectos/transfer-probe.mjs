@@ -21,6 +21,15 @@ export async function transferProbe(env = process.env) {
   const config = googleRepositoryConfig(env);
   const writeEnv = { ...env, PROYECTOS_WRITES_ENABLED: 'true', PROYECTOS_TRANSFER_VERIFIED: 'v1' };
   const client = createGoogleClient({ env: writeEnv, write: true }); await authenticateGoogle(client);
+  const originalRequest = client.request.bind(client);
+  client.request = async options => {
+    try { return await originalRequest(options); }
+    catch (error) {
+      const url = String(options.url);
+      error.probeDestination = url.includes('/developerMetadata/') ? 'sheets_marker' : url.includes(':batchUpdate') ? 'sheets_mutation' : url.includes('/upload/') ? 'drive_upload' : url.includes('/permissions') ? 'drive_permissions' : url.includes('sheets.googleapis.com') ? 'sheets_read' : 'drive_metadata';
+      throw error;
+    }
+  };
   const repository = createGoogleRepository(client, config);
   await repository.checkServiceAccount(); await repository.checkDrive();
   const system = await repository.checkStructure();
@@ -36,9 +45,11 @@ export async function transferProbe(env = process.env) {
     permissions[key + 'Write'] = (await call(`${DRIVE}/${sheet.id}`, 'GET', null, { supportsAllDrives: true, fields: 'capabilities(canEdit)' })).capabilities?.canEdit === true;
   }
   if (!permissions.temporaryFolderWrite) return { probe: 'isolated_transfer', ok: false, stage: 'permissions', code: 'sandbox_writer_required', permissions, institutionalWrites: false };
+  console.log(JSON.stringify({ probe: 'isolated_transfer', stage: 'permissions', permissions, institutionalWrites: false }));
   const run = 'QA-Entregable2-' + new Date().toISOString().replace(/[:.]/g, '-') + '-' + randomUUID().slice(0, 8);
   async function createFolder(parent, name) { const file = await call(DRIVE, 'POST', { name, mimeType: 'application/vnd.google-apps.folder', parents: [parent] }, { supportsAllDrives: true, fields: 'id,parents,driveId' }); if (file.driveId !== config.rootId || file.parents?.[0] !== parent) throw Error('sandbox_create_location'); return file.id; }
   const sandbox = await createFolder(folders.files[0].id, run); const sandboxSystem = await createFolder(sandbox, '00_Sistema');
+  console.log(JSON.stringify({ probe: 'isolated_transfer', stage: 'sandbox_created', run }));
   await createFolder(sandbox, '01_Investigaciones'); await createFolder(sandbox, '02_Importaciones_Temporales');
   const sheets = [];
   for (const original of config.sheets) {
@@ -59,13 +70,18 @@ export async function transferProbe(env = process.env) {
     return parseProjects(rows.values ?? [], catalog.headers);
   } };
   let identity = { email: 'qa-sintetico@example.invalid', sub: '123456789012345678901', role: 'DOCENTE' };
-  const options = { env: isolatedEnv, requireSession: async () => ({ identity }), storeFactory: async () => store };
+  let lastFailure = {};
+  const options = { env: isolatedEnv, requireSession: async () => ({ identity }), storeFactory: async () => store, onFailure(error) {
+    const knownReasons = ['invalid', 'invalidParameter', 'badRequest', 'insufficientFilePermissions', 'notFound', 'rateLimitExceeded', 'userRateLimitExceeded', 'storageQuotaExceeded', 'domainPolicy', 'appNotAuthorizedToFile'];
+    const reasons = error?.response?.data?.error?.errors?.map(item => item.reason).filter(reason => knownReasons.includes(reason));
+    lastFailure = { code: safeGoogleFailure(error).code, status: Number(error?.response?.status) || undefined, destination: error.probeDestination, reasons };
+  } };
   const management = createManagementHandler(options); const download = createDocumentHandler(options);
   async function api(input) {
     const encoded = JSON.stringify(input); if (Buffer.byteLength(encoded) > 1500000) throw Error('probe_request_limit');
     const response = await management(new Request(PROJECTS_ORIGIN + '/api/proyectos/manage', { method: 'POST', headers: { Origin: PROJECTS_ORIGIN, 'Content-Type': 'application/json', 'X-CEDHU-Projects': '1' }, body: encoded }));
     const data = await response.json();
-    if (!response.ok) throw Object.assign(Error('probe_operation_failed'), { probeCode: data.code, probeStatus: response.status });
+    if (!response.ok) throw Object.assign(Error('probe_operation_failed'), { probeCode: lastFailure.code || data.code, probeStatus: lastFailure.status || response.status, probeStage: input.action, probeDestination: lastFailure.destination, probeReasons: lastFailure.reasons });
     return data;
   }
   const checks = []; const batch = randomUUID();
@@ -88,6 +104,7 @@ export async function transferProbe(env = process.env) {
       if (!response.ok) throw Error('probe_download_chunk'); const bytes = Buffer.from(await response.arrayBuffer()); if (bytes.length > 1048576) throw Error('probe_response_limit'); returned.push(bytes);
     }
     checks.push({ size, upload: true, retry: true, download: createHash('sha256').update(Buffer.concat(returned)).digest('hex') === hash });
+    console.log(JSON.stringify({ probe: 'isolated_transfer', stage: 'file_verified', check: checks.at(-1) }));
   }
   const records = await store.projects(); if (records.length !== 3 || !checks.every(c => c.download)) throw Error('probe_integrity');
   const first = records[0]; const academic = Object.fromEntries(['anio', 'grado', 'titulo', 'autores', 'docente_asesor', 'area', 'resumen', 'palabras_clave'].map(key => [key, first[key]])); academic.titulo += ' (editado)';
@@ -100,5 +117,5 @@ export async function transferProbe(env = process.env) {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   try { const result = await transferProbe(); console.log(JSON.stringify(result)); if (!result.ok) process.exitCode = 1; }
-  catch (error) { console.log(JSON.stringify({ probe: 'isolated_transfer', ok: false, code: error.probeCode || safeGoogleFailure(error).code, status: error.probeStatus || Number(error?.response?.status) || undefined })); process.exitCode = 1; }
+  catch (error) { console.log(JSON.stringify({ probe: 'isolated_transfer', ok: false, code: error.probeCode || safeGoogleFailure(error).code, status: error.probeStatus || Number(error?.response?.status) || undefined, stage: error.probeStage, destination: error.probeDestination, reasons: error.probeReasons })); process.exitCode = 1; }
 }

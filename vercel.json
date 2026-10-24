@@ -5,8 +5,12 @@
   "outputDirectory": "dist",
   "functions": {
     "api/proyectos/google-diagnostic.js": { "maxDuration": 30 },
+    "api/proyectos/catalog.js": { "maxDuration": 60 },
+    "api/proyectos/project.js": { "maxDuration": 60 },
+    "api/proyectos/document.js": { "maxDuration": 60 },
+    "api/proyectos/manage.js": { "maxDuration": 60 },
     "api/cms/*.js": { "maxDuration": 30 },
-    "api/proyectos/*.js": { "maxDuration": 60 }
+    "api/proyectos/*.js": { "maxDuration": 15 }
   },
   "headers": [
     {

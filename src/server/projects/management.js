@@ -9,6 +9,7 @@ import { projectFailure } from './handlers.js';
 import { academicInput, uploadInput, duplicateCandidates, requireDuplicateConfirmation, digest, revisionOf, operationId } from './validation.js';
 import { sealUploadTicket, readUploadTicket } from './tickets.js';
 import { verifiedDocument } from './documents.js';
+import { safeGoogleFailure } from '../google/config.js';
 
 async function jsonBody(request) {
   if (request.headers.get('content-type')?.split(';')[0].trim() !== 'application/json') throw new ProjectError(415, 'json_required', 'El formato de la solicitud no es válido.');
@@ -21,11 +22,13 @@ async function jsonBody(request) {
 }
 
 export function createManagementHandler({ env = process.env, requireSession = createWorkspaceHandlers({ env }).requireSession,
-  storeFactory = options => openProjectStore({ env, ...options }), writerFactory = createProjectWriter, uploaderFactory = createProjectUploader, now = Date.now } = {}) {
+  storeFactory = options => openProjectStore({ env, ...options }), writerFactory = createProjectWriter, uploaderFactory = createProjectUploader, now = Date.now, onFailure = () => {} } = {}) {
   return async request => {
     if (!['GET', 'POST'].includes(request.method)) return projectsJson({ message: 'Método no permitido.' }, 405, { Allow: 'GET, POST' });
     const access = await requireSession(request); if (access.response) return access.response;
     const identity = access.identity;
+    let auditWriter;
+    let operationContext;
     try {
       if (request.method === 'GET') {
         const params = new URL(request.url).searchParams;
@@ -45,11 +48,13 @@ export function createManagementHandler({ env = process.env, requireSession = cr
       if (new URL(request.url).search) throw new ProjectError(400, 'invalid_request', 'La solicitud no es válida.');
       const input = await jsonBody(request);
       const store = await storeFactory({ write: true }); const writer = writerFactory(store);
+      auditWriter = writer;
       const uploader = uploaderFactory(store, writer, env);
       if (input.action === 'prepare') {
         const allowed = ['action', 'academic', 'operation', 'batch', 'size', 'mime', 'name', 'sha256', 'confirmedDuplicates'];
         if (Object.keys(input).some(k => !allowed.includes(k))) throw new ProjectError(400, 'invalid_fields', 'Revisa los campos del registro.');
         const academic = academicInput(input.academic, now()); uploadInput(input);
+        operationContext = { operation: input.operation, batch: input.batch || '', action: 'INCIDENCIA_IMPORTACION' };
         requireDuplicateConfirmation(duplicateCandidates(await store.projects(), academic, input.sha256, identity), input.confirmedDuplicates);
         const ticket = await uploader.prepare({ ...input, academic }, identity);
         return projectsJson({ ticket: sealUploadTicket(ticket, identity, env, now()), projectId: ticket.projectId, chunkSize: 1048576 });
@@ -58,6 +63,7 @@ export function createManagementHandler({ env = process.env, requireSession = cr
         const allowed = input.action === 'chunk' ? ['action', 'ticket', 'offset', 'data'] : ['action', 'ticket'];
         if (Object.keys(input).some(k => !allowed.includes(k))) throw new ProjectError(400, 'invalid_fields', 'La solicitud de carga no es válida.');
         const ticket = readUploadTicket(input.ticket, identity, env, now());
+        operationContext = { operation: ticket.operation, batch: ticket.batch || '', projectId: ticket.projectId, action: 'INCIDENCIA_IMPORTACION' };
         if (input.action === 'resume') return projectsJson({ academic: ticket.academic, sha256: ticket.sha256, projectId: ticket.projectId });
         if (input.action === 'status') return projectsJson(await uploader.state(ticket));
         if (input.action === 'chunk') return projectsJson(await uploader.chunk(ticket, input.offset, input.data));
@@ -80,6 +86,7 @@ export function createManagementHandler({ env = process.env, requireSession = cr
         if (Object.keys(input).some(k => !allowed.includes(k)) || !operationId(input.operation) || !/^[a-f0-9]{64}$/.test(input.revision || '')) throw new ProjectError(400, 'invalid_request', 'Vuelve a abrir el proyecto antes de editar.');
         const projects = await store.projects(); const before = findProject(projects, input.id, identity);
         if (!canEdit(before, identity) || (input.action === 'archive' && identity.role !== 'ADMIN') || (input.action === 'edit' && isArchived(before))) throw new ProjectError(403, 'not_owner', 'No tienes permiso para modificar este proyecto.');
+        operationContext = { operation: input.operation, projectId: input.id, action: 'INCIDENCIA_GESTION' };
         const academic = input.action === 'edit' ? academicInput(input.academic, now()) : {};
         if (input.action === 'edit' && (academic.anio !== before.anio || academic.grado !== before.grado)) throw new ProjectError(409, 'document_relocation_required', 'Para cambiar el año o grado y conservar la ubicación del documento, comunícate con Tecnología CEDHU. Puedes actualizar los demás campos.');
         const fingerprint = digest([input.action, input.id, input.revision, academic]);
@@ -104,6 +111,17 @@ export function createManagementHandler({ env = process.env, requireSession = cr
         return projectsJson({ message: 'Resolución registrada correctamente.' });
       }
       throw new ProjectError(400, 'unknown_action', 'La operación no es válida.');
-    } catch (error) { return projectFailure(error); }
+    } catch (error) {
+      // Injectable diagnostic sink for isolated administrative tests only. The
+      // default emits nothing; it is never configured from an HTTP request.
+      try { onFailure(error); } catch { /* Diagnostics cannot change access or results. */ }
+      if (auditWriter && operationContext) {
+        // Log only a controlled code. Google errors can contain credentials;
+        // upload tickets, session URIs and request bodies are never audit data.
+        const code = error instanceof ProjectError ? error.code : safeGoogleFailure(error).code;
+        try { await auditWriter.audit({ ...operationContext, phase: 'failure', identity, result: 'FALLIDO', details: { code } }); } catch { /* The original operation still fails closed if audit is unavailable. */ }
+      }
+      return projectFailure(error);
+    }
   };
 }
