@@ -1,6 +1,7 @@
 ---
 import Icon from '../common/Icon.astro';
 import { media } from '../../data/media';
+import googleLogo from '../../assets/icons/google-g.svg';
 ---
 <section class="projects-card" aria-labelledby="projects-title" data-projects-access>
   <header class="projects-brand">
@@ -12,13 +13,22 @@ import { media } from '../../data/media';
   <h1 id="projects-title" tabindex="-1">Proyectos de investigación</h1>
   <div data-projects-login>
     <p class="projects-description">Acceso exclusivo para docentes y administradores autorizados del CEDHU.</p>
+    <p class="projects-instruction">Inicia sesión con tu cuenta institucional del CEDHU.</p>
     <a class="button projects-submit" href="/api/proyectos/google/start" data-workspace-login>
-      Continuar con Google Workspace <Icon name="arrow" />
+      <img class="projects-google-logo" src={googleLogo.src} width="20" height="20" alt="" />
+      Iniciar sesión con Google
     </a>
     <noscript><p class="note">Se requiere JavaScript para consultar el estado de tu sesión institucional.</p></noscript>
   </div>
   <p class="projects-status" id="projects-status" role="status" aria-live="polite" aria-atomic="true" data-projects-status></p>
   <div data-projects-private></div>
+  <dialog class="projects-notice" aria-labelledby="projects-notice-title" aria-describedby="projects-notice-message projects-notice-guidance" data-projects-notice>
+    <span class="projects-notice__icon" aria-hidden="true">!</span>
+    <h2 id="projects-notice-title" data-notice-title>Cuenta no autorizada</h2>
+    <p id="projects-notice-message" data-notice-message>No pudimos permitir el acceso con esta cuenta.</p>
+    <p id="projects-notice-guidance" data-notice-guidance>Ingresa con tu cuenta institucional del CEDHU. Si el problema continúa, comunícate con Tecnología CEDHU.</p>
+    <form method="dialog"><button class="button" autofocus>Entendido</button></form>
+  </dialog>
   <p class="projects-footnote">Centro de Desarrollo Humano · CEDHU</p>
 </section>
 <script>import('../../scripts/interactions/projects-access');</script>

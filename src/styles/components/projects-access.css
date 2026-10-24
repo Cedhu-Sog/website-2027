@@ -12,8 +12,8 @@
 .projects-password input { width: 100%; min-width: 0; min-height: 3.25rem; padding: var(--space-xs) var(--space-sm); border: 0; border-radius: var(--radius-sm); background: var(--color-surface); color: var(--color-text); }
 .projects-toggle { min-width: 5.25rem; padding: var(--space-xs); border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--color-primary-dark); font-size: var(--text-small); font-weight: 600; }
 .projects-toggle:hover { background: var(--color-tint); }
-.projects-card .projects-submit { width: 100%; margin-top: var(--space-sm); border-radius: var(--radius-sm); background: var(--color-primary-dark); }
-.projects-card .projects-submit:hover { background: var(--color-primary); transform: none; }
+.projects-card .projects-submit { width: 100%; margin-top: var(--space-sm); border: 1px solid var(--color-text-muted); border-radius: var(--radius-sm); background: var(--color-surface); color: var(--color-text); }
+.projects-card .projects-submit:hover { background: var(--color-background); transform: none; }
 .projects-card button:disabled { cursor: wait; opacity: .65; }
 .projects-status { margin-top: var(--space-sm); font-size: var(--text-detail); }
 .projects-status:empty { display: none; }
@@ -30,6 +30,15 @@
 .projects-private .button { width: fit-content; border-radius: var(--radius-sm); }
 @media (max-width: 30rem) { .projects-navigation { flex-basis: 100%; margin-left: 0; } }
 
-/* Google Workspace login is a link, not a shared-password form. */
+/* Keep the official Google artwork on a light background. */
 .projects-card a.projects-submit { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-xs); margin-top: var(--space-lg); width: 100%; text-align: center; text-decoration: none; min-height: 3.25rem; }
 .projects-card a.projects-submit:focus-visible { outline: 3px solid var(--color-primary); outline-offset: 3px; }
+.projects-instruction { margin-top: var(--space-sm); }
+.projects-google-logo { width: 20px; height: 20px; flex: 0 0 20px; object-fit: contain; }
+.projects-notice { margin: auto; width: min(32rem, calc(100% - var(--space-md) * 2)); max-height: calc(100dvh - var(--space-md) * 2); overflow-y: auto; padding: var(--space-md); border: 1px solid var(--color-line); border-top: var(--space-xs) solid var(--color-accent); border-radius: var(--radius-mobile-navigation); background: var(--color-surface); color: var(--color-text); box-shadow: var(--shadow-menu); }
+.projects-notice::backdrop { background: var(--color-primary-dark); opacity: .7; }
+.projects-notice h2 { margin-block: var(--space-sm); color: var(--color-primary-dark); font-size: var(--text-h3); line-height: 1.25; }
+.projects-notice p + p { margin-top: var(--space-sm); }
+.projects-notice__icon { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: var(--radius-pill); background: var(--color-warm); color: var(--color-primary-dark); font-size: var(--text-h3); font-weight: 700; }
+.projects-notice .button { width: 100%; min-height: 3.25rem; margin-top: var(--space-md); border-radius: var(--radius-sm); }
+.projects-notice .button:focus-visible { outline: 3px solid var(--color-primary); outline-offset: 3px; }
