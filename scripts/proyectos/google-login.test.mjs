@@ -6,9 +6,9 @@ import { createWorkspaceHandlers } from '../../src/server/proyectos-google-auth.
 import { PROJECTS_ORIGIN } from '../../src/server/proyectos-session.js';
 import legacy from '../../api/proyectos/login.js';
 
-const domain = 'ejemplo.edu.co';
+const domain = 'cedhu.edu.co';
 const sub = '123456789012345678901';
-const email = 'docente@ejemplo.edu.co';
+const email = 'docente.prueba@cedhu.edu.co';
 const env = {
   VERCEL: '1', VERCEL_ENV: 'production', VERCEL_PROJECT_ID: 'prj_Fixture123456',
   PROYECTOS_SESSION_SECRET: randomBytes(32).toString('hex'),
