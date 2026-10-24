@@ -5,6 +5,7 @@ import '../styles/global.css';
 import '../styles/components/ui.css';
 // Keep this small stylesheet external even when Astro's default inlining applies.
 import projectsStyles from '../styles/components/projects-access.css?url&no-inline';
+import catalogStyles from '../styles/components/projects-catalog.css?url&no-inline';
 const title = 'Proyectos de investigación | CEDHU';
 const description = 'Acceso exclusivo para personal autorizado al repositorio institucional de proyectos de investigación del CEDHU.';
 ---
@@ -22,6 +23,7 @@ const description = 'Acceso exclusivo para personal autorizado al repositorio in
     <meta property="og:title" content={title} />
     <meta name="twitter:title" content={title} />
     <link rel="stylesheet" href={projectsStyles} />
+    <link rel="stylesheet" href={catalogStyles} />
   </head>
   <body class="projects-page">
     <a class="skip-link" href="#contenido">Saltar al contenido</a>

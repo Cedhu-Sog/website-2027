@@ -6,7 +6,7 @@
   "functions": {
     "api/proyectos/google-diagnostic.js": { "maxDuration": 30 },
     "api/cms/*.js": { "maxDuration": 30 },
-    "api/proyectos/*.js": { "maxDuration": 15 }
+    "api/proyectos/*.js": { "maxDuration": 60 }
   },
   "headers": [
     {

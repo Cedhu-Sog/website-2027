@@ -1,0 +1,20 @@
+---
+const fields = [['anio', 'Año'], ['grado', 'Grado'], ['area', 'Área académica']];
+---
+<section class="repository" data-catalog hidden aria-labelledby="catalog-heading">
+  <header class="repository-heading">
+    <div><p class="eyebrow">Memoria académica · CEDHU</p><h2 id="catalog-heading" tabindex="-1">Explora nuestras investigaciones</h2><p>Conocimiento que nace en el aula y crece con nuestra comunidad.</p></div>
+  </header>
+  <form class="repository-filters" data-catalog-filters role="search" aria-label="Buscar proyectos">
+    <label class="repository-search">Buscar proyectos<input name="q" type="search" maxlength="200" placeholder="Título, autores, resumen o palabras clave" /></label>
+    {fields.map(([name, label]) => <label>{label}<select name={name}><option value="">Todos</option></select></label>)}
+    <label>Ordenar por<select name="sort"><option value="fecha">Registro más reciente</option><option value="anio">Año más reciente</option><option value="titulo">Título A–Z</option></select></label>
+    <label class="repository-check"><input type="checkbox" name="mine" value="1" /> Mis proyectos</label>
+    <label class="repository-check" data-admin-filter hidden><input type="checkbox" name="archived" value="1" /> Incluir archivados</label>
+    <div class="repository-actions"><button class="button" type="submit">Buscar proyectos</button><button class="button button--outline" type="reset">Limpiar filtros</button></div>
+  </form>
+  <p role="status" aria-live="polite" aria-atomic="true" data-catalog-status></p>
+  <div class="repository-results" data-catalog-results></div>
+  <nav class="repository-pagination" aria-label="Páginas de proyectos" data-catalog-pagination hidden><button class="button button--outline" type="button" data-page-previous>Anterior</button><span data-page-label></span><button class="button button--outline" type="button" data-page-next>Siguiente</button></nav>
+  <dialog class="repository-detail" data-project-detail aria-labelledby="project-detail-title"><form method="dialog"><button class="button button--outline" autofocus>Cerrar ficha</button></form><div data-project-body></div></dialog>
+</section>

@@ -5,7 +5,7 @@ import { stripTypeScriptTypes } from 'node:module';
 import vm from 'node:vm';
 
 const source = stripTypeScriptTypes(readFileSync(new URL('../../src/scripts/interactions/projects-access.ts', import.meta.url), 'utf8'))
-  .replace('export {};', '');
+  .replace('export {};', '').replace("import { mountCatalog } from './projects-catalog';", '');
 const settle = () => new Promise(resolve => setImmediate(resolve));
 const ok = () => Response.json({ authenticated: true, role: 'DOCENTE', expiresAt: Date.now() + 3600000,
   title: 'Repositorio', welcome: 'Bienvenido', message: 'Autorizado' });
@@ -35,7 +35,7 @@ function environment(code = '', initial = () => Response.json({ code: 'sin_sesio
   const calls = [];
   let respond = initial;
   const timers = new Map();
-  vm.runInNewContext(source, { document, window, URL, URLSearchParams, AbortSignal, Date, setTimeout: fn => { timers.set(1, fn); return 1; },
+  vm.runInNewContext(source, { mountCatalog: () => ({ dispose() {} }), document, window, URL, URLSearchParams, AbortSignal, Date, setTimeout: fn => { timers.set(1, fn); return 1; },
     clearTimeout: id => timers.delete(id), fetch: (url, options) => { calls.push({ url, options }); return respond(url); } });
   return { nodes, document, window, calls, timers, get active() { return active; }, get cleaned() { return cleaned; },
     respond: next => { respond = next; }, refresh: () => document.dispatchEvent(new Event('visibilitychange')) };

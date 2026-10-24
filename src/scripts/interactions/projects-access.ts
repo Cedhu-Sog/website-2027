@@ -1,4 +1,5 @@
 export {};
+import { mountCatalog } from './projects-catalog';
 
 interface WorkspaceSession {
   authenticated: true;
@@ -50,12 +51,15 @@ function initialize(root: HTMLElement) {
   let authenticated = false;
   let expiry: ReturnType<typeof setTimeout> | undefined;
   let closing = false;
+  let catalog: ReturnType<typeof mountCatalog> | undefined;
 
   function message(value: string, isError = false) {
     status.textContent = value;
     status.dataset.error = String(isError);
   }
   function clear() {
+    catalog?.dispose();
+    catalog = undefined;
     if (expiry) clearTimeout(expiry);
     expiry = undefined;
     privateArea.replaceChildren();
@@ -103,13 +107,13 @@ function initialize(root: HTMLElement) {
       title.textContent = data.title;
       const section = text('section', '', 'projects-private');
       const badge = text('p', 'Sesión institucional · ' + (data.role === 'ADMIN' ? 'Administrador' : 'Docente'), 'projects-private__status');
-      const detail = text('section', '', 'projects-private__empty');
-      detail.append(text('p', data.message));
+      const detail = text('section', '', 'projects-private__catalog');
       const logout = text('button', 'Cerrar sesión', 'button button--outline');
       logout.type = 'button';
       logout.addEventListener('click', () => void closeSession(logout));
       section.append(badge, text('p', data.welcome), detail, logout);
       privateArea.append(section);
+      catalog = mountCatalog(detail, data.role);
       message('Cuenta institucional verificada.');
       expiry = setTimeout(() => { generation++; clear(); message(''); showNotice('sesion_vencida'); },
         Math.max(0, data.expiresAt - Date.now()));
@@ -146,6 +150,7 @@ function initialize(root: HTMLElement) {
     window.history.replaceState(null, '', url.pathname + url.search + url.hash);
   }
   window.addEventListener('pagehide', () => { generation++; clear(); });
+  document.addEventListener('projects-access-lost', () => { generation++; clear(); message(''); showNotice('sesion_vencida'); });
   window.addEventListener('pageshow', event => { if (event.persisted) void refresh(); });
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) { generation++; clear(); }
