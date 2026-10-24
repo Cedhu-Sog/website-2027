@@ -11,6 +11,7 @@ export const normalize = value => String(value ?? '').normalize('NFD').replace(/
 export const validProjectId = value => typeof value === 'string' && /^[A-Za-z0-9_-]{1,100}$/.test(value);
 export const canEdit = (project, identity) => identity.role === 'ADMIN' || project.registrado_por.trim().toLowerCase() === identity.email;
 export const isArchived = project => normalize(project.estado) === 'archivado';
+export const isDeleted = project => normalize(project.estado) === 'eliminado';
 export function ensureCurrentSession(identity, now = Date.now()) {
   if (identity.exp !== undefined && identity.exp * 1000 <= now) throw new ProjectError(401, 'sesion_vencida', 'Tu sesión ha expirado. Inicia sesión nuevamente.');
 }
@@ -28,24 +29,26 @@ export function parseProjects(rows, headers) {
 export function projectView(project, identity, detail = false) {
   const keys = ['id_proyecto', 'anio', 'grado', 'titulo', 'autores', 'docente_asesor', 'area', 'estado', 'fecha_registro'];
   if (detail) keys.push('resumen', 'palabras_clave');
-  return { ...Object.fromEntries(keys.map(key => [key, project[key]])), canEdit: canEdit(project, identity), hasDocument: Boolean(project.id_pdf_drive) };
+  return { ...Object.fromEntries(keys.map(key => [key, project[key]])), canEdit: !isDeleted(project) && canEdit(project, identity), hasDocument: !isDeleted(project) && Boolean(project.id_pdf_drive) };
 }
 
 export function findProject(projects, id, identity) {
   if (!validProjectId(id)) throw new ProjectError(400, 'invalid_id', 'El código del proyecto no es válido.');
   const project = projects.find(p => p.id_proyecto === id);
-  if (!project || (isArchived(project) && identity.role !== 'ADMIN')) throw new ProjectError(404, 'not_found', 'No se encontró el proyecto.');
+  if (!project || isDeleted(project) || (isArchived(project) && identity.role !== 'ADMIN')) throw new ProjectError(404, 'not_found', 'No se encontró el proyecto.');
   return project;
 }
 
 export function queryCatalog(projects, params, identity) {
-  const allowed = ['q', 'anio', 'grado', 'area', 'sort', 'page', 'mine', 'archived'];
+  const allowed = ['q', 'anio', 'grado', 'area', 'sort', 'page', 'mine', 'archived', 'view'];
   for (const key of params.keys()) if (!allowed.includes(key) || params.getAll(key).length !== 1 || params.get(key).length > 200) throw new ProjectError(400, 'invalid_filter', 'Revisa los filtros de búsqueda.');
   const sort = params.get('sort') || 'fecha';
   const page = Number(params.get('page') || 1);
+  const deletedView = params.get('view') === 'deleted';
+  if (params.has('view') && (!deletedView || identity.role !== 'ADMIN')) throw new ProjectError(403, 'admin_required', 'Esta consulta está disponible para administradores.');
   if (!['fecha', 'anio', 'titulo'].includes(sort) || !Number.isSafeInteger(page) || page < 1 || page > 1000 ||
     ['mine', 'archived'].some(key => params.has(key) && !['0', '1'].includes(params.get(key)))) throw new ProjectError(400, 'invalid_filter', 'Revisa los filtros de búsqueda.');
-  const visible = projects.filter(p => !isArchived(p) || (identity.role === 'ADMIN' && params.get('archived') === '1'));
+  const visible = projects.filter(p => deletedView ? isDeleted(p) : !isDeleted(p) && (!isArchived(p) || (identity.role === 'ADMIN' && params.get('archived') === '1')));
   const facets = Object.fromEntries(['anio', 'grado', 'area'].map(key => [key, [...new Set(visible.map(p => p[key]).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es', { numeric: true }))]));
   const terms = normalize(params.get('q')).split(' ').filter(Boolean);
   const matches = visible.filter(p => {

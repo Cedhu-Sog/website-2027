@@ -1,7 +1,5 @@
 export {};
-import { mountCatalog } from './projects-catalog';
-import { mountDocuments } from './projects-documents';
-import { mountManagement } from './projects-management';
+import { mountCatalog, type AcademicProject } from './projects-catalog';
 
 interface WorkspaceSession {
   authenticated: true;
@@ -10,6 +8,7 @@ interface WorkspaceSession {
   title: string;
   welcome: string;
   message: string;
+  management?: { canWrite: boolean; actor: string };
 }
 
 const root = document.querySelector<HTMLElement>('[data-projects-access]');
@@ -21,6 +20,9 @@ function initialize(root: HTMLElement) {
   const privateArea = root.querySelector<HTMLElement>('[data-projects-private]')!;
   const title = root.querySelector<HTMLHeadingElement>('#projects-title')!;
   const originalTitle = title.textContent;
+  const roleBadge = root.querySelector<HTMLElement>('[data-projects-role]')!;
+  const logout = root.querySelector<HTMLButtonElement>('[data-projects-logout]')!;
+  logout.addEventListener('click', () => void closeSession(logout));
   const notice = root.querySelector<HTMLDialogElement>('[data-projects-notice]')!;
   const loginLink = root.querySelector<HTMLAnchorElement>('[data-workspace-login]')!;
   const notices = {
@@ -54,8 +56,8 @@ function initialize(root: HTMLElement) {
   let expiry: ReturnType<typeof setTimeout> | undefined;
   let closing = false;
   let catalog: ReturnType<typeof mountCatalog> | undefined;
-  let documents: ReturnType<typeof mountDocuments> | undefined;
-  let management: ReturnType<typeof mountManagement> | undefined;
+  let documents: ReturnType<typeof import('./projects-documents').mountDocuments> | undefined;
+  let management: ReturnType<typeof import('./projects-management').mountManagement> | undefined;
 
   function message(value: string, isError = false) {
     status.textContent = value;
@@ -72,6 +74,8 @@ function initialize(root: HTMLElement) {
     expiry = undefined;
     privateArea.replaceChildren();
     title.textContent = originalTitle;
+    root.dataset.authenticated = 'false';
+    roleBadge.hidden = logout.hidden = true;
     login.hidden = false;
     authenticated = false;
   }
@@ -112,21 +116,28 @@ function initialize(root: HTMLElement) {
           ![data.title, data.welcome, data.message].every(value => typeof value === 'string')) throw new Error('session');
       authenticated = true;
       login.hidden = true;
-      title.textContent = data.title;
-      const section = text('section', '', 'projects-private');
-      const badge = text('p', 'Sesión institucional · ' + (data.role === 'ADMIN' ? 'Administrador' : 'Docente'), 'projects-private__status');
+      title.textContent = 'Investigación CEDHU';
+      root.dataset.authenticated = 'true';
+      roleBadge.textContent = data.role;
+      roleBadge.hidden = logout.hidden = false;
+      logout.disabled = false;
       const detail = text('section', '', 'projects-private__catalog');
-      const logout = text('button', 'Cerrar sesión', 'button button--outline');
-      logout.type = 'button';
-      logout.addEventListener('click', () => void closeSession(logout));
-      section.append(badge, text('p', data.welcome), detail, logout);
-      privateArea.append(section);
+      privateArea.append(detail);
       catalog = mountCatalog(detail, data.role);
-      documents = mountDocuments(catalog.root);
-      management = mountManagement(catalog.root, data.role, catalog.refresh);
-      message('Cuenta institucional verificada.');
-      expiry = setTimeout(() => { generation++; clear(); message(''); showNotice('sesion_vencida'); },
-        Math.max(0, data.expiresAt - Date.now()));
+      const catalogRoot = catalog.root;
+      let pendingProject: { body: HTMLElement; project: AcademicProject } | undefined;
+      const rememberProject = (event: Event) => { pendingProject = { body: event.target as HTMLElement, project: (event as CustomEvent<AcademicProject>).detail }; };
+      catalogRoot.addEventListener('project-opened', rememberProject);
+      expiry = setTimeout(() => { generation++; clear(); message(''); showNotice('sesion_vencida'); }, Math.max(0, data.expiresAt - Date.now()));
+      const modulesStarted = performance.now();
+      const [documentModule, managementModule] = await Promise.all([import('./projects-documents'), import('./projects-management')]);
+      root.dataset.modulesMs = (performance.now() - modulesStarted).toFixed(1);
+      if (request !== generation) return;
+      catalogRoot.removeEventListener('project-opened', rememberProject);
+      documents = documentModule.mountDocuments(catalog.root);
+      management = managementModule.mountManagement(catalog.root, data.role, catalog.refresh, data.management);
+      if (pendingProject?.body.isConnected && catalogRoot.querySelector<HTMLDialogElement>('[data-project-detail]')?.open) pendingProject.body.dispatchEvent(new CustomEvent('project-opened', { bubbles: true, detail: pendingProject.project }));
+      message('');
     } catch {
       if (request === generation) { message(''); showNotice('servicio'); }
     }

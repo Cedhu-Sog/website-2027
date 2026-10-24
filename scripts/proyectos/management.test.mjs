@@ -7,6 +7,8 @@ import { createDocumentHandler } from '../../src/server/projects/document-handle
 import { academicInput, duplicateCandidates, revisionOf, digest } from '../../src/server/projects/validation.js';
 import { sealUploadTicket, readUploadTicket, validUploadUri } from '../../src/server/projects/tickets.js';
 import { PROJECTS_ORIGIN, projectsJson } from '../../src/server/proyectos-session.js';
+import { createProjectHandlers } from '../../src/server/projects/handlers.js';
+import { queryCatalog } from '../../src/server/projects/catalog.js';
 import { fixtureEnv, syntheticTeacher, academicFixture, memoryRepository, sha256, syntheticPdf } from './fixtures/repository.mjs';
 
 const req = (input, headers = {}) => new Request(PROJECTS_ORIGIN + '/api/proyectos/manage', { method: 'POST', headers: { Origin: PROJECTS_ORIGIN, 'X-CEDHU-Projects': '1', 'Content-Type': 'application/json', ...headers }, body: JSON.stringify(input) });
@@ -26,6 +28,101 @@ async function upload(e, bytes, extra = {}) {
   }
   return { ticket, projectId: prepared.data.projectId };
 }
+
+test('recoverable deletion enforces owner/admin, blocks normal details and PDFs for everyone, and preserves identity, bytes and audit', async () => {
+  const e = setup(); const { ticket } = await upload(e, syntheticPdf(1024)); await e.api({ action: 'commit', ticket });
+  const before = (await e.store.projects())[0];
+  const deletion = { action: 'delete', operation: randomUUID(), id: before.id_proyecto, revision: revisionOf(before) };
+  e.identity({ ...syntheticTeacher, email: 'ajeno@example.invalid', sub: '987654321098765432109' });
+  assert.equal((await e.api(deletion)).status, 403);
+  e.identity(syntheticTeacher);
+  assert.equal((await e.api({ ...deletion, registrado_por: syntheticTeacher.email })).status, 400);
+  assert.equal((await e.api(deletion)).status, 200);
+  const deleted = (await e.store.projects())[0]; assert.equal(deleted.estado, 'ELIMINADO');
+  assert.equal((await e.api({ action: 'commit', ticket })).status, 200);
+  assert.equal((await e.store.projects())[0].estado, 'ELIMINADO', 'an old upload retry never resurrects a deleted project');
+  assert.equal((await e.store.projects()).length, 1);
+  const events = await createProjectWriter(e.store).activity(); const count = events.length;
+  assert.equal((await e.api(deletion)).status, 200);
+  assert.equal((await e.api({ ...deletion, operation: randomUUID() })).status, 200);
+  assert.equal((await createProjectWriter(e.store).activity()).length, count);
+  for (const identity of [syntheticTeacher, { ...syntheticTeacher, role: 'ADMIN' }]) {
+    const options = { requireSession: async () => ({ identity }), storeFactory: async () => e.store };
+    assert.equal((await createProjectHandlers(options).project(new Request(PROJECTS_ORIGIN + '/api/proyectos/project?id=' + before.id_proyecto))).status, 404);
+    assert.equal((await createDocumentHandler(options)(new Request(PROJECTS_ORIGIN + '/api/proyectos/document?id=' + before.id_proyecto))).status, 404);
+    assert.equal(queryCatalog(await e.store.projects(), new URLSearchParams({ archived: '1' }), identity).total, 0);
+  }
+  assert.throws(() => queryCatalog([deleted], new URLSearchParams({ view: 'deleted' }), syntheticTeacher), { status: 403 });
+  const admin = { ...syntheticTeacher, role: 'ADMIN' };
+  assert.equal(queryCatalog([deleted], new URLSearchParams({ view: 'deleted' }), admin).total, 1);
+  const detail = () => e.handler(new Request(PROJECTS_ORIGIN + '/api/proyectos/manage?view=deleted-project&id=' + before.id_proyecto));
+  assert.equal((await detail()).status, 403);
+  const restore = { action: 'restore', operation: randomUUID(), id: deleted.id_proyecto, revision: revisionOf(deleted) };
+  assert.equal((await e.api(restore)).status, 403);
+  e.identity(admin); const response = await detail(); assert.equal(response.status, 200);
+  const safe = (await response.json()).project; assert.equal(safe.canRestore, true); assert.equal(safe.hasDocument, false); assert(!('id_pdf_drive' in safe));
+  assert.equal((await e.api(restore)).status, 200); assert.equal((await e.api(restore)).status, 200);
+  const after = (await e.store.projects())[0]; assert.equal(after.estado, 'FINALIZADO');
+  for (const key of ['id_proyecto', 'fecha_registro', 'registrado_por', 'id_pdf_drive', 'hash_pdf']) assert.equal(after[key], before[key]);
+  assert(e.files.has(before.id_pdf_drive));
+  assert.equal((await e.api(deletion)).status, 200); assert.equal((await e.store.projects())[0].estado, 'FINALIZADO', 'replay never deletes again after restoration');
+  const history = await createProjectWriter(e.store).activity();
+  for (const action of ['ELIMINACION_PROYECTO', 'RESTAURACION_PROYECTO']) assert.equal(history.filter(e => e.accion === action && e.resultado === 'EXITO').length, 1);
+});
+
+test('administrator restores the exact archived or historical state, and each rapid mutation retains a unique revision', async () => {
+  for (const state of ['ARCHIVADO', '', 'VALIDADO_HISTORICO']) {
+    const e = setup(); const { ticket } = await upload(e, syntheticPdf(1024)); await e.api({ action: 'commit', ticket });
+    const sheet = e.data[fixtureEnv.PROYECTOS_METADATA_SPREADSHEET_ID]; sheet.rows[0][16] = state;
+    e.identity({ ...syntheticTeacher, role: 'ADMIN', email: 'administrador@example.invalid' });
+    const revisions = new Set();
+    for (let i = 0; i < 2; i++) {
+      let p = (await e.store.projects())[0]; revisions.add(revisionOf(p));
+      assert.equal((await e.api({ action: 'delete', operation: randomUUID(), id: p.id_proyecto, revision: revisionOf(p) })).status, 200);
+      p = (await e.store.projects())[0]; revisions.add(revisionOf(p));
+      assert.equal((await e.api({ action: 'restore', operation: randomUUID(), id: p.id_proyecto, revision: revisionOf(p) })).status, 200);
+      assert.equal((await e.store.projects())[0].estado, state);
+    }
+    assert.equal(revisions.size, 4);
+  }
+});
+
+test('deleted records do not leak through duplicate warnings; restoring alongside a new duplicate requires explicit confirmation', async () => {
+  const e = setup(); const bytes = syntheticPdf(1024); const first = await upload(e, bytes); await e.api({ action: 'commit', ticket: first.ticket });
+  let before = (await e.store.projects())[0]; await e.api({ action: 'delete', operation: randomUUID(), id: before.id_proyecto, revision: revisionOf(before) });
+  assert.equal(duplicateCandidates(await e.store.projects(), academicFixture, sha256(bytes), syntheticTeacher).length, 0);
+  const second = await upload(e, bytes); await e.api({ action: 'commit', ticket: second.ticket });
+  e.identity({ ...syntheticTeacher, role: 'ADMIN' }); before = (await e.store.projects())[0];
+  const restore = { action: 'restore', operation: randomUUID(), id: before.id_proyecto, revision: revisionOf(before) };
+  const warning = await e.api(restore); assert.equal(warning.status, 409); assert.equal(warning.data.duplicates[0].id_proyecto, second.projectId);
+  assert.equal((await e.api({ ...restore, confirmedDuplicates: [second.projectId] })).status, 200);
+});
+
+test('deletion rejects expired sessions, forged CSRF and stale/concurrent revisions without overwriting another mutation', async () => {
+  const e = setup(); const { ticket } = await upload(e, syntheticPdf(1024)); await e.api({ action: 'commit', ticket });
+  const before = (await e.store.projects())[0]; const input = { action: 'delete', operation: randomUUID(), id: before.id_proyecto, revision: revisionOf(before) };
+  e.identity({ ...syntheticTeacher, exp: 1 }); assert.equal((await e.api(input)).status, 401);
+  e.identity(syntheticTeacher); assert.equal((await e.api(input, { Origin: 'https://outside.invalid' })).status, 403);
+  assert.equal((await e.api({ ...input, revision: 'a'.repeat(64) })).status, 409);
+  const outcomes = await Promise.all([e.api(input), e.api({ action: 'edit', operation: randomUUID(), id: before.id_proyecto, revision: revisionOf(before), academic: { ...academicFixture, titulo: 'Corrección concurrente' } })]);
+  assert.deepEqual(outcomes.map(r => r.status).sort(), [200, 409]);
+  const after = (await e.store.projects())[0]; assert(after.estado === 'ELIMINADO' ? after.titulo === before.titulo : after.titulo === 'Corrección concurrente');
+});
+
+test('in-flight PDF metadata and chunks cannot finish after their record is logically deleted', async () => {
+  for (const suffix of ['', '&offset=0&version=1']) {
+  const e = setup(); const { ticket } = await upload(e, syntheticPdf(1024)); await e.api({ action: 'commit', ticket });
+  const before = (await e.store.projects())[0]; const request = e.store.client.request;
+  e.store.client.request = async options => {
+    const result = await request(options);
+    if (options.params?.alt === 'media' && (suffix ? options.headers.Range !== 'bytes=0-7' : options.headers.Range === 'bytes=0-7')) e.data[fixtureEnv.PROYECTOS_METADATA_SPREADSHEET_ID].rows[0][16] = 'ELIMINADO';
+    return result;
+  };
+  const handler = createDocumentHandler({ requireSession: async () => ({ identity: syntheticTeacher }), storeFactory: async () => e.store });
+  const response = await handler(new Request(PROJECTS_ORIGIN + '/api/proyectos/document?id=' + before.id_proyecto + suffix));
+  assert.equal(response.status, 404); assert(!(await response.text()).includes('%PDF'));
+  }
+});
 
 test('real management/writer/uploader flow handles small, 5MB+ and 17MB+ PDF uploads and repeated/concurrent commits exactly once', async () => {
   for (const size of [1024, 5 * 1024 * 1024 + 77, 17 * 1024 * 1024 + 19]) {

@@ -1,8 +1,9 @@
 import { createHash, randomBytes } from 'node:crypto';
 import { OAuth2Client } from 'google-auth-library';
-import { createGoogleClient, authenticateGoogle } from './google/auth.js';
+import { createGoogleClient, writesEnabled } from './google/auth.js';
 import { googleRepositoryConfig, requireGoogleProduction } from './google/config.js';
-import { createGoogleRepository } from './google/repository.js';
+import { openRepositoryContext } from './google/project-store.js';
+import { measuredHandler } from './projects/timing.js';
 import { PROJECTS_ORIGIN, allowedRequest, privateHeaders, projectsJson } from './proyectos-session.js';
 import { sealWorkspaceCookie, openWorkspaceCookie } from './proyectos-workspace-session.js';
 
@@ -89,16 +90,11 @@ export function resolveWorkspaceRole(rows, { sub, email } = {}) {
 }
 
 export async function authorizedWorkspaceRole({ env = process.env, sub, email, signal,
-  clientFactory = createGoogleClient } = {}) {
+  clientFactory = createGoogleClient, context, timing } = {}) {
   // The same WIF identity as Phase B reads only the institutional access list.
   // Check the file belongs to the approved shared drive before reading its rows.
-  const cfg = googleRepositoryConfig(env);
-  const client = clientFactory({ env, signal });
-  await authenticateGoogle(client);
-  const repository = createGoogleRepository(client, cfg, { signal });
-  await repository.checkServiceAccount();
-  await repository.checkDrive();
-  const systemId = await repository.checkStructure();
+  const store = await openRepositoryContext({ env, clientFactory, signal, timing });
+  const { config: cfg, client, repository, systemId } = store;
   await repository.checkSheet('users', systemId);
   const sheet = cfg.sheets.find(item => item.key === 'users');
   const result = await client.request({
@@ -112,6 +108,7 @@ export async function authorizedWorkspaceRole({ env = process.env, sub, email, s
   });
   const rows = result.data?.values;
   if (!Array.isArray(rows)) throw new Error('users_sheet_unavailable');
+  if (context) context.store = store;
   return resolveWorkspaceRole(rows, { sub, email });
 }
 
@@ -187,40 +184,43 @@ export function createWorkspaceHandlers({ env = process.env, now = Date.now,
       return denied();
     }
   }
-  async function requireSession(request) {
+  async function requireSession(request, { timing } = {}) {
     const cfg = configured();
     if (!cfg) return { response: projectsJson({ message: 'Acceso institucional no disponible.' }, 503) };
     if (!fixedOrigin(request) || !allowedRequest(request, { origin: PROJECTS_ORIGIN })) {
       return { response: projectsJson({ message: 'Solicitud no permitida.' }, 403) };
     }
     let data;
-    try { data = localSession(request, cfg, now); }
+    try { data = await (timing ? timing.measure('session', () => localSession(request, cfg, now)) : localSession(request, cfg, now)); }
     catch (error) { return { response: projectsJson({ message: 'Inicia sesión para continuar.',
       code: error.message === 'expired_session' ? 'sesion_vencida' : 'sin_sesion' }, 401, { 'Set-Cookie': clearSession() }) }; }
     try {
-      const activeRole = await roleLookup({ env, sub: data.sub, email: data.email });
+      const googleContext = {};
+      const lookup = () => roleLookup({ env, sub: data.sub, email: data.email, context: googleContext, timing });
+      const activeRole = await (timing ? timing.measure('authorization', lookup) : lookup());
       // A slow permissions read must not deliver private content after expiry.
       if (data.exp <= Math.floor(now() / 1000)) return { response: projectsJson({ message: 'Inicia sesión para continuar.', code: 'sesion_vencida' }, 401, { 'Set-Cookie': clearSession() }) };
       // Revocation or role changes take effect on the next private API request.
       if (activeRole !== data.role) return { response: projectsJson({ message: 'Acceso no autorizado.', code: 'denegado' }, 403, { 'Set-Cookie': clearSession() }) };
-      return { identity: data };
+      return { identity: data, googleContext };
     } catch {
       // No cached authorization in the event Google Workspace is unavailable.
       if (data.exp <= Math.floor(now() / 1000)) return { response: projectsJson({ message: 'Inicia sesión para continuar.', code: 'sesion_vencida' }, 401, { 'Set-Cookie': clearSession() }) };
       return { response: projectsJson({ message: 'No fue posible comprobar la autorización.' }, 503) };
     }
   }
-  async function session(request) {
+  const session = measuredHandler(async (request, timing) => {
     if (request.method !== 'GET') return projectsJson({ message: 'Método no permitido.' }, 405, { Allow: 'GET' });
-    const access = await requireSession(request);
+    const access = await requireSession(request, { timing });
     if (access.response) return access.response;
     return projectsJson({
       authenticated: true, expiresAt: access.identity.exp * 1000, role: access.identity.role,
       title: 'Repositorio de investigación CEDHU',
       welcome: 'Bienvenido al repositorio institucional.',
       message: 'Consulta las investigaciones de nuestra comunidad académica.',
+      management: { canWrite: writesEnabled(env), actor: createHash('sha256').update(access.identity.sub).digest('hex').slice(0, 24) },
     });
-  }
+  });
   function logout(request) {
     if (request.method !== 'POST') return projectsJson({ message: 'Método no permitido.' }, 405, { Allow: 'POST' });
     if (!fixedOrigin(request) || request.headers.get('origin') !== PROJECTS_ORIGIN ||

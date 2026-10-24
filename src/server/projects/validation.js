@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { normalize, isArchived, ProjectError, projectView } from './catalog.js';
+import { normalize, isArchived, isDeleted, ProjectError, projectView } from './catalog.js';
 import { PDF_MAX_BYTES } from './documents.js';
 
 export const ACADEMIC_FIELDS = Object.freeze({ anio: 4, grado: 40, titulo: 300, autores: 1500, docente_asesor: 200, area: 120, resumen: 6000, palabras_clave: 800 });
@@ -29,7 +29,7 @@ export function uploadInput(input) {
 }
 
 export function duplicateCandidates(projects, academic, hash, identity, exclude = '') {
-  return projects.filter(p => p.id_proyecto !== exclude && (!isArchived(p) || identity.role === 'ADMIN')).filter(p => {
+  return projects.filter(p => p.id_proyecto !== exclude && !isDeleted(p) && (!isArchived(p) || identity.role === 'ADMIN')).filter(p => {
     if (hash && p.hash_pdf.toLowerCase() === hash.toLowerCase()) return true;
     const title = normalize(p.titulo) === normalize(academic.titulo);
     const context = p.anio === academic.anio && normalize(p.grado) === normalize(academic.grado);
@@ -41,5 +41,6 @@ export function duplicateCandidates(projects, academic, hash, identity, exclude 
 }
 
 export function requireDuplicateConfirmation(candidates, confirmed = []) {
+  if (!Array.isArray(confirmed) || confirmed.length > 100 || confirmed.some(id => typeof id !== 'string' || !/^[A-Za-z0-9_-]{1,100}$/.test(id))) throw new ProjectError(400, 'invalid_confirmation', 'Revisa la confirmación de coincidencias.');
   if (candidates.some(p => !confirmed.includes(p.id_proyecto))) throw new ProjectError(409, 'possible_duplicate', 'Se encontró un posible duplicado. Revisa los proyectos existentes y confirma si deseas continuar.', { duplicates: candidates });
 }

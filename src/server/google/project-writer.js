@@ -1,4 +1,4 @@
-import { digest } from '../projects/validation.js';
+import { digest, revisionOf } from '../projects/validation.js';
 import { ProjectError } from '../projects/catalog.js';
 
 const SHEETS = 'https://sheets.googleapis.com/v4/spreadsheets';
@@ -70,7 +70,12 @@ export function createProjectWriter(store) {
     if (!Number.isSafeInteger(before.rowNumber) || before.rowNumber < 2) throw Error('invalid_row');
     const revision = 'revision:' + before.id_proyecto + ':' + digest(cfg.headers.map(key => before[key]));
     const guard = { createDeveloperMetadata: { developerMetadata: { metadataId: markerId(revision), metadataKey: 'cedhu:' + digest(revision), metadataValue: JSON.stringify({ fingerprint: operation }), location: { spreadsheet: true }, visibility: 'PROJECT' } } };
-    try { return await atomic('catalog', operation, { fingerprint, projectId: after.id_proyecto }, [guard, { updateCells: { range: { sheetId: cfg.tabId, startRowIndex: before.rowNumber - 1, endRowIndex: before.rowNumber, startColumnIndex: 0, endColumnIndex: cfg.headers.length }, rows: [cells(cfg.headers.map(key => after[key]))], fields: 'userEnteredValue' } }]); }
+    const sidecars = [];
+    if (after.estado === 'ELIMINADO' && before.estado !== 'ELIMINADO') {
+      const key = `deleted:${after.id_proyecto}:${revisionOf(after)}`;
+      sidecars.push({ createDeveloperMetadata: { developerMetadata: { metadataId: markerId(key), metadataKey: 'cedhu:' + digest(key), metadataValue: JSON.stringify({ fingerprint: digest(before.estado), state: before.estado, revision: revisionOf(after) }), location: { spreadsheet: true }, visibility: 'PROJECT' } } });
+    }
+    try { return await atomic('catalog', operation, { fingerprint, projectId: after.id_proyecto }, [guard, ...sidecars, { updateCells: { range: { sheetId: cfg.tabId, startRowIndex: before.rowNumber - 1, endRowIndex: before.rowNumber, startColumnIndex: 0, endColumnIndex: cfg.headers.length }, rows: [cells(cfg.headers.map(key => after[key]))], fields: 'userEnteredValue' } }]); }
     catch (error) { if (await marker('catalog', revision)) throw new ProjectError(409, 'edit_conflict', 'Otra persona modificó este proyecto. Vuelve a abrir su ficha antes de editar.'); throw error; }
   }
   async function activity() {
