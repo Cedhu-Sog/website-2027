@@ -2,6 +2,10 @@
 
 ## Reanudación del 23/10/2026: comprobación real en un build aislado
 
+**Resultado de esta reanudación: configuración OAuth completada; conexión real
+NO COMPROBADA. El mecanismo de staging mediante el conector no quedó aislado en
+todos sus alias y NO debe repetirse sin resolverlo.**
+
 La autorización vigente permite configurar OAuth y ejecutar lecturas reales, pero
 prohíbe sustituir Production o fusionar la PR #2 antes de verificar y autorizar la
 publicación. El procedimiento histórico de push temporal a master que aparece
@@ -51,6 +55,53 @@ reales y cierre completo incluso tras un fallo, según las secciones históricas
 No activar ese endpoint durante el build aislado.
 
 Fuente: [Vercel: staging desde el panel](https://vercel.com/docs/deployments/promoting-a-deployment#dashboard).
+
+### Resultado observado y cierre de la tentativa
+
+Commit del ejecutor: `f138eee8f261f860ba65a69f6d60ac933a1f67df`, PR #2.
+GitHub Actions [run 40053858518](https://github.com/Cedhu-Sog/website-2027/actions/runs/40053858518)
+terminó success; Preview `dpl_5NJiQXrSivYqnnqgzq886jwjQeok`, READY.
+
+Se verificó en el panel Auto-assign Custom Production Domains=Disabled antes de
+crear `dpl_EvvZnoN1km5no3NEu1GPT1exRTP2`, target Production, commit exacto de la PR.
+El dominio canónico conservó en todo momento `dpl_45na8koSAGfXJxnsrKdi7gr6v5gi`.
+Sin embargo, Vercel sí reasignó el alias auxiliar del proyecto y el de la rama al
+nuevo despliegue. Esta observación limita la garantía documental del control de
+autoasignación: no basta para el aislamiento requerido con este conector.
+
+El build terminó READY, pero `vercel.json` mantuvo el comando `npm run build`:
+la opción buildCommand de la solicitud no ejecutó el probe. No hubo JSON de
+`google_production_build` ni evidencia STS/IAM/Drive/Sheets. Una solicitud posterior
+con hook de instalación fue rechazada; el reintento forzado fue rechazado por la
+revisión automática debido al riesgo de repetir la reasignación de alias. No se
+intentó eludir ese bloqueo con otro transporte.
+
+Cierre verificado:
+
+- Alias auxiliar `website-2027-cedhu-webmasters-projects.vercel.app` restaurado
+  al despliegue original; alias de la rama restaurado al Preview de `f138eee`.
+- El despliegue de prueba no conserva alias. No se promocionó ni fusionó la PR.
+- Autoasignación restaurada a Enabled, su estado original, y verificada en panel.
+  Los overrides de build e instalación del proyecto siguen desactivados.
+- WAF activo versión 5: se conservan las dos reglas anteriores y se añade
+  `CEDHU Closed build probe`, que deniega únicamente el host único del intento.
+  Respuesta remota 403 con `x-vercel-mitigated=deny`.
+- Diagnóstico canónico: HTTP 404 `not_found`, no-store. ENABLED=false verificado;
+  TOKEN y EXPIRES_AT ausentes del inventario. No se generó credencial temporal,
+  no comenzó una ventana y no se activó el endpoint.
+- Los tres alias de Production siguen en el despliegue original de `f870d75`.
+  No se modificaron DNS, hosting del sitio oficial, master, CMS ni contenido.
+
+Client ID y dominio se configuraron por el conector exclusivamente en Production.
+El administrador guardó el Client Secret mediante el campo oculto: metadatos
+`type=sensitive`, target Production. No se leyó su valor ni se comprobó todavía
+un intercambio OAuth con él. No se rotaron secretos existentes ni permisos IAM.
+
+El siguiente intento requiere una vía que suprima los alias por despliegue y un
+comando que ejecute efectivamente el probe. La CLI oficial con `--prod --skip-domain`
+es una alternativa a preparar, sin instalarla ni ejecutar otro Production hasta
+obtener autorización y verificar el aislamiento. El callback canónico exige,
+además, resolver el ensayo OAuth sin sustituir la versión que hoy sirve ese alias.
 
 ---
 

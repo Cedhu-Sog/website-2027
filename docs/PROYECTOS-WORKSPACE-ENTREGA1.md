@@ -2,6 +2,68 @@
 
 Fecha de preparación: 23/10/2026. **NO APROBADA PARA USO INSTITUCIONAL AÚN.**
 
+## Estado vigente tras desbloquear Google Cloud — 23/10/2026
+
+Acceso administrativo real con `web@cedhu.edu.co` y proyecto `cedhu-repositorio`
+comprobados. Se reutilizó `CEDHU-Repositorio-Web` (Web application), Audience
+Interno; callback Vercel corregido y guardado exactamente como
+`https://website-2027-seven.vercel.app/api/proyectos/google/callback`.
+Los scopes declarados y guardados son únicamente openid, userinfo.email y
+userinfo.profile; no hay scopes sensibles/restringidos ni permisos personales Drive.
+La redirección histórica a cedhu.edu.co se conservó para no afectar una posible
+integración ajena; no se agregaron dominios públicos nuevos.
+
+Vercel contiene Client ID, Client Secret y dominio únicamente en Production.
+El secreto fue guardado por el administrador en campo oculto; se comprobó solo
+su metadato sensitive y target, nunca su valor. Esto acredita configuración, no
+validez del secreto ni un intercambio OAuth exitoso.
+
+| Condición | Estado | Evidencia y límite |
+| --- | --- | --- |
+| Acceso administrativo Google Cloud | APROBADO | Sesión de Web Cedhu y proyecto CEDHU-Repositorio visibles. |
+| Cliente OAuth | APROBADO | Existente reutilizado, Web, Interno, callback exacto y tres scopes guardados. |
+| Credenciales en Vercel | APROBADO | Los tres nombres presentes solo en Production; Client Secret sensitive. Canje real pendiente. |
+| Federación OIDC y STS | NO COMPROBADO | Pool/proveedor/emisor/audiencia/condición inspeccionados; no se ejecutó el intercambio real. |
+| Cuenta de servicio e IAM | APROBADO | Cuenta habilitada, sin claves; Workload Identity User para el sujeto Production exacto. Identidad efectiva de un token pendiente. |
+| Lectura real de Drive | NO COMPROBADO | No se llegó a ejecutar el probe. |
+| Lectura real de Sheets | NO COMPROBADO | No se llegó a ejecutar el probe. |
+| Autenticación real de la cuenta de prueba | NO COMPROBADO | Login oficial Google comprobado previamente; OAuth desde Vercel pendiente. |
+| Rol y estado de la cuenta | NO COMPROBADO | No se consultó su fila real. No se alteraron permisos ni estado. |
+| ADMIN y DOCENTE | NO COMPROBADO | Ambos perfiles reales pendientes por separado. |
+| Seguridad de sesiones | NO COMPROBADO | Casos locales aprobados; ciclo real del sitio y revocación pendientes. |
+| Actions y Preview | APROBADO | Actions run 40053858518 success; Preview f138eee READY. |
+| Cierre del diagnóstico | APROBADO | Canónico 404/no-store, indicador false, sin token/expiry; host de prueba bloqueado por WAF. |
+| Condiciones para publicar | NO COMPROBADO | Conexión real y OAuth pendientes; falta resolver un ensayo con aislamiento de alias y autorización final. |
+
+### Intento de conexión, incidencia y corrección
+
+El ejecutor `scripts/proyectos/google-build-probe.mjs` quedó preparado y pasó dos
+tests nuevos de precondiciones y sanitización, junto con 11 tests Workspace.
+Build local correcto. No se repitieron suites sin cambios.
+
+Con autoasignación desactivada y comprobada se creó un único build Production
+de `f138eee`. Vercel conservó el alias canónico, pero movió dos alias auxiliares;
+además, el buildCommand del repositorio prevaleció y el probe no se ejecutó.
+No se atribuye una conexión Google a ese READY. La revisión automática rechazó
+otro despliegue por el riesgo de repetir la reasignación de alias.
+
+Se restauraron todos los alias a sus destinos anteriores y la autoasignación a
+Enabled. El intento quedó sin alias y con su host único bloqueado por WAF; se
+verificó 403/deny. El dominio canónico y los dos alias de Production corresponden
+otra vez al despliegue inicial `dpl_45na8koSAGfXJxnsrKdi7gr6v5gi` de `f870d75`.
+master no cambió. No se promovió ni fusionó la PR. No se modificó el sitio oficial,
+su DNS/hosting, CMS ni contenido. El diagnóstico público no fue activado.
+
+Detalles operativos y cierre: [Fase B](PROYECTOS-GOOGLE-FASE-B.md).
+Evidencia remota: [PR #2](https://github.com/Cedhu-Sog/website-2027/pull/2),
+[commit f138eee](https://github.com/Cedhu-Sog/website-2027/commit/f138eee8f261f860ba65a69f6d60ac933a1f67df),
+[Actions aprobado](https://github.com/Cedhu-Sog/website-2027/actions/runs/40053858518),
+[Preview](https://vercel.com/cedhu-webmasters-projects/website-2027/5NJiQXrSivYqnnqgzq886jwjQeok),
+[intento bloqueado](https://vercel.com/cedhu-webmasters-projects/website-2027/EvvZnoN1km5no3NEu1GPT1exRTP2).
+
+Los apartados siguientes conservan la preparación y prueba anteriores; sus
+pendientes de configuración OAuth quedan sustituidos por este estado vigente.
+
 ## Alcance
 
 Se prepara una ruta de acceso individual por Google OAuth 2.0, para cuentas
