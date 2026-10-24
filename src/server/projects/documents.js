@@ -26,7 +26,7 @@ async function metadata(store, id) {
 /** Follow only the catalog's PDF and verify every ancestor before reading bytes.
  * Deliberately reject legacy misplaced files instead of following Drive links.
  */
-export async function verifiedDocument(store, project, { exactAcademicLocation = false } = {}) {
+export async function verifiedDocument(store, project, { exactAcademicLocation = false, verifySignature = true } = {}) {
   const file = await metadata(store, project.id_pdf_drive);
   const size = Number(file.size);
   if (file.mimeType !== 'application/pdf' || file.capabilities?.canDownload !== true || !Number.isSafeInteger(size) || size < 8 || size > PDF_MAX_BYTES || !/^\d{1,30}$/.test(file.version || '')) throw unavailable();
@@ -43,10 +43,12 @@ export async function verifiedDocument(store, project, { exactAcademicLocation =
     timeout: 5000, retry: false, maxRedirects: 0, maxContentLength: 32768 });
   if (!Array.isArray(permissions.data?.permissions) || permissions.data.nextPageToken || permissions.data.permissions.some(p => p.type === 'anyone')) throw unavailable();
   if (project.hash_pdf && /^[a-f0-9]{64}$/i.test(project.hash_pdf) && file.sha256Checksum?.toLowerCase() !== project.hash_pdf.toLowerCase()) throw unavailable();
-  const signature = await store.client.request({ url: `${DRIVE}/${file.id}`, params: { alt: 'media', supportsAllDrives: true },
+  if (verifySignature) {
+    const signature = await store.client.request({ url: `${DRIVE}/${file.id}`, params: { alt: 'media', supportsAllDrives: true },
     headers: { Range: 'bytes=0-7', 'Accept-Encoding': 'identity' }, responseType: 'arraybuffer', method: 'GET',
     timeout: 6000, retry: false, maxRedirects: 0, maxContentLength: 8 });
-  if (signature.status !== 206 || !validPdfSignature(Buffer.from(signature.data))) throw unavailable();
+    if (signature.status !== 206 || !validPdfSignature(Buffer.from(signature.data))) throw unavailable();
+  }
   return { ...file, size };
 }
 

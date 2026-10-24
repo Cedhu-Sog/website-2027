@@ -1,7 +1,10 @@
 ---
-interface Props { name?: 'arrow' | 'external' | 'menu' | 'home' | 'book' | 'phone' | 'close' | 'chevron' | 'graduation' | 'play' | 'calendar'; }
+interface Props { name?: 'arrow' | 'external' | 'menu' | 'home' | 'book' | 'phone' | 'close' | 'chevron' | 'graduation' | 'play' | 'calendar' | 'search' | 'filters' | 'plus'; }
 const { name = 'arrow' } = Astro.props;
 const paths = {
+  search: 'M21 21l-5-5M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z',
+  filters: 'M4 7h16M4 17h16M8 4v6M16 14v6',
+  plus: 'M12 4v16M4 12h16',
   calendar: 'M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2ZM8 15l3 3 5-5',
   play: 'm8 5 11 7-11 7V5Z',
   arrow: 'M4 12h15M13 5l7 7-7 7', external: 'M7 17 18 6M6 6h12v12',

@@ -262,7 +262,9 @@ test('ADMIN and DOCENTE sessions persist separately, expire at the exact boundar
       const data = await response.json();
       assert.equal(data.role, role);
       assert.equal(data.expiresAt, start + 3600000, 'refresh must not extend expiration');
-      assert.deepEqual(Object.keys(data).sort(), ['authenticated', 'expiresAt', 'message', 'role', 'title', 'welcome']);
+      assert.deepEqual(Object.keys(data).sort(), ['authenticated', 'expiresAt', 'management', 'message', 'role', 'title', 'welcome']);
+      assert.equal(typeof data.management.canWrite, 'boolean');
+      assert.match(data.management.actor, /^[a-f0-9]{24}$/);
     }
     const closed = f.handler.logout(new Request(PROJECTS_ORIGIN + '/api/proyectos/logout', {
       method: 'POST', headers: { Origin: PROJECTS_ORIGIN, 'X-CEDHU-Projects': '1' },

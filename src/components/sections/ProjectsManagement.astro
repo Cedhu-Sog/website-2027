@@ -1,12 +1,20 @@
 ---
+import Icon from '../common/Icon.astro';
 const fields = [
   ['titulo', 'Título', 300], ['autores', 'Autores', 1500], ['docente_asesor', 'Docente asesor', 200],
   ['area', 'Área académica', 120], ['resumen', 'Resumen', 6000], ['palabras_clave', 'Palabras clave', 800],
 ];
 ---
 <section class="repository-management" data-management aria-label="Gestión de investigaciones">
-  <div class="repository-actions"><button class="button" type="button" data-register>Registrar proyecto</button><button class="button button--outline" type="button" data-bulk>Subir varios proyectos</button><button class="button button--outline" type="button" data-activity hidden>Historial de actividad</button></div>
+  <div class="repository-toolbar"><h2 id="catalog-heading" tabindex="-1">Proyectos de investigación</h2><div class="repository-actions"><button class="button" type="button" data-register><Icon name="plus" /> Registrar proyecto</button><button class="button button--outline" type="button" data-bulk><Icon name="book" /> Subir varios proyectos</button><button class="button button--outline" type="button" data-activity hidden><Icon name="calendar" /> Historial</button><button class="button button--outline" type="button" data-deleted-toggle hidden aria-pressed="false">Proyectos eliminados</button></div></div>
   <p role="status" data-management-status></p>
+  <dialog class="repository-detail repository-confirm" data-delete-dialog aria-labelledby="delete-project-title" aria-describedby="delete-project-description delete-project-name">
+    <h2 id="delete-project-title">¿Eliminar este proyecto?</h2>
+    <p id="delete-project-description">El proyecto dejará de aparecer en el catálogo. Tecnología CEDHU podrá recuperarlo si fue eliminado por error.</p>
+    <p id="delete-project-name" class="repository-confirm-name" data-delete-name></p>
+    <p role="status" aria-live="polite" data-delete-status></p>
+    <div class="repository-actions"><button class="button button--outline" type="button" data-delete-cancel autofocus>Cancelar</button><button class="button repository-danger" type="button" data-delete-confirm>Eliminar proyecto</button></div>
+  </dialog>
   <dialog class="repository-detail" data-management-dialog aria-labelledby="management-title">
     <form method="dialog"><button class="button button--outline" autofocus>Cerrar gestión</button></form>
     <h2 id="management-title">Registrar proyecto</h2>

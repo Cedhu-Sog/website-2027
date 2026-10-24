@@ -8,12 +8,27 @@ class ManagementError extends Error { code = ''; duplicates: AcademicProject[] =
 const names = ['anio', 'grado', 'titulo', 'autores', 'docente_asesor', 'area', 'resumen', 'palabras_clave'];
 const labels = ['Año', 'Grado', 'Título', 'Autores', 'Docente asesor', 'Área académica', 'Resumen', 'Palabras clave'];
 
-export function mountManagement(root: HTMLElement, role: 'ADMIN' | 'DOCENTE', refresh: () => Promise<void>) {
+export function mountManagement(root: HTMLElement, role: 'ADMIN' | 'DOCENTE', refresh: () => Promise<void>, capabilities?: { canWrite: boolean; actor: string }) {
   const query = <T extends HTMLElement>(selector: string) => root.querySelector<T>(selector)!;
-  const controller = new AbortController(); let alive = true; let canWrite = false; let actor = ''; let running = false; let stopping = false;
+  const controller = new AbortController(); let alive = true; let canWrite = capabilities?.canWrite === true; let actor = capabilities?.actor || ''; let running = false; let stopping = false;
   const dialog = query<HTMLDialogElement>('[data-management-dialog]');
   const editDialog = query<HTMLDialogElement>('[data-edit-dialog]');
   const activityDialog = query<HTMLDialogElement>('[data-activity-dialog]');
+  const deleteDialog = query<HTMLDialogElement>('[data-delete-dialog]');
+  const deleteConfirm = query<HTMLButtonElement>('[data-delete-confirm]');
+  let deleting: AcademicProject | undefined; let deleteOperation = ''; let deleteBusy = false;
+  query('[data-delete-cancel]').addEventListener('click', () => deleteDialog.close());
+  deleteDialog.addEventListener('cancel', event => { if (deleteBusy) event.preventDefault(); });
+  deleteConfirm.addEventListener('click', async () => {
+    if (!deleting || deleteBusy) return;
+    deleteBusy = true; deleteConfirm.disabled = true; query<HTMLButtonElement>('[data-delete-cancel]').disabled = true;
+    try {
+      const result = await api({ action: 'delete', operation: deleteOperation, id: deleting.id_proyecto, revision: deleting.revision });
+      query('[data-management-status]').textContent = result.message; deleteDialog.close(); query('#catalog-heading').focus(); await refresh();
+    } catch (error) { if (alive) query('[data-delete-status]').textContent = (error as Error).message; }
+    finally { deleteBusy = false; deleteConfirm.disabled = false; query<HTMLButtonElement>('[data-delete-cancel]').disabled = false; }
+  });
+  deleteDialog.addEventListener('close', () => { if (alive) query('#catalog-heading').focus(); });
   const form = query<HTMLFormElement>('[data-upload-form]'); const files = query<HTMLInputElement>('[data-upload-files]');
   const rowsHost = query<HTMLElement>('[data-upload-rows]'); const summary = query<HTMLElement>('[data-import-summary]');
   const importButton = query<HTMLButtonElement>('[data-import]'); const reviewButton = query<HTMLButtonElement>('[data-review]'); const correctButton = query<HTMLButtonElement>('[data-correct]');
@@ -43,7 +58,7 @@ export function mountManagement(root: HTMLElement, role: 'ADMIN' | 'DOCENTE', re
   }
   function newFields() { return (template.content.cloneNode(true) as DocumentFragment).firstElementChild as HTMLFieldSetElement; }
   function preview(values: Academic) { const list = element('dl', '', 'repository-metadata'); names.forEach((name, i) => list.append(element('dt', labels[i]), element('dd', name === 'grado' ? gradeLabel(values[name]) : values[name]))); return list; }
-  function closeToFocus(target: HTMLDialogElement) { target.addEventListener('close', () => opener?.focus()); }
+  function closeToFocus(target: HTMLDialogElement) { target.addEventListener('close', () => (opener?.isConnected && !opener.closest('dialog:not([open])') ? opener : query('#catalog-heading')).focus()); }
   [dialog, editDialog, activityDialog].forEach(closeToFocus);
   function open(multiple: boolean, button: HTMLElement) {
     opener = button;
@@ -137,10 +152,26 @@ export function mountManagement(root: HTMLElement, role: 'ADMIN' | 'DOCENTE', re
     const success = rows.filter(r => r.state === 'success').length, failed = rows.filter(r => r.state === 'failed').length;
     summary.textContent = `${success} guardados · ${failed} fallidos · ${rows.length - success - failed} pendientes. Los registros guardados no se repetirán.`;
     importButton.textContent = 'Reintentar fallidos y continuar pendientes'; importButton.hidden = success === rows.length; correctButton.hidden = success === rows.length;
-    rows.filter(row => row.state !== 'success').forEach(row => { row.fields.disabled = false; }); await refresh();
+    rows.filter(row => row.state !== 'success').forEach(row => { row.fields.disabled = false; }); if (success) await refresh();
   });
   root.addEventListener('project-opened', event => {
     const p = (event as CustomEvent<AcademicProject>).detail; const body = event.target as HTMLElement;
+    if (p.canRestore && role === 'ADMIN' && canWrite) {
+      const restore = element('button', 'Restaurar proyecto', 'button'); restore.type = 'button';
+      const status = element('p'); status.setAttribute('role', 'status');
+      const operation = crypto.randomUUID(); let confirmed: string[] = [];
+      restore.addEventListener('click', async () => {
+        restore.disabled = true;
+        try {
+          const result = await api({ action: 'restore', operation, id: p.id_proyecto, revision: p.revision, confirmedDuplicates: confirmed });
+          query<HTMLDialogElement>('[data-project-detail]').close(); query('[data-management-status]').textContent = result.message; query('#catalog-heading').focus(); await refresh();
+        } catch (error) {
+          if (!alive) return; status.textContent = (error as Error).message; restore.disabled = false;
+          if (error instanceof ManagementError && error.code === 'possible_duplicate') duplicateNotice(body, error, ids => { confirmed = ids; });
+        }
+      });
+      body.append(restore, status); return;
+    }
     if (!p.canEdit || !canWrite) return;
     const actions = element('div', '', 'repository-actions');
     const edit = element('button', 'Editar información', 'button button--outline'); edit.type = 'button';
@@ -150,11 +181,16 @@ export function mountManagement(root: HTMLElement, role: 'ADMIN' | 'DOCENTE', re
       const fields = newFields(); fill(fields, p as unknown as Academic); query('[data-edit-fields]').replaceChildren(fields);
       query('[data-edit-form]').hidden = false; query('[data-edit-review]').hidden = true; query('[data-edit-save]').hidden = true; query('[data-edit-correct]').hidden = true; query('[data-edit-status]').textContent = ''; editDialog.showModal();
     }); actions.append(edit);
+    const remove = element('button', 'Eliminar proyecto', 'button repository-danger'); remove.type = 'button';
+    remove.addEventListener('click', () => {
+      deleting = p; deleteOperation = crypto.randomUUID(); query('[data-delete-name]').textContent = p.titulo; query('[data-delete-status]').textContent = '';
+      query<HTMLDialogElement>('[data-project-detail]').close(); deleteDialog.showModal(); query('[data-delete-cancel]').focus();
+    }); actions.append(remove);
     if (role === 'ADMIN' && p.estado.toUpperCase() !== 'ARCHIVADO') {
       const archive = element('button', 'Archivar proyecto', 'button button--outline'); archive.type = 'button';
       archive.addEventListener('click', async () => {
         if (!window.confirm('¿Archivar este proyecto? Se conservarán el documento y su historial.')) return; archive.disabled = true;
-        try { const result = await api({ action: 'archive', operation: crypto.randomUUID(), id: p.id_proyecto, revision: p.revision }); body.append(element('p', result.message)); await refresh(); }
+        try { const result = await api({ action: 'archive', operation: crypto.randomUUID(), id: p.id_proyecto, revision: p.revision }); query<HTMLDialogElement>('[data-project-detail]').close(); query('[data-management-status]').textContent = result.message; query('#catalog-heading').focus(); await refresh(); }
         catch (error) { body.append(element('p', (error as Error).message)); archive.disabled = false; }
       }); actions.append(archive);
     }
@@ -191,9 +227,9 @@ export function mountManagement(root: HTMLElement, role: 'ADMIN' | 'DOCENTE', re
   }
   activityButton.addEventListener('click', () => { opener = activityButton; activityPage = 1; activityDialog.showModal(); void activity(); });
   query('[data-activity-previous]').addEventListener('click', () => { activityPage--; void activity(); }); query('[data-activity-next]').addEventListener('click', () => { activityPage++; void activity(); });
-  void repositoryRequest('/api/proyectos/manage?view=capabilities', { signal: controller.signal }).then(response => response.json()).then(data => {
+  if (!capabilities) void repositoryRequest('/api/proyectos/manage?view=capabilities', { signal: controller.signal }).then(response => response.json()).then(data => {
     if (!alive) return; canWrite = data.canWrite === true; actor = data.actor; register.disabled = bulk.disabled = !canWrite; query('[data-management-status]').textContent = data.message;
   }).catch(error => { if (alive) { register.disabled = bulk.disabled = true; query('[data-management-status]').textContent = error.message; } });
-  register.disabled = bulk.disabled = true;
-  return { dispose() { alive = false; controller.abort(); [dialog, editDialog, activityDialog].forEach(d => { if (d.open) d.close(); }); } };
+  register.disabled = bulk.disabled = !canWrite;
+  return { dispose() { alive = false; controller.abort(); [dialog, editDialog, activityDialog, deleteDialog].forEach(d => { if (d.open) d.close(); }); } };
 }

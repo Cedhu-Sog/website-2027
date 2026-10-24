@@ -7,11 +7,13 @@ import ProjectsCatalog from './ProjectsCatalog.astro';
 <section class="projects-card" aria-labelledby="projects-title" data-projects-access>
   <header class="projects-brand">
     <img class="projects-brand__logo" src={media.logo.src.src} alt={media.logo.alt} width={media.logo.src.width} height={media.logo.src.height} loading="eager" decoding="async" />
+    <h1 id="projects-title" tabindex="-1">Proyectos de investigación</h1>
     <nav class="projects-navigation" aria-label="Navegación del acceso institucional">
-      <a class="button button--outline projects-back" href="/"><Icon name="arrow" /> Volver al inicio</a>
+      <a class="projects-back" href="/"><Icon name="external" /> Ir al sitio web</a>
+      <span class="projects-role" data-projects-role hidden></span>
+      <button class="projects-logout" type="button" data-projects-logout hidden>Cerrar sesión</button>
     </nav>
   </header>
-  <h1 id="projects-title" tabindex="-1">Proyectos de investigación</h1>
   <div data-projects-login>
     <p class="projects-description">Acceso exclusivo para docentes y administradores autorizados del CEDHU.</p>
     <p class="projects-instruction">Inicia sesión con tu cuenta institucional del CEDHU.</p>
