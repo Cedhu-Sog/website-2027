@@ -2,7 +2,7 @@
   "date": "2026-10-24",
   "timezone": "America/Bogota",
   "baseCommit": "1e364afba66fe5f1d299be73f890bf30aa3d61a0",
-  "pullRequests": [4, 5, 6],
+  "pullRequests": [4, 5, 6, 7],
   "isolatedGoogleTransfer": {
     "deployment": "dpl_2QzMT2HEGxvjuQYejkNzzXmrHRCR",
     "state": "READY",
@@ -32,7 +32,7 @@
     "drivePermissionChanges": false,
     "teacherOAuthScopeChanges": false
   },
-  "localTests": { "workspace": 33, "google": 24, "cms": 13, "catalogAndDocuments": 7, "managementAndNetwork": 9 },
+  "localTests": { "legacyAccess": 14, "workspace": 33, "google": 24, "cms": 13, "catalogAndDocuments": 7, "managementAndNetwork": 9, "total": 100 },
   "browserSynthetic": { "individualRegistration": true, "edit": true, "searchWithoutAccents": true, "bulkPartialFailure": true, "explicitDuplicateConfirmation": true, "retryOnlyFailed": true, "activity": true, "mobileOverflow": false },
   "limitations": [
     "No new real ADMIN or DOCENTE Google sign-in performed in this delivery.",
@@ -41,5 +41,18 @@
     "Google quotas can require waiting and retrying; no quota increase was requested.",
     "Physical PDF folders preserve original registration year and grade after academic corrections."
   ],
-  "productionWritesEnabled": false
+  "productionWritesEnabled": true,
+  "production": {
+    "featureCommit": "3dec705afd80f5c0f384b60252f36dadfba29a20",
+    "featureDeployment": "dpl_BzEemYGq2NQNAgKwMSATKWwX48qG",
+    "state": "READY",
+    "prActions": 40116732355,
+    "masterActions": 40116936626,
+    "canonicalAliasVerified": true,
+    "unauthenticatedNewApis": 401,
+    "privateApiCacheControl": "no-store",
+    "homeAndCmsStatus": 200,
+    "institutionalTestWrites": false,
+    "trailingSlashHeadersCorrection": "PR #7"
+  }
 }

@@ -174,8 +174,9 @@ Por defecto están cerradas; una revisión Preview no puede usar WIF Production.
   estado institucional está vacía, sin valores previos que migrar. No hubo
   modificación de datos institucionales.
 
-Pruebas locales: 33 Workspace, 24 Google, 13 CMS, 7 catálogo/documentos y 9
-gestión/red, además de build, comprobación de contenido y escaneo de salida pública.
+Pruebas locales: 100 casos: 14 del acceso heredado, 33 Workspace, 24 Google,
+13 CMS, 7 catálogo/documentos y 9 gestión/red, además de build, comprobación
+de contenido y escaneo de salida pública.
 El compilador TypeScript ya incluido en la CLI instalada comprobó los módulos
 de navegador sin instalar paquetes. El navegador local recorrió registro y
 edición de un PDF válido de más de 5 MiB, ficha, preparación de descarga y búsqueda
@@ -184,6 +185,28 @@ archivos terminó inicialmente con un éxito y una coincidencia pendiente;
 tras confirmación explícita pasó a dos éxitos sin repetir el registro guardado.
 Se consultó el historial de las operaciones realizadas.
 
-La activación definitiva está pendiente de autorización para configurar los dos
-controles de Production, conforme al punto 14 del encargo. No se han activado
-escrituras institucionales ni se han usado proyectos reales para ensayos.
+## Publicación autorizada
+
+El usuario autorizó expresamente activar y publicar después de los checks.
+Se configuraron `PROYECTOS_WRITES_ENABLED=true` y
+`PROYECTOS_TRANSFER_VERIFIED=v1`, exclusivamente en Production, y se integró
+la PR #6 en `3dec705afd80f5c0f384b60252f36dadfba29a20`.
+GitHub Actions de la revisión: 40116732355 success; de master: 40116936626 success.
+El despliegue `dpl_BzEemYGq2NQNAgKwMSATKWwX48qG` quedó READY, con los alias
+canónico y git-master asignados a esa versión. El registro institucional queda
+habilitado para las identidades activas autorizadas; no se efectuaron escrituras
+de prueba en el catálogo real.
+
+Smoke de Production: inicio, CMS, configuración CMS y acceso institucional 200;
+las cuatro API nuevas sin sesión devuelven 401 y no-store. La comprobación
+detectó que la variante `/proyectos/` con barra final solo recibía la regla
+corta de indexación. El cierre incorpora todas las cabeceras de seguridad en
+esa coincidencia, además de conservar la regla sin barra final. El esqueleto
+HTML no contiene registros privados; las API mantuvieron no-store.
+
+La validación real de OAuth ADMIN/DOCENTE de la entrega anterior se conserva.
+En esta entrega no se repitió un login Google con esas cuentas ni un registro
+HTTP sobre las hojas reales. Tampoco se certificó Safari físico: se mantiene
+el enlace de guardar cuando el navegador no pueda integrar el visor PDF.
+Los recursos sintéticos QA siguen privados dentro de la carpeta temporal para
+inspección; no se publicaron ni se eliminaron permanentemente.
