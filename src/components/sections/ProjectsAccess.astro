@@ -11,20 +11,14 @@ import { media } from '../../data/media';
   </header>
   <h1 id="projects-title" tabindex="-1">Proyectos de investigación</h1>
   <div data-projects-login>
-    <p class="projects-description">Repositorio institucional de proyectos de investigación. Acceso exclusivo para personal autorizado.</p>
-    <form class="projects-form" method="post" action="/api/proyectos/login" data-projects-form>
-      <label for="projects-password">Contraseña institucional</label>
-      <div class="projects-password">
-        <input id="projects-password" name="password" type="password" autocomplete="current-password" required maxlength="512" aria-describedby="projects-status" disabled />
-        <button class="projects-toggle" type="button" aria-controls="projects-password" aria-pressed="false" aria-label="Mostrar contraseña" data-projects-toggle disabled>Mostrar</button>
-      </div>
-      <button class="button projects-submit" type="submit" data-projects-submit disabled>Ingresar <Icon name="arrow" /></button>
-    </form>
-    <noscript><p class="note">Activa JavaScript para utilizar el acceso seguro al repositorio.</p></noscript>
+    <p class="projects-description">Acceso exclusivo para docentes y administradores autorizados del CEDHU.</p>
+    <a class="button projects-submit" href="/api/proyectos/google/start" data-workspace-login>
+      Continuar con Google Workspace <Icon name="arrow" />
+    </a>
+    <noscript><p class="note">Se requiere JavaScript para consultar el estado de tu sesión institucional.</p></noscript>
   </div>
   <p class="projects-status" id="projects-status" role="status" aria-live="polite" aria-atomic="true" data-projects-status></p>
   <div data-projects-private></div>
   <p class="projects-footnote">Centro de Desarrollo Humano · CEDHU</p>
 </section>
-<!-- A dynamic import keeps the bundled entry external under Astro's defaults. -->
 <script>import('../../scripts/interactions/projects-access');</script>
