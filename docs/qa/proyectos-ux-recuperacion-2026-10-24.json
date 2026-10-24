@@ -1,0 +1,48 @@
+{
+  "referenceCommit": "8bdb73b4e14828d04c19063408e38775f8d0e89a",
+  "date": "2026-10-24",
+  "institutionalTestWrites": false,
+  "iamOrSharingChanges": false,
+  "permanentDeletion": false,
+  "tests": { "access": 14, "workspace": 33, "google": 24, "cms": 13, "catalogDocumentsPerformance": 9, "managementNetwork": 14, "total": 107 },
+  "benchmark": {
+    "kind": "synthetic_network_model_not_google_latency",
+    "operationDelayMs": 20,
+    "authenticationDelayMs": 40,
+    "repetitions": 3,
+    "aggregation": "median",
+    "results": [
+      { "route": "catalog", "before": { "ms": 553, "operations": 14, "authentications": 2 }, "after": { "ms": 367, "operations": 11, "authentications": 1 } },
+      { "route": "project", "before": { "ms": 537, "operations": 14, "authentications": 2 }, "after": { "ms": 395, "operations": 11, "authentications": 1 } },
+      { "route": "document-metadata", "before": { "ms": 728, "operations": 20, "authentications": 2 }, "after": { "ms": 600, "operations": 18, "authentications": 1 } },
+      { "route": "document-chunk", "before": { "ms": 944, "operations": 27, "authentications": 2 }, "after": { "ms": 784, "operations": 24, "authentications": 1 } }
+    ]
+  },
+  "javascriptBytesUncompressed": { "initialBefore": 24830, "initialAfter": 12722, "documentsAfterAuthentication": 3135, "managementAfterAuthentication": 14224 },
+  "browser": {
+    "data": "synthetic_local_memory_only",
+    "rapidSearchChanges": 4,
+    "resultingRequests": 1,
+    "staleSearchResponseDiscarded": true,
+    "filtersResetAndEscape": true,
+    "deleteCancelRestoreAudit": true,
+    "teacherOwnershipControls": true,
+    "pdfBytes": 1048593,
+    "pdfAfterView": { "metadata": 1, "chunks": 2 },
+    "pdfAfterDownload": { "metadata": 2, "chunks": 2 },
+    "desktop": { "fetchMs": 144.2, "injectedServerDelayMs": 120, "renderMs": 1.6, "secondaryModulesMs": 26.0 },
+    "viewports": [
+      { "width": 375, "height": 812, "firstCardY": 478, "horizontalOverflow": false },
+      { "width": 768, "height": 1024, "firstCardY": 421, "horizontalOverflow": false },
+      { "width": 1024, "height": 768, "firstCardY": 369, "horizontalOverflow": false },
+      { "width": 1440, "height": 900, "firstCardY": 333, "horizontalOverflow": false }
+    ]
+  },
+  "limitations": [
+    "No authenticated Production latency comparison with equal network conditions",
+    "No institutional row was changed or deleted during tests",
+    "No physical iPhone/iPad Safari certification",
+    "Manual concurrent Sheets edits/reordering require administrative coordination",
+    "Manually eliminated records without an atomic recovery receipt require Technology verification"
+  ]
+}
