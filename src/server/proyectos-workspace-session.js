@@ -14,8 +14,8 @@ export function sealWorkspaceCookie(payload, key, purpose) {
   return ['v2', iv.toString('base64url'), encrypted.toString('base64url'), cipher.getAuthTag().toString('base64url')].join('.');
 }
 
-export function openWorkspaceCookie(value, key, purpose) {
-  if (typeof value !== 'string' || value.length > 1800 ||
+export function openWorkspaceCookie(value, key, purpose, maxLength = 1800) {
+  if (typeof value !== 'string' || value.length > maxLength ||
       !/^v2\.[A-Za-z0-9_-]{16}\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]{22}$/.test(value)) throw new Error('invalid_cookie');
   const parts = value.split('.').slice(1);
   const [iv, encrypted, tag] = parts.map(part => Buffer.from(part, 'base64url'));

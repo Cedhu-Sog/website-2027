@@ -23,7 +23,7 @@ import ProjectsCatalog from './ProjectsCatalog.astro';
   </div>
   <p class="projects-status" id="projects-status" role="status" aria-live="polite" aria-atomic="true" data-projects-status></p>
   <div data-projects-private></div>
-  <div data-catalog-parking hidden><ProjectsCatalog /></div>
+  <template data-catalog-parking><ProjectsCatalog /></template>
   <dialog class="projects-notice" aria-labelledby="projects-notice-title" aria-describedby="projects-notice-message projects-notice-guidance" data-projects-notice>
     <span class="projects-notice__icon" aria-hidden="true">!</span>
     <h2 id="projects-notice-title" data-notice-title>Cuenta no autorizada</h2>

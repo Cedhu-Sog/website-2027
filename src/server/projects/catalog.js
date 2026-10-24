@@ -14,9 +14,9 @@ export const isArchived = project => normalize(project.estado) === 'archivado';
 
 export function parseProjects(rows, headers) {
   if (!Array.isArray(rows) || rows.length > 10000) throw new ProjectError(503, 'catalog_capacity', 'El catálogo requiere mantenimiento. Comunícate con Tecnología CEDHU.');
-  const projects = rows.filter(row => Array.isArray(row) && row.some(value => String(value ?? '').trim())).map(row => {
+  const projects = rows.map((row, index) => ({ row, rowNumber: index + 2 })).filter(({ row }) => Array.isArray(row) && row.some(value => String(value ?? '').trim())).map(({ row, rowNumber }) => {
     if (row.length > headers.length || row.some(value => !['string', 'number', 'boolean'].includes(typeof value))) throw new Error('catalog_invalid');
-    return Object.fromEntries(headers.map((key, i) => [key, String(row[i] ?? '')]));
+    return { ...Object.fromEntries(headers.map((key, i) => [key, String(row[i] ?? '')])), rowNumber };
   });
   if (projects.some(p => !validProjectId(p.id_proyecto) || !p.titulo.trim()) || new Set(projects.map(p => p.id_proyecto)).size !== projects.length) throw new Error('catalog_ids_invalid');
   return projects;

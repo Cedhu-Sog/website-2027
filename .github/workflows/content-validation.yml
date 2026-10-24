@@ -22,5 +22,6 @@ jobs:
       - run: npm run test:cms
       - run: npm run test:proyectos:workspace
       - run: npm run test:proyectos:catalog
+      - run: npm run test:proyectos:management
       - run: npm run build
       - run: node scripts/check-personal.mjs

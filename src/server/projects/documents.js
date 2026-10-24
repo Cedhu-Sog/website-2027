@@ -35,7 +35,7 @@ export async function verifiedDocument(store, project) {
   const researches = await metadata(store, year.parents[0]);
   if ([grade, year, researches].some(folder => folder.mimeType !== FOLDER) ||
       normalize(grade.name) !== normalize(gradeFolderName(project.grado)) || year.name !== project.anio ||
-      researches.name !== '01_Investigaciones' || researches.parents[0] !== store.config.rootId) throw unavailable();
+      researches.name !== '01_Investigaciones' || researches.parents[0] !== (store.structureRootId || store.config.rootId)) throw unavailable();
   // Check effective permissions explicitly; never serve an accidentally public file.
   const permissions = await store.client.request({ url: `${DRIVE}/${file.id}/permissions`, params: {
     supportsAllDrives: true, fields: 'nextPageToken,permissions(type)', pageSize: 100 }, method: 'GET',

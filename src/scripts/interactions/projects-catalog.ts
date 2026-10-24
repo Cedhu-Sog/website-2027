@@ -2,6 +2,7 @@ export interface AcademicProject {
   id_proyecto: string; anio: string; grado: string; titulo: string; autores: string; docente_asesor: string;
   area: string; estado: string; fecha_registro: string; resumen?: string; palabras_clave?: string;
   canEdit: boolean; hasDocument: boolean;
+  revision?: string;
 }
 interface Catalog { projects: AcademicProject[]; total: number; page: number; pageSize: number; pages: number; facets: Record<string, string[]> }
 export function element<K extends keyof HTMLElementTagNameMap>(tag: K, value = '', className = '') {
@@ -19,7 +20,7 @@ export async function repositoryRequest(url: string, options: RequestInit = {}) 
   return response;
 }
 export function mountCatalog(host: HTMLElement, role: 'ADMIN' | 'DOCENTE') {
-  const root = document.querySelector<HTMLElement>('[data-catalog]')!.cloneNode(true) as HTMLElement;
+  const root = document.querySelector<HTMLTemplateElement>('[data-catalog-parking]')!.content.querySelector<HTMLElement>('[data-catalog]')!.cloneNode(true) as HTMLElement;
   root.hidden = false;
   host.append(root);
   const form = root.querySelector<HTMLFormElement>('[data-catalog-filters]')!;
@@ -34,6 +35,7 @@ export function mountCatalog(host: HTMLElement, role: 'ADMIN' | 'DOCENTE') {
   let controller: AbortController | undefined;
   let detailController: AbortController | undefined;
   let opener: HTMLElement | undefined;
+  const lifecycle = new AbortController();
   async function detail(id: string, button: HTMLElement) {
     opener = button; detailController?.abort(); detailController = new AbortController();
     const body = root.querySelector<HTMLElement>('[data-project-body]')!;
@@ -52,6 +54,20 @@ export function mountCatalog(host: HTMLElement, role: 'ADMIN' | 'DOCENTE') {
     } catch (error) { if (detailController?.signal.aborted) return; body.replaceChildren(element('h2', 'No fue posible abrir la ficha'), element('p', (error as Error).message)); body.firstElementChild!.id = 'project-detail-title'; }
   }
   dialog.addEventListener('close', () => { detailController?.abort(); opener?.focus(); });
+  function openLinked() {
+    const linked = window.location.hash.match(/^#proyecto=([A-Za-z0-9_%.-]+)$/);
+    if (!linked) return;
+    try {
+      root.querySelectorAll<HTMLDialogElement>('dialog[open]').forEach(other => { if (other !== dialog) other.close(); });
+      void detail(decodeURIComponent(linked[1]), root.querySelector<HTMLElement>('#catalog-heading')!);
+    } catch { /* Invalid fragments carry no private data. */ }
+  }
+  window.addEventListener('hashchange', openLinked, { signal: lifecycle.signal });
+  root.addEventListener('click', event => {
+    const link = (event.target as Element).closest<HTMLAnchorElement>('a[href^="/proyectos/#proyecto="]');
+    if (link && link.target !== '_blank') { event.preventDefault(); window.history.replaceState(null, '', link.href); openLinked(); }
+  });
+  queueMicrotask(openLinked);
   async function load() {
     const request = ++revision; controller?.abort(); controller = new AbortController();
     const query = new URLSearchParams();
@@ -82,5 +98,5 @@ export function mountCatalog(host: HTMLElement, role: 'ADMIN' | 'DOCENTE') {
   form.addEventListener('reset', () => { page = 1; queueMicrotask(() => void load()); });
   previous.addEventListener('click', () => { page--; void load(); }); next.addEventListener('click', () => { page++; void load(); });
   void load();
-  return { root, refresh: load, dispose() { revision++; controller?.abort(); detailController?.abort(); if (dialog.open) dialog.close(); root.remove(); } };
+  return { root, refresh: load, dispose() { revision++; lifecycle.abort(); controller?.abort(); detailController?.abort(); if (dialog.open) dialog.close(); root.remove(); } };
 }

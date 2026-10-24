@@ -2,6 +2,7 @@ import { createWorkspaceHandlers } from '../proyectos-google-auth.js';
 import { projectsJson } from '../proyectos-session.js';
 import { openProjectStore } from '../google/project-store.js';
 import { ProjectError, queryCatalog, findProject, projectView } from './catalog.js';
+import { revisionOf } from './validation.js';
 
 export function projectFailure(error) {
   if (error instanceof ProjectError) return projectsJson({ code: error.code, message: error.message, ...error.extra }, error.status);
@@ -27,7 +28,8 @@ export function createProjectHandlers({ requireSession = createWorkspaceHandlers
       const params = new URL(request.url).searchParams;
       if ([...params.keys()].some(key => key !== 'id') || params.getAll('id').length !== 1) throw new ProjectError(400, 'invalid_id', 'El código del proyecto no es válido.');
       const store = await storeFactory();
-      return projectsJson({ project: projectView(findProject(await store.projects(), params.get('id'), access.identity), access.identity, true) });
+      const found = findProject(await store.projects(), params.get('id'), access.identity);
+      return projectsJson({ project: { ...projectView(found, access.identity, true), revision: revisionOf(found) } });
     } catch (error) { return projectFailure(error); }
   }
   return { catalog, project };

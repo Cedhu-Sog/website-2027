@@ -18,6 +18,17 @@
 .repository-title:hover { text-decoration: underline; }
 .repository-muted { color: var(--color-text-muted); font-size: var(--text-small); }
 .repository-pdf { width: 100%; height: 65dvh; border: 1px solid var(--color-line); margin-top: var(--space-sm); }
+.repository-management { padding-block: var(--space-sm); border-bottom: 1px solid var(--color-line); }
+.repository-management [role="status"] { margin-block: var(--space-sm); }
+.repository-academic { display: grid; gap: var(--space-sm); border: 1px solid var(--color-line); padding: var(--space-sm); border-radius: var(--radius-sm); }
+.repository-academic legend { padding-inline: var(--space-xs); font-weight: 700; }
+.repository-import-row { margin-block: var(--space-md); padding: var(--space-sm); border: 1px solid var(--color-line); border-radius: var(--radius-sm); }
+.repository-import-row h3 { overflow-wrap: anywhere; }
+.repository-import-row progress { width: 100%; accent-color: var(--color-primary); }
+.repository-import-row pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: var(--text-small); }
+.repository-file-label { margin-block: var(--space-md); }
+.repository-management button { margin-block: var(--space-xs); }
+.repository-management .repository-academic[hidden] { display: none; }
 .repository-pagination { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-sm); }
 .repository :focus-visible { outline: 3px solid var(--color-primary); outline-offset: 3px; }
 .repository-detail { margin: auto; width: min(55rem, calc(100% - var(--space-sm) * 2)); max-height: calc(100dvh - var(--space-md)); overflow-y: auto; padding: var(--space-md); background: var(--color-surface); color: var(--color-text); border: 1px solid var(--color-line); border-radius: var(--radius-sm); }
@@ -33,4 +44,6 @@
   .repository-search, .repository-filters .repository-actions { grid-column: 1 / -1; }
   .repository-results { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .repository-metadata { grid-template-columns: minmax(8rem, 1fr) 3fr; }
+  .repository-academic { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .repository-wide { grid-column: 1 / -1; }
 }
