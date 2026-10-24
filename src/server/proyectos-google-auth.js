@@ -87,6 +87,25 @@ function localSession(request, cfg, now) {
   return data;
 }
 
+/** Resolve permission from the confirmed Sheets schema; duplicates fail closed.
+ * Keep this pure so access-control edge cases can be tested without Google.
+ */
+export function resolveWorkspaceRole(rows, { sub, email } = {}) {
+  if (!Array.isArray(rows) || rows.length > 1000 ||
+      typeof email !== 'string' || typeof sub !== 'string' ||
+      !/^\d{10,30}$/.test(sub)) return null;
+  const matches = rows.filter(row => Array.isArray(row) && typeof row[0] === 'string' &&
+    row[0].trim().toLowerCase() === email);
+  if (matches.length !== 1) return null;
+  const row = matches[0];
+  const boundSub = String(row[1] ?? '').trim();
+  const role = String(row[3] ?? '').trim().toUpperCase();
+  const status = String(row[4] ?? '').trim().toUpperCase();
+  if ((boundSub && boundSub !== sub) || !['ADMIN', 'DOCENTE'].includes(role) ||
+      status !== 'ACTIVO') return null;
+  return role;
+}
+
 export async function authorizedWorkspaceRole({ env = process.env, sub, email, signal } = {}) {
   // The same WIF identity as Phase B reads only the institutional access list.
   // Check the file belongs to the approved shared drive before reading its rows.
@@ -106,16 +125,7 @@ export async function authorizedWorkspaceRole({ env = process.env, sub, email, s
   });
   const rows = result.data?.values;
   if (!Array.isArray(rows)) throw new Error('users_sheet_unavailable');
-  const matches = rows.filter(row => Array.isArray(row) && typeof row[0] === 'string' &&
-    row[0].trim().toLowerCase() === email);
-  if (matches.length !== 1) return null;
-  const row = matches[0];
-  const boundSub = String(row[1] ?? '').trim();
-  const role = String(row[3] ?? '').trim().toUpperCase();
-  const status = String(row[4] ?? '').trim().toUpperCase();
-  if ((boundSub && boundSub !== sub) || !['ADMIN', 'DOCENTE'].includes(role) ||
-      status !== 'ACTIVO') return null;
-  return role;
+  return resolveWorkspaceRole(rows, { sub, email });
 }
 
 export function createWorkspaceHandlers({ env = process.env, now = Date.now,
