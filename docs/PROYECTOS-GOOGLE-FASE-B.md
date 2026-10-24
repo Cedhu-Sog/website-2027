@@ -1,5 +1,59 @@
 # Fase B — preparación, incidencia y cierre
 
+## Reanudación del 23/10/2026: comprobación real en un build aislado
+
+La autorización vigente permite configurar OAuth y ejecutar lecturas reales, pero
+prohíbe sustituir Production o fusionar la PR #2 antes de verificar y autorizar la
+publicación. El procedimiento histórico de push temporal a master que aparece
+más abajo NO se aplica a esta reanudación.
+
+Se verificó acceso a Google Cloud con `web@cedhu.edu.co` y el proyecto correcto.
+El cliente Web institucional existente conserva Audience Interno. Se corrigió el
+callback Vercel a `/api/proyectos/google/callback`; la otra redirección histórica
+no se modificó. Los scopes declarados son solo openid, userinfo.email y
+userinfo.profile. El código solicita sus equivalentes `openid email profile`.
+
+Se inspeccionó el pool habilitado `vercel-cedhu-prod` y su proveedor habilitado
+`vercel-team-cedhu`: emisor `https://oidc.vercel.com/cedhu-webmasters-projects`,
+audiencia `https://vercel.com/cedhu-webmasters-projects`, `google.subject=assertion.sub`
+y condición exacta del sujeto `owner:cedhu-webmasters-projects:project:website-2027:environment:production`.
+La cuenta de servicio está habilitada, sin claves y con Workload Identity User
+otorgado al mismo sujeto. Son lecturas administrativas reales, todavía no un
+intercambio STS ni una lectura del repositorio desde Vercel.
+
+### Ejecución independiente de la publicación
+
+`scripts/proyectos/google-build-probe.mjs` ejecuta el diagnóstico reutilizable en
+un build de Vercel con target Production, limitado al proyecto y rama de la PR.
+No forma parte de `npm run build`: se invoca expresamente en el comando de un
+despliegue de prueba. Exige que el diagnóstico HTTP esté apagado y sin token ni
+fecha de activación; no crea credenciales ni activa una ruta. El OIDC se obtiene
+del contexto real del build y se valida antes de STS/IAM. Salida: exclusivamente
+los ocho booleanos y códigos sanitizados. Límite de abortar red: 25 segundos.
+
+Antes de crear el despliegue, comprobar ausencia de otros builds y desactivar
+temporalmente Auto-assign Custom Production Domains. La documentación de Vercel
+describe este control como staging sin servir tráfico de Production. Verificar
+la desactivación en el panel; no basta el éxito de una mutación de API. Crear
+solo el commit exacto de la PR, con comando de build explícito, target Production
+y sin promoción. Verificar después que el alias canónico sigue asignado al
+despliegue inicial. Restaurar la configuración original al terminar, sin promover
+el despliegue de prueba. Ante cualquier duda de aislamiento, no crear el build.
+
+La comprobación resultante acredita solo el contexto real de build. No acredita
+el transporte HTTP del diagnóstico, la identidad OIDC por petición de Function,
+los tokens OAuth de un usuario, los roles ni las sesiones del sitio. Los tests
+locales del ejecutor usan inyección de dependencias y se identifican como tales.
+
+Si se requiere posteriormente activar el endpoint HTTP, siguen siendo obligatorios
+WAF, credencial independiente, ventana absoluta máxima de 20 minutos, negativos
+reales y cierre completo incluso tras un fallo, según las secciones históricas.
+No activar ese endpoint durante el build aislado.
+
+Fuente: [Vercel: staging desde el panel](https://vercel.com/docs/deployments/promoting-a-deployment#dashboard).
+
+---
+
 Fecha: 2026-10-22. La ventana autorizada venció sin ejecutar la consulta real a
 Workspace. Se retira el diagnóstico del código desplegable y se publica el cierre.
 Las secciones de preparación conservan la evidencia previa; el resultado de
