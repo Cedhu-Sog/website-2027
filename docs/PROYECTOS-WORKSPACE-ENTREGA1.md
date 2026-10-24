@@ -1,233 +1,78 @@
 # Entrega 1 — Acceso de Google Workspace al repositorio CEDHU
 
-Fecha de preparación: 23/10/2026. **NO APROBADA PARA USO INSTITUCIONAL AÚN.**
+Estado al 23/10/2026 (cierre operativo 24/10 UTC): **conexión real y OAuth de ambos roles comprobados en copia aislada; publicación canónica NO autorizada ni ejecutada.** No se certifica todavía el entregable completo.
 
-## Estado vigente tras desbloquear Google Cloud — 23/10/2026
+## Resultado vigente
 
-Acceso administrativo real con `web@cedhu.edu.co` y proyecto `cedhu-repositorio`
-comprobados. Se reutilizó `CEDHU-Repositorio-Web` (Web application), Audience
-Interno; callback Vercel corregido y guardado exactamente como
-`https://website-2027-seven.vercel.app/api/proyectos/google/callback`.
-Los scopes declarados y guardados son únicamente openid, userinfo.email y
-userinfo.profile; no hay scopes sensibles/restringidos ni permisos personales Drive.
-La redirección histórica a cedhu.edu.co se conservó para no afectar una posible
-integración ajena; no se agregaron dominios públicos nuevos.
+Se reutilizó `CEDHU-Repositorio-Web`, aplicación Web interna, desde Google Cloud con la cuenta administradora institucional. Se conserva el callback exacto `https://website-2027-seven.vercel.app/api/proyectos/google/callback` y la redirección histórica existente. Scopes: únicamente `openid email profile` (userinfo.email y userinfo.profile en la consola). No se piden permisos Drive del usuario.
 
-Vercel contiene Client ID, Client Secret y dominio únicamente en Production.
-El secreto fue guardado por el administrador en campo oculto; se comprobó solo
-su metadato sensitive y target, nunca su valor. Esto acredita configuración, no
-validez del secreto ni un intercambio OAuth exitoso.
+Client ID, Client Secret y dominio están solo en Vercel Production. El administrador introdujo directamente el secreto protegido; no se leyó ni publicó su valor. Los canjes OAuth reales posteriores comprobaron su funcionamiento.
+
+El primer build real falló en STS. Se contrastó `GCP_PROJECT_NUMBER` con el recurso del pool en Google Cloud y se encontró una discrepancia. Se corrigió exclusivamente esa variable de Production. El siguiente build aprobó los ocho checks reales. No se ampliaron permisos IAM ni se habilitó Preview.
 
 | Condición | Estado | Evidencia y límite |
 | --- | --- | --- |
-| Acceso administrativo Google Cloud | APROBADO | Sesión de Web Cedhu y proyecto CEDHU-Repositorio visibles. |
-| Cliente OAuth | APROBADO | Existente reutilizado, Web, Interno, callback exacto y tres scopes guardados. |
-| Credenciales en Vercel | APROBADO | Los tres nombres presentes solo en Production; Client Secret sensitive. Canje real pendiente. |
-| Federación OIDC y STS | NO COMPROBADO | Pool/proveedor/emisor/audiencia/condición inspeccionados; no se ejecutó el intercambio real. |
-| Cuenta de servicio e IAM | APROBADO | Cuenta habilitada, sin claves; Workload Identity User para el sujeto Production exacto. Identidad efectiva de un token pendiente. |
-| Lectura real de Drive | NO COMPROBADO | No se llegó a ejecutar el probe. |
-| Lectura real de Sheets | NO COMPROBADO | No se llegó a ejecutar el probe. |
-| Autenticación real de la cuenta de prueba | NO COMPROBADO | Login oficial Google comprobado previamente; OAuth desde Vercel pendiente. |
-| Rol y estado de la cuenta | NO COMPROBADO | No se consultó su fila real. No se alteraron permisos ni estado. |
-| ADMIN y DOCENTE | NO COMPROBADO | Ambos perfiles reales pendientes por separado. |
-| Seguridad de sesiones | NO COMPROBADO | Casos locales aprobados; ciclo real del sitio y revocación pendientes. |
-| Actions y Preview | APROBADO | Actions run 40053858518 success; Preview f138eee READY. |
-| Cierre del diagnóstico | APROBADO | Canónico 404/no-store, indicador false, sin token/expiry; host de prueba bloqueado por WAF. |
-| Condiciones para publicar | NO COMPROBADO | Conexión real y OAuth pendientes; falta resolver un ensayo con aislamiento de alias y autorización final. |
+| 1. Acceso administrativo Google Cloud | APROBADO | Cuenta administradora y proyecto institucional verificados en consola. |
+| 2. Cliente OAuth | APROBADO | Web interno reutilizado; callback canónico exacto y scopes de identidad. |
+| 3. Credenciales en Vercel | APROBADO | Solo Production; secreto sensitive; canje real exitoso en copia aislada. |
+| 4. Federación OIDC y STS | APROBADO | JWT Vercel validado e intercambio real tras corregir el número de proyecto. |
+| 5. Cuenta de servicio e IAM | APROBADO | Suplantación real y Drive about contrastado con la cuenta backend; sin claves JSON ni ampliación IAM. |
+| 6. Lectura real Drive | APROBADO | Repo Investigación y las tres carpetas esperadas verificadas. |
+| 7. Lectura real Sheets | APROBADO | Tres archivos, pertenencia a 00_Sistema, pestañas y encabezados verificados; lectura real de autorizaciones. |
+| 8. Autenticación real de pruebas | APROBADO | OAuth desde Vercel, ID token validado y acceso DOCENTE real. El ensayo usó callback temporal exacto, ya retirado. |
+| 9. Rol y estado | APROBADO | Ausencia inicial rechazada. Alta expresamente autorizada DOCENTE/ACTIVO; revocación real rechazada en la petición siguiente. Registro temporal cerrado INACTIVO. |
+| 10. ADMIN y DOCENTE | APROBADO | Dos identidades institucionales distintas y autorizadas; ADMIN existente activo y DOCENTE temporal, comprobados por separado. |
+| 11. Seguridad de sesiones | NO COMPROBADO | Persistencia, vencimiento anunciado sin renovación, revocación y logout reales aprobados. Límite exacto de una hora probado localmente; no se esperó su vencimiento en una sesión real. Límites de cookie y logout descritos abajo. |
+| 12. Actions y Preview | APROBADO | Fuente 115f4b0: Actions 40054385765 success y Preview READY. Consultar también el check del commit documental final de esta PR. |
+| 13. Retirada del ensayo y diagnóstico | APROBADO | Callback temporal retirado, cinco hosts de prueba denegados por WAF, logout de ambas sesiones del portal y de CLI. Diagnóstico HTTP nunca activado, canónico 404/no-store, sin token ni expiry. |
+| 14. Condiciones para publicar | NO COMPROBADO | Falta decisión de publicación, comprobación final canónica y aceptación/resolución de los límites de sesión. No fusionar ni promover automáticamente. |
 
-### Intento de conexión, incidencia y corrección
+## Evidencia remota reproducible
 
-El ejecutor `scripts/proyectos/google-build-probe.mjs` quedó preparado y pasó dos
-tests nuevos de precondiciones y sanitización, junto con 11 tests Workspace.
-Build local correcto. No se repitieron suites sin cambios.
+Fuente de las copias: [115f4b0](https://github.com/Cedhu-Sog/website-2027/commit/115f4b0ee4040618287bde5d88747ff38e29c31e), sobre [PR #2](https://github.com/Cedhu-Sog/website-2027/pull/2).
 
-Con autoasignación desactivada y comprobada se creó un único build Production
-de `f138eee`. Vercel conservó el alias canónico, pero movió dos alias auxiliares;
-además, el buildCommand del repositorio prevaleció y el probe no se ejecutó.
-No se atribuye una conexión Google a ese READY. La revisión automática rechazó
-otro despliegue por el riesgo de repetir la reasignación de alias.
+- [Actions fuente aprobado](https://github.com/Cedhu-Sog/website-2027/actions/runs/40054385765).
+- [Preview fuente](https://website-2027-331j7a6q6-cedhu-webmasters-projects.vercel.app/).
+- [Build real antes de corregir STS](https://vercel.com/cedhu-webmasters-projects/website-2027/BFS2m8jgDrxUwGXt5hWQjVZct9Ce): configuración válida, federation_exchange_failed, ERROR.
+- [Build real corregido](https://vercel.com/cedhu-webmasters-projects/website-2027/DQrgipCeJaseF4jgMk2yX3uWRXQm): READY; configuration, federation, serviceAccount, drive, structure, catalog, users y audit verdaderos.
+- [Lectura administrativa inicial de autorización](https://vercel.com/cedhu-webmasters-projects/website-2027/ajzgNuyDrCBscgnU1ti2XaodmGhS): sin entrada para la identidad DOCENTE de pruebas; solo indicadores, ninguna fila publicada.
+- [Ensayo OAuth real](https://vercel.com/cedhu-webmasters-projects/website-2027/8hoQQVTqfwrianVw4zWrZG87a6cw): READY; logs acotados a identity_verified y authorization_allowed/authorization_denied. Host cerrado con WAF al finalizar.
 
-Se restauraron todos los alias a sus destinos anteriores y la autoasignación a
-Enabled. El intento quedó sin alias y con su host único bloqueado por WAF; se
-verificó 403/deny. El dominio canónico y los dos alias de Production corresponden
-otra vez al despliegue inicial `dpl_45na8koSAGfXJxnsrKdi7gr6v5gi` de `f870d75`.
-master no cambió. No se promovió ni fusionó la PR. No se modificó el sitio oficial,
-su DNS/hosting, CMS ni contenido. El diagnóstico público no fue activado.
+El aislamiento se comprobó con CLI oficial temporal 65.1.0, autorizada por el usuario, `--prod --skip-domain`, inventario de alias vacío por despliegue y los tres alias de Production conservados en `dpl_45na8koSAGfXJxnsrKdi7gr6v5gi`. No usar el campo de alias previstos del detalle como sustituto de consultar las asignaciones reales. El intento anterior del conector reasignó alias auxiliares y fue cerrado; no se repitió ese mecanismo.
 
-Detalles operativos y cierre: [Fase B](PROYECTOS-GOOGLE-FASE-B.md).
-Evidencia remota: [PR #2](https://github.com/Cedhu-Sog/website-2027/pull/2),
-[commit f138eee](https://github.com/Cedhu-Sog/website-2027/commit/f138eee8f261f860ba65a69f6d60ac933a1f67df),
-[Actions aprobado](https://github.com/Cedhu-Sog/website-2027/actions/runs/40053858518),
-[Preview](https://vercel.com/cedhu-webmasters-projects/website-2027/5NJiQXrSivYqnnqgzq886jwjQeok),
-[intento bloqueado](https://vercel.com/cedhu-webmasters-projects/website-2027/EvvZnoN1km5no3NEu1GPT1exRTP2).
+La carga partió de un archivo del commit y excluyó .env privados, .vercel, credenciales CLI, logs, .astro, dist y dependencias locales. El build de conexión solo sustituyó su comando administrativo. La copia OAuth añadió un origen limitado al VERCEL_URL propio del proyecto y guard de ventana absoluta de veinte minutos; no acepta Host/Origin arbitrarios. Añadió únicamente eventos booleanos después de validar claims y autorización. Estos cambios de ensayo viven en la copia ignorada, no en la implementación candidata de la PR, cuyo origen sigue siendo el canónico.
 
-Los apartados siguientes conservan la preparación y prueba anteriores; sus
-pendientes de configuración OAuth quedan sustituidos por este estado vigente.
+La ventana OAuth fue 2026-10-24T02:55:11.040Z a 03:15:11.040Z. La URI adicional se guardó tras autorización expresa, se utilizó con éxito y se retiró antes del vencimiento. No se activó la ruta HTTP de diagnóstico. La copia heredó la configuración Production y su clave de sesión existente; no se rotó esa clave. No constituye un entorno permanente con credenciales independientes: los hosts quedaron bloqueados y las sesiones del portal se cerraron. No volver a habilitarlos como entornos reutilizables.
 
-## Alcance
+## Autorizaciones y prueba de acceso
 
-Se prepara una ruta de acceso individual por Google OAuth 2.0, para cuentas
-Workspace autorizadas y los roles `ADMIN` / `DOCENTE`. La interfaz Astro no
-incorpora datos privados; las verificaciones de identidad, Drive y Sheets ocurren
-en funciones de servidor de Vercel. El antiguo endpoint de contraseña compartida
-responde 410 y su cookie no es compatible con la nueva sesión.
+La cuenta facilitada por TIC no tenía registro. El primer OAuth real validó firma, audiencia, emisor y expiración mediante la librería oficial, además de nonce, hd, sub y correo verificado; luego la consulta real de permisos denegó el acceso.
 
-Fase B **sigue pendiente**: no existe evidencia de una federación OIDC real, STS,
-suplantación de cuenta, lectura de Drive y Sheets desde Production. La suite
-simulada de CI NO acredita esas operaciones. El diagnóstico temporal de B permanece
-desactivado y no se han generado secretos.
+El usuario autorizó expresamente su alta como DOCENTE/ACTIVO exclusivamente para pruebas. Desde Google Sheets, con el administrador institucional, se añadió solo la fila nueva en Usuarios A4:I4, sin copiar historial ni alterar otras identidades. google_id se dejó vacío, permitido por el esquema; el correo institucional verificado sigue siendo obligatorio. No se afirmó ni se restauró ningún rol histórico.
 
-## Seguridad de acceso
+El siguiente OAuth concedió DOCENTE. Recargas y consultas reales de session mantuvieron el mismo expiresAt, dentro de una hora desde el inicio, y solo devolvieron etiquetas públicas, rol y vencimiento. Cambiar E4 a INACTIVO hizo que la siguiente petición devolviera Acceso no autorizado y eliminara la sesión. Restaurar ACTIVO no restauró esa cookie: fue necesario repetir OAuth. Logout mostró Sesión cerrada y una petición posterior respondió Inicia sesión para continuar.
 
-- Flujo Authorization Code con PKCE S256, nonce y estado HMAC firmado de diez minutos,
-  en cookie `__Host-` HttpOnly, Secure, SameSite=Lax para permitir el callback de Google.
-- Validación de firma, audiencia, emisor y expiración del ID token por la librería
-  oficial; nonce, `hd` y correo verificado contrastados con el dominio Workspace real
-  configurado en el servidor. El parámetro de interfaz `hd` NO autoriza por sí solo.
-- Además, consulta de solo lectura de `Usuarios_Autorizados`, bajo `00_Sistema`
-  dentro de la unidad compartida correcta. El servidor primero comprueba el
-  drive, las carpetas, pertenencia y esquema. Comprueba también la cuenta de servicio
-  efectiva con Drive `about`. Lee A2:E completo (respuesta limitada a 256 KiB) y
-  rechaza más de 1000 filas; no trunca permisos ni oculta duplicados tras filas vacías.
-  `estado=ACTIVO`, `rol=ADMIN|DOCENTE`, `google_id` debe coincidir si está relleno.
-  Duplicados, cuentas inexistentes, estados distintos y errores de Google deniegan.
-- Las sesiones duran una hora, con firma ligada a `PROYECTOS_SESSION_SECRET` y
-  cookies `__Host-` HttpOnly, Secure, SameSite=Strict. Cada acceso a la API
-  `session` revalida el rol, para que las bajas y cambios surtan efecto sin caché.
-- El backend no expone correos, IDs Google, cabeceras OAuth ni registros de la hoja.
-  Si Google no responde, se deniega el acceso en lugar de reutilizar un permiso
-  antiguo; respuestas privadas `no-store`.
-- La función `requireSession` debe aplicarse en los nuevos endpoints privados de
-  D/E. **NO** utilizar el guard heredado de contraseña compartida.
+La otra identidad, expresamente autorizada para ADMIN, ya tenía una fila ADMIN/ACTIVO. Completó su propio OAuth y la interfaz mostró Administrador. Se cerró esa sesión. Las pruebas no acreditan funciones de catálogo, importación, escritura o administración que pertenecen a entregas posteriores.
 
-## Configuración aún requerida (no inventar valores)
+Al finalizar, el nuevo registro de pruebas quedó DOCENTE/INACTIVO. No se suspendió, reactivó ni modificó el estado de ninguna cuenta en Google Workspace. No se accedió a Gmail, archivos personales ni actividad histórica.
 
-**Dominio confirmado por el administrador:** `cedhu.edu.co`. Configurar `PROYECTOS_GOOGLE_DOMAIN=cedhu.edu.co`. La identidad de pruebas vigente es la facilitada por Coordinación TIC el 23/10/2026. No se publica su contraseña, nombre, correo ni registros de autorización en esta evidencia versionada.
+## Seguridad de la implementación candidata
 
-**<u>PENDIENTE DE CONFIRMAR</u>** Crear/identificar en Google Cloud un cliente OAuth
-para aplicación de tipo Web, gestionado por la organización institucional, con
-pantalla de consentimiento interna cuando aplique y redirect URI **exacta**:
+- Authorization Code, PKCE S256, nonce y estado firmado de diez minutos; cookie de flujo __Host-, HttpOnly, Secure y SameSite=Lax.
+- Cliente backend con WIF, sujeto Production exacto, STS y suplantación de cuenta de servicio; scopes Google de solo lectura. Sin claves privadas permanentes.
+- Identidad efectiva contrastada con Drive about antes de leer permisos. Unidad, carpetas, pertenencia y esquema verificados. Lectura A2:E completa, respuesta máxima 256 KiB y rechazo de más de 1000 filas y duplicados.
+- Estado ACTIVO y rol ADMIN o DOCENTE obligatorios. google_id vinculante si está relleno. Cada petición privada revalida estado y rol; los fallos de Google deniegan el acceso.
+- Sesión de una hora, __Host-, HttpOnly, Secure, SameSite=Strict y respuestas no-store. Session omite correo, sub, tokens y filas. Aplicar requireSession a todos los futuros endpoints privados; no reutilizar el guard heredado de contraseña.
+- Eventos del ensayo sin JWT, secretos, campos de correo ni códigos OAuth en la muestra revisada. Las capturas de roles contienen solo la interfaz pública y se guardan localmente bajo .vercel, nunca en Git. No se afirma una auditoría exhaustiva de todos los logs históricos.
 
-`https://website-2027-seven.vercel.app/api/proyectos/google/callback`
+La cookie es firmada, no cifrada: contiene correo, sujeto Google y rol. HttpOnly impide leerla desde JavaScript, pero no se afirma que esos datos no viajen al navegador en la cookie. Logout borra la cookie del navegador; no existe revocación central de una copia robada mientras la cuenta siga activa. La baja de autorización, expiración y rotación de clave siguen aplicando. No se promete revocación global por sesión sin decidir y verificar esa arquitectura.
 
-Guardar en Vercel Production, como variables privadas (nunca en Git):
+## Verificación y publicación pendiente
 
-- `PROYECTOS_GOOGLE_OAUTH_CLIENT_ID`
-- `PROYECTOS_GOOGLE_OAUTH_CLIENT_SECRET` (secret)
-- `PROYECTOS_GOOGLE_DOMAIN`
-- `PROYECTOS_SESSION_SECRET` existente (no rotarlo sin plan de sesiones)
+Las suites de la fuente aprobaron Workspace 11, backend Google 24, autenticación heredada 14 y CMS 13, además de los dos casos del ejecutor. La copia OAuth aprobó nuevamente 11 casos Workspace y dos específicos de origen y cierre exacto de veinte minutos. `npm run build` de esa copia aprobó 31 páginas, comprobación de 30 páginas, 4296 referencias y nueve PDF. Esas pruebas locales se distinguen de las conexiones reales citadas arriba.
 
-No reutilizar ni modificar credenciales de GitHub/Decap. No publicar un flujo de
-Google que pida privilegios Drive del usuario: solo `openid email profile`.
-El acceso a Drive/Sheets usa exclusivamente el WIF del servidor.
+Antes de publicar: revisar el último commit y sus checks, resolver/aceptar expresamente los límites de sesión, verificar el comportamiento al vencimiento real y obtener autorización final. Solo entonces realizar una comprobación del callback canónico después de una publicación controlada. Mantener master, aliases publicados, DNS/hosting oficial, CMS y contenido sin cambios mientras tanto.
 
-**<u>PENDIENTE DE CONFIRMAR</u>** La lista `Usuarios_Autorizados` debe incluir cuentas
-institucionales aprobadas con `rol` y `estado=ACTIVO`. La columna `google_id`
-es vinculante cuando se completa, pero puede estar inicialmente vacía. Consultar
-a la administración antes de cargar usuarios; este entregable no edita Sheets.
+Al terminar el uso de la identidad de pruebas, la institución debe rotar su contraseña, revocar sesiones y conexiones innecesarias de Google, y suspenderla cuando deje de necesitarse. La sesión temporal de Vercel CLI ya se cerró con la herramienta oficial. No se cerraron sesiones administrativas ajenas.
 
-## Validación y activación
-
-1. Mantener la PR #2 en borrador y revisar pruebas y CI.
-2. Preparar un entorno de autenticación aislado en Vercel, con origen y callback
-   exactos, cliente OAuth Web institucional, secreto de sesión propio y federación
-   del backend expresamente limitada a ese entorno. El código actual y el sujeto
-   WIF están fijados a Production: NO basta copiar variables a Preview ni cambiar
-   solamente el callback. No usar credenciales personales ni retirar ese control.
-3. Verificar OIDC/STS/IAM y lectura de Drive/Sheets con la cuenta de servicio del
-   entorno de pruebas, manteniendo el diagnóstico de Production cerrado.
-4. Ejecutar OAuth real, comprobar claims sin registrar tokens y consultar la fila
-   autorizada. Probar cada rol con una identidad realmente autorizada para él;
-   una identidad de prueba no acredita ADMIN y DOCENTE por sí sola. No modificar
-   estados o permisos de usuarios sin autorización institucional específica.
-5. Verificar rechazo por falta de permiso, persistencia, expiración, logout,
-   cookies, respuestas, frontend y registros del entorno de pruebas.
-6. Solo tras resolver esas condiciones, solicitar la decisión de publicación.
-   Esta actualización no autoriza fusionar master ni modificar Production.
-
-## Estado a 23/10/2026
-
-- Código preparado en rama aislada: no afecta `master` ni el alias Production.
-- Pruebas de la rama: consultar resultados de CI; no afirmar éxito sin evidencia.
-- Fase B: **NO COMPROBADA**.
-- Login real con Google Workspace: **NO COMPROBADO**.
-- Dominio institucional: **CONFIRMADO**. OAuth client: **PENDIENTE**.
-
-## Prueba de identidad real y revisión de la PR #2 — 23/10/2026
-
-Se completó un inicio de sesión real en el formulario oficial de Google con la
-identidad facilitada por Coordinación TIC. Google abrió su cuenta y mostró
-**«Gestionada por cedhu.edu.co»**. No se solicitó reactivación ni cambio de
-contraseña; no se alteraron permisos. No se consultaron Gmail, Drive personal,
-archivos ni actividad histórica. La captura recortada de identidad se conserva
-solo en `.vercel/entrega1-google-domain-evidence.png`, excluida de Git.
-El éxito de este login no demuestra el claim `hd` de un ID token emitido al sitio,
-la fila de Usuarios_Autorizados ni un rol del repositorio.
-
-Referencia remota revisada: HEAD `1bc40c6a59e1c1c921fe51522e00494b82d26125`,
-Preview `dpl_GLf44xQuf5Nrgjtf8iDrXdBEYD7T`, READY, estado Vercel success.
-Production observado: `dpl_45na8koSAGfXJxnsrKdi7gr6v5gi`, commit
-`f870d75e3c0a519ae4b5c42eb8ca12cf88c2232e`. No se modificaron sus variables,
-firewall, alias, configuración ni despliegue; no se fusionó la PR.
-
-| Prueba requerida | Evidencia real y límites |
-| --- | --- |
-| Cuenta y dominio institucional | Login oficial completado y dominio administrado visible; sin evidencia de suspensión durante el login. No acredita su estado administrativo completo. |
-| OAuth desde Vercel | Bloqueado: GET start, callback y session devolvieron 503 y mensaje fijo, con no-store en navegador/CDN. El guard rechaza Preview. |
-| Tokens de identidad reales | No emitidos al sitio; no se capturaron, imprimieron ni almacenaron tokens. Validaciones criptográficas solo con tokens sintéticos. |
-| Usuarios_Autorizados | No consultada realmente; registro, estado y rol de la identidad siguen desconocidos. |
-| Acceso ADMIN real | No probado. Casos sintéticos separados correctos. |
-| Acceso DOCENTE real | No probado. Casos sintéticos separados correctos. |
-| Rechazo real por falta de autorización | No probado. El 503 es configuración no disponible, no un rechazo de la fila de una cuenta. |
-| Persistencia, expiración y logout del sitio | Probados con cookies y reloj sintéticos; pendientes en Vercel con OAuth real. |
-| Drive/Sheets mediante cuenta de servicio | Código y transporte simulado comprobados; falta conexión real OIDC/STS/IAM/Drive/Sheets. El login de Google del usuario no se usa para pedir permisos Drive. |
-| Privacidad | Respuestas remotas observadas sanitizadas y sin caché. Escaneo de build y fuentes correcto; falta auditoría de una ejecución real autenticada y sus registros. |
-
-El inventario de metadatos de Vercel muestra las variables GCP/recursos/sesión y
-dominio solo en Production; los nombres OAuth CLIENT_ID y CLIENT_SECRET no están
-configurados en ningún target del proyecto. No se descifraron valores.
-Google Cloud requiere volver a verificar la identidad administrativa antes de
-mostrar los clientes OAuth: todavía no se afirma si existe un cliente allí.
-
-### Correcciones y pruebas locales de esta actualización
-
-- Comprobación explícita de la cuenta de servicio efectiva antes de consultar la
-  unidad y la hoja. Se rechazan cuentas personales antes de leer registros.
-- Lectura completa de las cinco columnas de permisos con límite de respuesta y
-  rechazo de más de 1000 filas, incluidos duplicados tras espacios vacíos.
-- Verificador oficial de Google ejecutado con claves RSA y tokens sintéticos:
-  éxito válido y rechazo de firma alterada, audiencia, emisor y expiración inválidos.
-  Los certificados se sustituyen solo en la prueba; ninguna clave o token real.
-- ADMIN y DOCENTE comprobados por separado: consultas repetidas conservan una hora
-  de vigencia sin renovarla; al límite exacto se deniega; logout elimina la cookie
-  y una petición posterior sin cookie recibe 401. No se atribuyen esos roles a la
-  identidad institucional de pruebas.
-- Node 22.23.4 existente, sin instalaciones. Build mediante
-  `npm run check:proyectos:build` (incluye `npm run build`) correcto: 31 páginas,
-  30 páginas verificadas, 4296 referencias, nueve PDF y 502 archivos públicos
-  sin los secretos/recursos comprobados. Avisos existentes de colección de eventos
-  vacía y chunk grande; sin errores de compilación.
-- Pruebas de esta revisión: Workspace 11/11 y autenticación heredada 14/14;
-  backend Google 24/24 mediante `npm run test:proyectos:google`. La ejecución
-  directa inicial de esa última suite falló en el transporte de prueba por no
-  tener `npm_execpath`; ejecutarla mediante npm resolvió ese requisito, sin
-  cambiar ni omitir pruebas. La suite CMS ejecutada también pasó sus 13 casos.
-
-### Límites que no deben certificarse como resueltos
-
-La sesión es una cookie firmada, no cifrada: contiene correo, sujeto Google y rol,
-protegidos de JavaScript por HttpOnly. El JSON público de session omite esos
-identificadores, pero no se afirma que la identidad no viaje al navegador en la
-cookie. Logout borra la cookie de ese navegador; no existe registro central de
-revocación de una copia previamente robada. La expiración, rotación de clave y
-revalidación de autorización siguen aplicando. No se promete revocación global de
-sesiones ni se añade un almacén nuevo sin decidir antes su arquitectura.
-
-Al cerrar las pruebas, rotar la contraseña por el procedimiento institucional,
-revocar las sesiones innecesarias de la identidad de pruebas y dejarla suspendida
-cuando termine su uso. La sesión Google abierta para esta prueba no equivale a
-una sesión del sitio. No se cerraron las otras cuentas presentes en el navegador.
-
-Referencias técnicas contrastadas: [Google OpenID Connect](https://developers.google.com/identity/openid-connect/openid-connect)
-y [Vercel OIDC](https://vercel.com/docs/oidc/reference). Estas referencias explican
-los controles; no sustituyen la evidencia pendiente del entorno institucional.
+Incidencia y detalle histórico: [Fase B](PROYECTOS-GOOGLE-FASE-B.md). Referencias: [Google OpenID Connect](https://developers.google.com/identity/openid-connect/openid-connect), [Vercel OIDC](https://vercel.com/docs/oidc/reference).

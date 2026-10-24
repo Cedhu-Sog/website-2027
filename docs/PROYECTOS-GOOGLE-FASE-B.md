@@ -1,4 +1,31 @@
-# Fase B — preparación, incidencia y cierre
+# Fase B — conexión real verificada y ensayo cerrado
+
+## Resultado vigente — cierre 24/10/2026 UTC
+
+**Conexión real APROBADA. OAuth real ADMIN y DOCENTE APROBADO en copia aislada. No se autoriza todavía la publicación canónica ni se declara completo el entregable.**
+
+La CLI oficial 65.1.0 fue instalada temporalmente y autorizada por el usuario, fuera de las dependencias del repositorio. El usuario completó el Device Authorization oficial. Se comprobó proyecto/equipo antes de actuar, carga limpia y supresión de alias por solicitud con --prod --skip-domain. Al terminar se cerró la sesión CLI oficialmente. No repetir el mecanismo del conector que reasignó alias auxiliares.
+
+La primera ejecución efectiva de google-build-probe falló con federation_exchange_failed. Se comparó GCP_PROJECT_NUMBER con el recurso real del pool y se encontró una discrepancia. Se corrigió esa variable solo en Production, sin cambiar IAM, scopes, emisor, audiencia ni condición del proveedor. El siguiente build aprobó los ocho checks: configuración, federación STS, cuenta de servicio efectiva, Drive, carpetas y los tres Sheets con sus pestañas/encabezados. No hubo escritura de datos desde la cuenta de servicio.
+
+| Ejecución | Evidencia |
+| --- | --- |
+| STS antes de la corrección | [BFS2m8jgDrxUwGXt5hWQjVZct9Ce](https://vercel.com/cedhu-webmasters-projects/website-2027/BFS2m8jgDrxUwGXt5hWQjVZct9Ce), ERROR; configuración true, federación false. |
+| Conexión real corregida | [DQrgipCeJaseF4jgMk2yX3uWRXQm](https://vercel.com/cedhu-webmasters-projects/website-2027/DQrgipCeJaseF4jgMk2yX3uWRXQm), READY; ocho checks true. |
+| Lectura inicial de autorización | [ajzgNuyDrCBscgnU1ti2XaodmGhS](https://vercel.com/cedhu-webmasters-projects/website-2027/ajzgNuyDrCBscgnU1ti2XaodmGhS), READY; cuenta de pruebas ausente, sin datos de filas en salida. |
+| OAuth real aislado | [8hoQQVTqfwrianVw4zWrZG87a6cw](https://vercel.com/cedhu-webmasters-projects/website-2027/8hoQQVTqfwrianVw4zWrZG87a6cw), READY; dos identidades y roles distintos, rechazo inicial, revocación, persistencia y logout comprobados. |
+
+La fuente fue el commit 115f4b0 de PR #2, con overlays administrativos limitados a la copia de carga; no se cambió el código candidato para admitir orígenes arbitrarios. OAuth empleó una URI temporal exacta tras autorización específica, en una ventana 02:55:11.040Z–03:15:11.040Z del 24/10. El origen dependía únicamente del VERCEL_URL validado del propio deployment y el acceso fallaba cerrado fuera de esa ventana. No era Preview y no se amplió el sujeto WIF.
+
+La cuenta DOCENTE no tenía autorización y fue rechazada realmente después de verificar su ID token. Tras autorización expresa se añadió la fila institucional de pruebas DOCENTE/ACTIVO, se probó acceso, se revocó y se comprobó rechazo en la petición siguiente. El estado final de esa fila nueva es INACTIVO. El perfil ADMIN se comprobó con otra identidad existente y activa. No se restauró historial ni se cambió el estado Workspace de un antiguo trabajador.
+
+Cierre: URI temporal retirada; sesiones del portal y CLI cerradas; WAF versión 7 con cinco hosts de pruebas denegados y reglas previas conservadas; host OAuth comprobado con 403 y x-vercel-mitigated=deny. Diagnóstico canónico 404/no-store, ENABLED=false y sin TOKEN/EXPIRES_AT. Nunca se abrió el diagnóstico HTTP ni se creó su bearer temporal. Los tres alias Production siguen en dpl_45na8koSAGfXJxnsrKdi7gr6v5gi; master, CMS y sitio oficial conservados.
+
+El ensayo heredó el secreto de sesión Production existente y no constituye un entorno permanente con claves independientes. Sus hosts no deben reabrirse ni promocionarse. El vencimiento de una hora se contrastó en los metadatos reales, sin renovarse al recargar; el rechazo al límite exacto sigue probado solo localmente. Faltan la decisión de publicación, la comprobación canónica y resolver/aceptar los límites de sesión documentados en [Entrega 1](PROYECTOS-WORKSPACE-ENTREGA1.md).
+
+## Historial anterior — estados sustituidos por el resultado vigente
+
+Los apartados siguientes conservan intentos y cierres anteriores. Sus frases de conexión pendiente, procedimientos de publicación y estados remotos no describen la situación actual. No aplicar el procedimiento histórico de cambio temporal de master ni el control global de autoasignación como garantía de aislamiento. Usar el resultado vigente y la tabla de Entrega 1.
 
 ## Reanudación del 23/10/2026: comprobación real en un build aislado
 
