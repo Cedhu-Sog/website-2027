@@ -18,6 +18,34 @@ function initialize(root: HTMLElement) {
   const privateArea = root.querySelector<HTMLElement>('[data-projects-private]')!;
   const title = root.querySelector<HTMLHeadingElement>('#projects-title')!;
   const originalTitle = title.textContent;
+  const notice = root.querySelector<HTMLDialogElement>('[data-projects-notice]')!;
+  const loginLink = root.querySelector<HTMLAnchorElement>('[data-workspace-login]')!;
+  const notices = {
+    denegado: ['Cuenta no autorizada', 'No pudimos permitir el acceso con esta cuenta.',
+      'Ingresa con tu cuenta institucional del CEDHU. Si el problema continúa, comunícate con Tecnología CEDHU.'],
+    institucional: ['Cuenta institucional requerida', 'Utiliza tu cuenta institucional del CEDHU para ingresar', ''],
+    cancelado: ['Inicio de sesión incompleto', 'No se completó el inicio de sesión. Puedes intentarlo nuevamente', ''],
+    servicio: ['No pudimos comprobar tu acceso', 'No fue posible comprobar tu acceso en este momento. Inténtalo nuevamente', ''],
+    sesion_vencida: ['Sesión vencida', 'Tu sesión ha expirado. Inicia sesión nuevamente', ''],
+  };
+  type NoticeCode = keyof typeof notices;
+  // Independent of session rendering: only an explicit dismissal closes this notice.
+  let pendingNotice: NoticeCode | undefined;
+  function showNotice(code: NoticeCode) {
+    if (pendingNotice) return;
+    pendingNotice = code;
+    const [heading, body, guidance] = notices[code];
+    root.querySelector<HTMLElement>('[data-notice-title]')!.textContent = heading;
+    root.querySelector<HTMLElement>('[data-notice-message]')!.textContent = body;
+    const help = root.querySelector<HTMLElement>('[data-notice-guidance]')!;
+    help.textContent = guidance;
+    help.hidden = !guidance;
+    notice.showModal();
+  }
+  notice.addEventListener('close', () => {
+    pendingNotice = undefined;
+    (login.hidden ? title : loginLink).focus();
+  });
   let generation = 0;
   let authenticated = false;
   let expiry: ReturnType<typeof setTimeout> | undefined;
@@ -57,10 +85,14 @@ function initialize(root: HTMLElement) {
       const result = await fetchSession();
       if (request !== generation) return;
       if (result.status === 401 || result.status === 403) {
-        message(previous ? 'La sesión ha finalizado. Ingresa de nuevo con Google.' : '', previous);
+        const data = await result.json();
+        if (request !== generation) return;
+        message('');
+        if (result.status === 403) showNotice(data.code === 'denegado' ? 'denegado' : 'servicio');
+        else if (previous || data.code === 'sesion_vencida') showNotice('sesion_vencida');
         return;
       }
-      if (!result.ok) { message('La conexión institucional no está disponible temporalmente.', true); return; }
+      if (!result.ok) { message(''); showNotice('servicio'); return; }
       const data: WorkspaceSession = await result.json();
       if (request !== generation) return;
       if (data.authenticated !== true || !['ADMIN', 'DOCENTE'].includes(data.role) ||
@@ -79,10 +111,10 @@ function initialize(root: HTMLElement) {
       section.append(badge, text('p', data.welcome), detail, logout);
       privateArea.append(section);
       message('Cuenta institucional verificada.');
-      expiry = setTimeout(() => { generation++; clear(); message('La sesión ha expirado.', true); },
+      expiry = setTimeout(() => { generation++; clear(); message(''); showNotice('sesion_vencida'); },
         Math.max(0, data.expiresAt - Date.now()));
     } catch {
-      if (request === generation) message('No fue posible comprobar tu acceso.', true);
+      if (request === generation) { message(''); showNotice('servicio'); }
     }
   }
   async function closeSession(button: HTMLButtonElement) {
@@ -100,14 +132,18 @@ function initialize(root: HTMLElement) {
       if (!response.ok) throw new Error('logout');
       clear();
       message('Sesión cerrada.');
+      loginLink.focus();
     } catch {
       if (request === generation) { button.disabled = false; message('No fue posible cerrar la sesión.', true); }
     } finally { closing = false; }
   }
   const params = new URLSearchParams(window.location.search);
-  if (params.get('acceso') === 'denegado') {
-    message('Acceso denegado. Verifica que tu cuenta esté autorizada por el CEDHU.', true);
-    window.history.replaceState(null, '', '/proyectos/');
+  if (params.has('acceso')) {
+    const code = params.get('acceso') || '';
+    showNotice(params.getAll('acceso').length === 1 && Object.hasOwn(notices, code) ? code as NoticeCode : 'servicio');
+    const url = new URL(window.location.href);
+    url.searchParams.delete('acceso');
+    window.history.replaceState(null, '', url.pathname + url.search + url.hash);
   }
   window.addEventListener('pagehide', () => { generation++; clear(); });
   window.addEventListener('pageshow', event => { if (event.persisted) void refresh(); });

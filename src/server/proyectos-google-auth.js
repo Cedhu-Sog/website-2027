@@ -62,9 +62,10 @@ function localSession(request, cfg, now) {
   const data = openWorkspaceCookie(cookieValue(request, SESSION_NAME), cfg.key, 'cedhu-google-session-v2');
   const time = Math.floor(now() / 1000);
   if (data.v !== 1 || !Number.isSafeInteger(data.iat) || !Number.isSafeInteger(data.exp) ||
-      data.exp - data.iat !== SESSION_SECONDS || data.iat > time || data.exp <= time ||
+      data.exp - data.iat !== SESSION_SECONDS || data.iat > time ||
       typeof data.sub !== 'string' || !/^\d{10,30}$/.test(data.sub) ||
       !validEmail(data.email, cfg.domain) || !['ADMIN', 'DOCENTE'].includes(data.role)) throw new Error('invalid_session');
+  if (data.exp <= time) throw new Error('expired_session');
   return data;
 }
 
@@ -141,33 +142,39 @@ export function createWorkspaceHandlers({ env = process.env, now = Date.now,
 
   async function callback(request) {
     if (request.method !== 'GET') return projectsJson({ message: 'Método no permitido.' }, 405, { Allow: 'GET' });
-    const cfg = configured();
-    if (!cfg) return projectsJson({ message: 'Acceso institucional no disponible.' }, 503);
     if (!fixedOrigin(request)) return projectsJson({ message: 'Solicitud no permitida.' }, 403);
-    const denied = () => redirect(PROJECTS_ORIGIN + '/proyectos/?acceso=denegado', [clearFlow(), clearSession()]);
+    // Only these literal public outcomes leave this handler; provider errors stay private.
+    const outcomes = new Set(['denegado', 'institucional', 'cancelado', 'servicio']);
+    const denied = (outcome = 'servicio') => redirect(PROJECTS_ORIGIN + '/proyectos/?acceso=' +
+      (outcomes.has(outcome) ? outcome : 'servicio'), [clearFlow(), clearSession()]);
+    const cfg = configured();
+    if (!cfg) return denied();
     try {
       const query = new URL(request.url).searchParams;
       const code = query.get('code');
       const state = query.get('state');
-      if (query.has('error') || !code || code.length > 2048 || !state || query.getAll('state').length !== 1 ||
-          query.getAll('code').length !== 1 || !/^[A-Za-z0-9_-]{43}$/.test(state)) return denied();
+      if (!state || query.getAll('state').length !== 1 || !/^[A-Za-z0-9_-]{43}$/.test(state)) return denied();
       const flow = openWorkspaceCookie(cookieValue(request, FLOW_NAME), cfg.key, 'cedhu-google-oauth-flow-v2');
       const at = Math.floor(now() / 1000);
       if (flow.v !== 1 || !Number.isSafeInteger(flow.iat) || !Number.isSafeInteger(flow.exp) ||
           flow.exp - flow.iat !== FLOW_SECONDS || flow.iat > at || flow.exp <= at ||
           flow.state !== state || !/^[A-Za-z0-9_-]{43}$/.test(flow.nonce) ||
           !/^[A-Za-z0-9_-]{43}$/.test(flow.verifier)) return denied();
+      // Cancellation is recognized only after validating the original browser flow.
+      if (query.has('error')) return denied(query.getAll('error').length === 1 &&
+        query.get('error') === 'access_denied' && !query.has('code') ? 'cancelado' : 'servicio');
+      if (!code || code.length > 2048 || query.getAll('code').length !== 1) return denied();
       const oauth = oauthFactory(cfg);
       const exchanged = await oauth.getToken({ code, redirect_uri: CALLBACK, codeVerifier: flow.verifier });
       const idToken = exchanged.tokens?.id_token;
       if (typeof idToken !== 'string') return denied();
       const ticket = await oauth.verifyIdToken({ idToken, audience: cfg.clientId });
       const claims = ticket.getPayload();
-      if (claims?.nonce !== flow.nonce || claims?.hd !== cfg.domain ||
-          claims?.email_verified !== true || !/^\d{10,30}$/.test(claims.sub || '') ||
-          !validEmail(claims.email, cfg.domain)) return denied();
+      if (claims?.nonce !== flow.nonce || claims?.email_verified !== true ||
+          !/^\d{10,30}$/.test(claims?.sub || '')) return denied();
+      if (claims.hd !== cfg.domain || !validEmail(claims.email, cfg.domain)) return denied('institucional');
       const role = await roleLookup({ env, sub: claims.sub, email: claims.email });
-      if (!['ADMIN', 'DOCENTE'].includes(role)) return denied();
+      if (!['ADMIN', 'DOCENTE'].includes(role)) return denied('denegado');
       const issued = Math.floor(now() / 1000);
       if (flow.exp <= issued) return denied();
       const session = sealWorkspaceCookie({ v: 1, sub: claims.sub, email: claims.email, role, iat: issued,
@@ -188,17 +195,18 @@ export function createWorkspaceHandlers({ env = process.env, now = Date.now,
     }
     let data;
     try { data = localSession(request, cfg, now); }
-    catch { return { response: projectsJson({ message: 'Inicia sesión para continuar.' }, 401, { 'Set-Cookie': clearSession() }) }; }
+    catch (error) { return { response: projectsJson({ message: 'Inicia sesión para continuar.',
+      code: error.message === 'expired_session' ? 'sesion_vencida' : 'sin_sesion' }, 401, { 'Set-Cookie': clearSession() }) }; }
     try {
       const activeRole = await roleLookup({ env, sub: data.sub, email: data.email });
       // A slow permissions read must not deliver private content after expiry.
-      if (data.exp <= Math.floor(now() / 1000)) return { response: projectsJson({ message: 'Inicia sesión para continuar.' }, 401, { 'Set-Cookie': clearSession() }) };
+      if (data.exp <= Math.floor(now() / 1000)) return { response: projectsJson({ message: 'Inicia sesión para continuar.', code: 'sesion_vencida' }, 401, { 'Set-Cookie': clearSession() }) };
       // Revocation or role changes take effect on the next private API request.
-      if (activeRole !== data.role) return { response: projectsJson({ message: 'Acceso no autorizado.' }, 403, { 'Set-Cookie': clearSession() }) };
+      if (activeRole !== data.role) return { response: projectsJson({ message: 'Acceso no autorizado.', code: 'denegado' }, 403, { 'Set-Cookie': clearSession() }) };
       return { identity: data };
     } catch {
       // No cached authorization in the event Google Workspace is unavailable.
-      if (data.exp <= Math.floor(now() / 1000)) return { response: projectsJson({ message: 'Inicia sesión para continuar.' }, 401, { 'Set-Cookie': clearSession() }) };
+      if (data.exp <= Math.floor(now() / 1000)) return { response: projectsJson({ message: 'Inicia sesión para continuar.', code: 'sesion_vencida' }, 401, { 'Set-Cookie': clearSession() }) };
       return { response: projectsJson({ message: 'No fue posible comprobar la autorización.' }, 503) };
     }
   }

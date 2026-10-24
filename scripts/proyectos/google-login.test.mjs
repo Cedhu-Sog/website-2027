@@ -152,24 +152,24 @@ test('OAuth state is bound to short-lived secure cookie, and rejects tampering',
   const stateCookie = await begin(f);
   for (const altered of [undefined, stateCookie + 'x']) {
     const response = await complete(f, altered);
-    assert.equal(response.headers.get('location'), PROJECTS_ORIGIN + '/proyectos/?acceso=denegado');
+    assert.equal(response.headers.get('location'), PROJECTS_ORIGIN + '/proyectos/?acceso=servicio');
     assert.equal(response.headers.getSetCookie().some(item => item.startsWith('__Host-cedhu-proyectos=;')), true);
   }
-  assert.match((await complete(f, stateCookie, 'A'.repeat(43))).headers.get('location'), /acceso=denegado/);
+  assert.match((await complete(f, stateCookie, 'A'.repeat(43))).headers.get('location'), /acceso=servicio/);
 });
 
 test('Google identity checks reject outsider email, wrong hd, unverified email, wrong nonce, or unlisted user', async () => {
   for (const scenario of [
-    { claimChanges: { hd: 'otro.edu.co' } },
-    { claimChanges: { email: 'alguien@gmail.com' } },
+    { claimChanges: { hd: 'otro.edu.co' }, outcome: 'institucional' },
+    { claimChanges: { email: 'alguien@gmail.com' }, outcome: 'institucional' },
     { claimChanges: { email_verified: false } },
     { claimChanges: { nonce: 'invalid' } },
     { claimChanges: { sub: 'invalid' } },
-    { role: null },
+    { role: null, outcome: 'denegado' },
   ]) {
     const f = fixture(scenario);
     const response = await complete(f, await begin(f));
-    assert.equal(response.headers.get('location'), PROJECTS_ORIGIN + '/proyectos/?acceso=denegado');
+    assert.equal(response.headers.get('location'), PROJECTS_ORIGIN + '/proyectos/?acceso=' + (scenario.outcome || 'servicio'));
   }
 });
 
@@ -188,14 +188,14 @@ test('callback denies forged origin, missing state and replay after flow expirat
   await begin(f);
   assert.equal((await f.handler.callback(new Request('https://evil.invalid' + path + 'callback'))).status, 403);
   const missingState = await f.handler.callback(req('callback', { query: '?code=one-time-code' }));
-  assert.match(missingState.headers.get('location'), /acceso=denegado/);
+  assert.match(missingState.headers.get('location'), /acceso=servicio/);
   const clockValue = Date.now();
   let time = clockValue;
   const expired = fixture({ clock: () => time });
   const cookie = await begin(expired);
   time += 601_000;
   const r = await complete(expired, cookie);
-  assert.match(r.headers.get('location'), /acceso=denegado/);
+  assert.match(r.headers.get('location'), /acceso=servicio/);
 });
 
 test('logout enforces same-origin POST and clears Google session cookie', async () => {
@@ -236,7 +236,7 @@ test('official ID-token verifier rejects invalid signature, audience, issuer and
     const f = fixture({ signedToken: true, ...scenario });
     const response = await complete(f, await begin(f));
     assert.equal(response.headers.get('location'), PROJECTS_ORIGIN +
-      (scenario.allowed ? '/proyectos/' : '/proyectos/?acceso=denegado'));
+      (scenario.allowed ? '/proyectos/' : '/proyectos/?acceso=servicio'));
     if (!scenario.allowed) {
       assert(response.headers.getSetCookie().every(value => value.includes('Max-Age=0')));
       assert.equal(await response.text(), '', 'provider errors and tokens must not reach the response');
@@ -437,7 +437,7 @@ test('a slow OAuth authorization cannot complete an expired flow and session lif
     const f = fixture({ clock: () => time, roleLookup: () => { time = start + delay; return 'ADMIN'; } });
     const result = await complete(f, await begin(f));
     if (delay === 600000) {
-      assert.match(result.headers.get('location'), /acceso=denegado/);
+      assert.match(result.headers.get('location'), /acceso=servicio/);
       assert(result.headers.getSetCookie().every(value => /Max-Age=0/.test(value)));
     } else {
       const cookie = cookieNamed(result, '__Host-cedhu-proyectos');
@@ -470,6 +470,46 @@ test('method errors and retired login expose no identity; logout is idempotent w
     assert(response.headers.getSetCookie().every(cookie => /Max-Age=0/.test(cookie)));
   }
   assert.equal(f.lookupCalls, 0);
+});
+
+test('only a validated cancellation is classified as cancelled; provider errors never escape', async () => {
+  for (const [query, outcome] of [
+    ['error=access_denied', 'cancelado'],
+    ['error=server_error&error_description=private-provider-detail', 'servicio'],
+    ['error=access_denied&code=one-time-code', 'servicio'],
+    ['error=access_denied&error=access_denied', 'servicio'],
+  ]) {
+    const f = fixture();
+    const cookie = await begin(f);
+    const response = await f.handler.callback(req('callback', { cookie, query: '?' + query + '&state=' + f.auth.state }));
+    assert.equal(response.headers.get('location'), PROJECTS_ORIGIN + '/proyectos/?acceso=' + outcome);
+    assert.equal(f.lookupCalls, 0);
+    assert(response.headers.getSetCookie().every(value => value.includes('Max-Age=0')));
+    const forged = await f.handler.callback(req('callback', { query: '?error=access_denied&state=' + f.auth.state }));
+    assert.match(forged.headers.get('location'), /acceso=servicio$/);
+  }
+});
+
+test('inactive and unregistered institutional accounts are denied; service failures are distinct', async () => {
+  for (const rows of [[], [[email, sub, '', 'DOCENTE', 'INACTIVO']]]) {
+    const f = fixture({ roleLookup: () => resolveWorkspaceRole(rows, { email, sub }) });
+    assert.match((await complete(f, await begin(f))).headers.get('location'), /acceso=denegado$/);
+  }
+  const f = fixture({ roleLookup: () => { throw new Error('sensitive backend details'); } });
+  const response = await complete(f, await begin(f));
+  assert.equal(response.headers.get('location'), PROJECTS_ORIGIN + '/proyectos/?acceso=servicio');
+  assert.equal(await response.text(), '');
+});
+
+test('only an authentic expired cookie reports expiry; missing or damaged cookies are ordinary sign-out', async () => {
+  let time = Math.floor(Date.now() / 1000) * 1000;
+  const f = fixture({ clock: () => time });
+  const cookie = cookieNamed(await complete(f, await begin(f)), '__Host-cedhu-proyectos');
+  time += 3600000;
+  assert.equal((await (await f.handler.session(sessionRequest(cookie))).json()).code, 'sesion_vencida');
+  for (const value of [undefined, cookie + 'x']) {
+    assert.equal((await (await f.handler.session(sessionRequest(value))).json()).code, 'sin_sesion');
+  }
 });
 
 function accessListClient({ account = GOOGLE_IDENTITY.serviceAccount, rows = [], transform = value => value } = {}) {
