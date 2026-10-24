@@ -2,9 +2,21 @@
 
 Fecha: 24/10/2026, America/Bogota. Base auditada: `8f88675e9395dbed791990023002a431a347d93d`, [PR #2](https://github.com/Cedhu-Sog/website-2027/pull/2), rama `feature/proyectos-workspace-entrega1`.
 
-**Dictamen: no certificar todavía ni publicar el Entregable 1.** Las correcciones de esta revisión están verificadas localmente. No hay evidencia nueva de una sesión Google real que llegue a los 60 minutos. Tampoco hay aceptación administrativa del límite de revocación de logout. No se afirma aprobación de los 14 criterios.
+## Decisión vigente del responsable del proyecto — 24/10/2026
 
-## Alcance y evidencia conservada
+El responsable del proyecto **autoriza subir la rama existente, integrar PR #2 en master y desplegar Production cuando pasen los checks**, sin esperar una hora ni implementar revocación inmediata. Se mantiene el vencimiento absoluto de 3600 segundos y no se incorporan servicios, costos ni cambios arquitectónicos para revocación.
+
+La posible reutilización de una cookie previamente conservada hasta su vencimiento queda **aceptada temporalmente por el responsable del proyecto**. Esto no resuelve el riesgo, no acredita revocación inmediata ni implica aprobación administrativa institucional adicional. El vencimiento real de una sesión de 60 minutos queda pendiente de una validación posterior en Production; las pruebas automatizadas de frontera siguen siendo evidencia local.
+
+La decisión habilita la publicación con pendientes explícitos; **no convierte los 14 criterios en verificaciones íntegramente realizadas**. Si aparece una falla crítica de autenticación, autorización, exposición de datos o funcionamiento, detener la integración/despliegue o revertir exclusivamente esta integración, conservando configuraciones preexistentes. No se abrirán el ensayo de 75 minutos ni callbacks temporales para completar esta publicación.
+
+`b9f2c3be574c97661eb1bd61371467350b6d6504` se verificó como último commit de seguridad de la rama existente y se subió sin crear otra PR. GitHub confirmó ese SHA como head de PR #2. [Actions 40106951563](https://github.com/Cedhu-Sog/website-2027/actions/runs/40106951563) y [Vercel Preview](https://vercel.com/cedhu-webmasters-projects/website-2027/8b7z4HhUJ3H1f1gYujgXJUczjUp7) aprobaron ese commit. La revisión documental que registra esta decisión debe pasar sus propios checks antes de la fusión.
+
+## Dictamen histórico de la auditoría de b9f2c3b
+
+La recomendación original fue no certificar ni publicar hasta resolver los pendientes. La decisión anterior del responsable sustituye ese bloqueo de publicación, manteniendo las limitaciones técnicas y la falta de comprobación real de una hora. Lo que sigue describe la auditoría original y no debe interpretarse como una prohibición vigente de la integración expresamente autorizada.
+
+## Alcance y evidencia conservada de la auditoría original
 
 No se repitieron pruebas reales de Workspace, OAuth, OIDC, Drive, Sheets ni ADMIN/DOCENTE. La evidencia previa sigue en [Entrega 1](PROYECTOS-WORKSPACE-ENTREGA1.md) y [Fase B](PROYECTOS-GOOGLE-FASE-B.md). La autorización del usuario para una nueva ventana aislada de 75 minutos llegó durante esta auditoría. No se ejecutó: el control del navegador terminó porque no pudo determinar la URL activa de Windows con suficiente confianza. No se abrió una nueva sesión, no empezó la ventana y no hay callback que retirar ni host nuevo que cerrar.
 
@@ -47,7 +59,7 @@ La alternativa mínima a evaluar primero es un almacén ya aprobado con una gene
 
 Medida de contención sin infraestructura nueva: mantener la cuenta INACTIVO al menos hasta agotar sus cookies anteriores (una hora desde la última posible emisión), o rotar la clave del portal y desplegar de forma controlada si se requiere corte global. Una rotación solo afecta instancias con la configuración nueva y exige mantener cerrados los despliegues anteriores; no se ejecuta aquí. Un cambio de contraseña Google por sí solo no invalida esta cookie.
 
-La administración debe aceptar explícitamente la ventana residual de hasta una hora y la semántica limitada de logout, o exigir su eliminación. Este informe no presume esa aceptación ni presenta el sistema como plenamente conforme a la recomendación de invalidación en servidor de OWASP.
+El responsable del proyecto aceptó temporalmente la ventana residual de hasta una hora y la semántica limitada de logout para esta publicación. No se presume aceptación administrativa institucional adicional ni se presenta el sistema como plenamente conforme a la recomendación de invalidación en servidor de OWASP.
 
 ## Pruebas y evidencia verificable
 
@@ -70,20 +82,22 @@ Resumen con hashes de fuentes/resultados: [evidencia local](qa/proyectos-sesione
 
 Checks remotos consultados para la base `8f88675`: [Actions 40057370811](https://github.com/Cedhu-Sog/website-2027/actions/runs/40057370811) success; [Vercel EhiZs6S9FxHTCGeqb5fs6vLmeDVg](https://vercel.com/cedhu-webmasters-projects/website-2027/EhiZs6S9FxHTCGeqb5fs6vLmeDVg) success. No atribuirlos a las correcciones locales todavía no subidas.
 
-## Riesgos y bloqueos de publicación
+## Pendientes de la auditoría original y tratamiento autorizado
 
 | Pendiente | Decisión o evidencia requerida |
 | --- | --- |
-| Vencimiento real de 60 minutos | Reanudar el ensayo autorizado en un navegador controlable y completar la observación de una sesión real sin renovar |
-| Logout y reactivación de permisos | Aceptación administrativa explícita de los límites anteriores, o implementación y validación de revocación persistente |
-| Pruebas remotas de esta revisión | Actualizar la rama remota y comprobar Actions/Preview cuando se autorice su despliegue automático; el check verde de la base no valida los cambios nuevos |
+| Vencimiento real de 60 minutos | PENDIENTE posterior en Production por decisión expresa; no esperar una hora en esta publicación ni reabrir el ensayo temporal |
+| Logout y reactivación de permisos | Riesgo aceptado temporalmente por el responsable del proyecto. Revocación persistente pendiente de mejora; sin aprobación administrativa institucional adicional |
+| Pruebas remotas de esta revisión | b9f2c3b subido y Actions/Preview aprobados. Comprobar también los checks de la revisión documental final antes de integrar |
 | Clave heredada por ensayos anteriores | Los hosts previos deben seguir cerrados. Evaluar rotación controlada del secreto del portal antes de publicar; no se afirma compromiso de la clave |
 | Acceso compartido temporal preexistente | La consulta de alias detectó una entrada shareable-link en el alias canónico que vence el 25/10/2026 a las 02:14:25 UTC (24/10 21:14:25 Colombia). No se usó, extendió ni modificó; no se publica su valor. No sustituye autenticación privada. Revisar su necesidad o constatar su expiración antes de la publicación |
-| Publicación canónica | Autorización final independiente y comprobación del callback exacto tras la publicación controlada |
+| Publicación canónica | Autorización expresa recibida del responsable; comprobar despliegue y registrar únicamente los smoke realmente realizados |
 
-Los criterios 1–10 y 13 conservan la evidencia de aprobación anterior. El 11 sigue parcial; el 12 está aprobado en la base y pendiente para esta revisión; el 14 no queda aprobado. **La recomendación vigente es mantener la PR en borrador y no certificar ni publicar todavía.**
+Los criterios 1–10 y 13 conservan la evidencia de aprobación anterior. El 11 sigue parcial, con riesgo aceptado por el responsable y prueba real pendiente; el 12 aprobó en b9f2c3b y debe comprobarse para la revisión final; el 14 tiene autorización de publicación, con comprobaciones canónicas aún por registrar. Se puede avanzar a producción conforme a la decisión del responsable, sin declarar certificación integral de los 14 criterios.
 
-## Protocolo para completar la prueba real pendiente
+## Protocolo histórico del ensayo aislado (no ejecutar en esta publicación)
+
+La decisión vigente traslada la validación de una hora a Production para una ejecución posterior. Este protocolo se conserva como historial; no autoriza reabrir hosts o callbacks temporales ahora.
 
 1. Recuperar un navegador cuya URL pueda verificar la herramienta. La autorización de 75 minutos ya existe; no pedir de nuevo autorización para el mismo alcance. Si hace falta autenticación administrativa, la persona administradora la completa directamente, sin compartir credenciales.
 2. Preparar una copia revisable de esta revisión, con origen único del despliegue, cierre absoluto de 75 minutos y aislamiento criptográfico respecto de las cookies canónicas. Verificar proyecto/equipo y conservar todos los alias; el procedimiento previo usa CLI `--prod --skip-domain`, sin promoción. No reutilizar los hosts antiguos ni ampliar IAM o scopes.

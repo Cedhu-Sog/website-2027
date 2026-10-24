@@ -1,8 +1,8 @@
 # Entrega 1 — Acceso de Google Workspace al repositorio CEDHU
 
-Estado al 24/10/2026 (Colombia): **conexión real y OAuth de ambos roles comprobados previamente; auditoría y correcciones locales de sesión completadas sobre `8f88675`. Publicación canónica NO autorizada ni ejecutada.** No se certifica todavía el entregable completo.
+Estado al 24/10/2026 (Colombia): **publicación expresamente autorizada por el responsable del proyecto, pendiente de finalizar checks, integración y smoke canónico.** Las correcciones de seguridad `b9f2c3b` están en la rama remota de PR #2 y aprobaron Actions/Preview. No se declara certificación integral de los 14 criterios.
 
-Informe vigente: [auditoría de sesiones y decisión de certificación](PROYECTOS-SESIONES-AUDITORIA.md). La nueva ventana aislada de 75 minutos fue autorizada, pero no se abrió: el control del navegador se detuvo al no poder identificar con confianza la URL activa de Windows. No se reactivaron hosts ni callbacks. El límite real de una hora sigue pendiente; las pruebas con reloj controlado no lo sustituyen.
+Informe vigente: [auditoría de sesiones y decisión de publicación](PROYECTOS-SESIONES-AUDITORIA.md). El vencimiento real de una hora queda pendiente de validación posterior en Production, sin bloquear esta publicación. La posible reutilización de cookies conservadas queda aceptada temporalmente por el responsable del proyecto; no está resuelta ni implica aprobación administrativa institucional adicional. Se mantiene la hora configurada y no se añaden servicios. No se abrirá el ensayo temporal de 75 minutos.
 
 ## Resultado vigente
 
@@ -24,10 +24,10 @@ El primer build real falló en STS. Se contrastó `GCP_PROJECT_NUMBER` con el re
 | 8. Autenticación real de pruebas | APROBADO | OAuth desde Vercel, ID token validado y acceso DOCENTE real. El ensayo usó callback temporal exacto, ya retirado. |
 | 9. Rol y estado | APROBADO | Ausencia inicial rechazada. Alta expresamente autorizada DOCENTE/ACTIVO; revocación real rechazada en la petición siguiente. Registro temporal cerrado INACTIVO. |
 | 10. ADMIN y DOCENTE | APROBADO | Dos identidades institucionales distintas y autorizadas; ADMIN existente activo y DOCENTE temporal, comprobados por separado. |
-| 11. Seguridad de sesiones | PARCIAL / NO APROBADO | Correcciones locales: cifrado autenticado, vencimiento también después de consultar permisos, logout de ambas cookies y controles de origen. 25 pruebas Workspace/ejecutor aprobadas. Falta vencimiento real y resolver/aceptar revocación de copias conservadas. |
-| 12. Actions y Preview | APROBADO EN BASE / PENDIENTE EN CORRECCIONES | `8f88675`: Actions 40057370811 success y check Vercel success, consultados nuevamente. Correcciones: 76 pruebas y build locales aprobados; sin push ni nuevo despliegue automático. CI de la nueva revisión pendiente. |
+| 11. Seguridad de sesiones | PARCIAL / RIESGO ACEPTADO POR RESPONSABLE | Cifrado autenticado, vencimiento tras consultar permisos, logout de ambas cookies y controles de origen. 25 pruebas Workspace/ejecutor aprobadas. Vencimiento real pendiente posterior; reutilización de cookies aceptada temporalmente, sin aprobación institucional adicional. |
+| 12. Actions y Preview | APROBADO EN b9f2c3b / REVISIÓN FINAL PENDIENTE | Actions 40106951563 success y Vercel Preview success. Deben pasar también los checks de la revisión documental que registra la decisión antes de integrar. |
 | 13. Retirada del ensayo y diagnóstico | APROBADO | Callback temporal retirado, cinco hosts de prueba denegados por WAF, logout de ambas sesiones del portal y de CLI. Diagnóstico HTTP nunca activado, canónico 404/no-store, sin token ni expiry. |
-| 14. Condiciones para publicar | NO APROBADO | Faltan prueba real de vencimiento, decisión administrativa de revocación, checks de la revisión corregida y autorización de publicación controlada con verificación canónica. No fusionar ni promover automáticamente. |
+| 14. Condiciones para publicar | AUTORIZADO / VERIFICACIÓN CANÓNICA PENDIENTE | Responsable autoriza expresamente integrar PR #2 en master y Production con los dos pendientes registrados, sin nueva confirmación. Detener o revertir exclusivamente esta integración ante una falla crítica. Registrar checks y smoke reales. |
 
 ## Evidencia remota reproducible
 
@@ -75,7 +75,7 @@ Logout elimina sesión y flujo del navegador incluso si falta configuración bac
 
 Las suites de la fuente aprobaron Workspace 11, backend Google 24, autenticación heredada 14 y CMS 13, además de los dos casos del ejecutor. La copia OAuth aprobó nuevamente 11 casos Workspace y dos específicos de origen y cierre exacto de veinte minutos. `npm run build` de esa copia aprobó 31 páginas, comprobación de 30 páginas, 4296 referencias y nueve PDF. Esas pruebas locales se distinguen de las conexiones reales citadas arriba.
 
-Antes de publicar: revisar el último commit y sus checks, resolver/aceptar expresamente los límites de sesión, verificar el comportamiento al vencimiento real y obtener autorización final. Solo entonces realizar una comprobación del callback canónico después de una publicación controlada. Mantener master, aliases publicados, DNS/hosting oficial, CMS y contenido sin cambios mientras tanto.
+Decisión de publicación del responsable: integrar la PR existente cuando sus checks pasen, desplegar Production y comprobar el callback canónico. No esperar la expiración real ni implementar revocación inmediata ahora. Conservar el vencimiento de una hora, permisos y configuraciones preexistentes; detener o revertir exclusivamente la integración ante una falla crítica. Registrar separadamente los smoke realizados y los pendientes.
 
 Al terminar el uso de la identidad de pruebas, la institución debe rotar su contraseña, revocar sesiones y conexiones innecesarias de Google, y suspenderla cuando deje de necesitarse. La sesión temporal de Vercel CLI ya se cerró con la herramienta oficial. No se cerraron sesiones administrativas ajenas.
 
