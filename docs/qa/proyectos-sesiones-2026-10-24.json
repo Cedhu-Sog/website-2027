@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "observedAtUtc": "2026-10-24T15:16:02.1845541Z",
+  "timezone": "America/Bogota",
+  "baseCommit": "8f88675e9395dbed791990023002a431a347d93d",
+  "branch": "feature/proyectos-workspace-entrega1",
+  "pullRequest": "https://github.com/Cedhu-Sog/website-2027/pull/2",
+  "runtime": "Node 22.23.4",
+  "tests": [
+    {
+      "command": "npm run test:proyectos:workspace",
+      "passed": 25,
+      "failed": 0,
+      "transport": "local_synthetic",
+      "logSha256": "8d153bb68f66c0bda2023afc73181858fbe5160225f257c076f25961321ed4e4"
+    },
+    {
+      "command": "npm run test:proyectos:google",
+      "passed": 24,
+      "failed": 0,
+      "transport": "local_synthetic",
+      "logSha256": "b16a58da7ad67b966e4c78045bb546a8fa8cc5d3bb80a3b6839d52bf8532f9cf"
+    },
+    {
+      "command": "npm run test:proyectos",
+      "passed": 14,
+      "failed": 0,
+      "transport": "local_synthetic",
+      "logSha256": "53a365f5982259eba485ace1a21208028649f1312eba7b23d3f50fcded27f903"
+    },
+    {
+      "command": "npm run test:cms",
+      "passed": 13,
+      "failed": 0,
+      "transport": "local_synthetic",
+      "logSha256": "916330cebcb0619536ce141ce27b33091427166d739037c9c353e00560b1675f"
+    }
+  ],
+  "totalPassed": 76,
+  "build": {
+    "command": "npm run check:proyectos:build",
+    "passed": true,
+    "pagesBuilt": 31,
+    "pagesChecked": 30,
+    "referencesChecked": 4296,
+    "pdfsChecked": 9,
+    "publicFilesScanned": 502,
+    "logSha256": "8d04604c57a9c7b0a7afc039e4f2cc03dadd496713cfe517824af77bb1fcd395"
+  },
+  "realSixtyMinuteSession": {
+    "authorizedWindowMinutes": 75,
+    "started": false,
+    "expiryObserved": false,
+    "reason": "computer_use_stopped_cannot_verify_active_browser_url",
+    "newHostCreated": false,
+    "temporaryCallbackAdded": false
+  },
+  "revocation": {
+    "accountAuthorizationRechecked": true,
+    "persistentPerSessionRevocation": false,
+    "retainedCookieReplayAfterLogout": "demonstrated_with_synthetic_cookie",
+    "retainedCookieReplayAfterRoleRestoration": "demonstrated_with_synthetic_cookie",
+    "administrativelyAccepted": false
+  },
+  "baseRemoteChecks": {
+    "commit": "8f88675e9395dbed791990023002a431a347d93d",
+    "actionsRun": "https://github.com/Cedhu-Sog/website-2027/actions/runs/40057370811",
+    "actionsConclusion": "success",
+    "vercelCheck": "success",
+    "correctedRevisionPushed": false
+  },
+  "production": {
+    "mutated": false,
+    "deployment": "dpl_45na8koSAGfXJxnsrKdi7gr6v5gi",
+    "master": "f870d75e3c0a519ae4b5c42eb8ca12cf88c2232e",
+    "aliasesConfirmed": [
+      "website-2027-git-master-cedhu-webmasters-projects.vercel.app",
+      "website-2027-cedhu-webmasters-projects.vercel.app",
+      "website-2027-seven.vercel.app"
+    ],
+    "preexistingTemporaryShareDetected": true,
+    "temporaryShareExpiresUtc": "2026-10-25T02:14:25.000Z",
+    "temporaryShareUsedOrChanged": false
+  },
+  "sourceDigests": [
+    {
+      "path": ".github/workflows/content-validation.yml",
+      "sha256": "558eb0072243a2d9481df518d45d9acf50662e0011b17d681125cabe33fabbf1"
+    },
+    {
+      "path": "package.json",
+      "sha256": "5ebd7442d135d6b6a46222976c74c977bf079ef43e5bcbaa1377f1cec02e3cd5"
+    },
+    {
+      "path": "src/server/proyectos-google-auth.js",
+      "sha256": "662419a9122b537e62a8e2f1e042f78cfb1146b9e3e5bc3bd160d4368aac0ec1"
+    },
+    {
+      "path": "src/server/proyectos-workspace-session.js",
+      "sha256": "9aa6b13f512ce5a8d42793243aab99a6f88ea07eb34e5480e84c160b7d8b0d60"
+    },
+    {
+      "path": "scripts/proyectos/google-login.test.mjs",
+      "sha256": "8f0eb2140bd79ae8177e5e4244592ac84c50a4464360dc2b0889b9be600f7287"
+    },
+    {
+      "path": "scripts/proyectos/workspace-session.test.mjs",
+      "sha256": "3604e5dc544d2ad6478240e6998ee5c0190405ef59374e40c57e6ee4c8a3fa0a"
+    },
+    {
+      "path": "docs/PROYECTOS-WORKSPACE-ENTREGA1.md",
+      "sha256": "466f014fb2f70f3944db295927ab6097db530131e663df84a765d5e7d12c7615"
+    },
+    {
+      "path": "docs/PROYECTOS-ACCESO.md",
+      "sha256": "feb11206aab02a40da7a6c6bcda467422cc33b06300b2fcb2ae01f17ebe71cb2"
+    },
+    {
+      "path": "docs/PROYECTOS-SESIONES-AUDITORIA.md",
+      "sha256": "6d0ebb0e2595911de400787f5755612e2874eeb81cd90779464b93cd55367a57"
+    }
+  ],
+  "certification": "not_approved",
+  "publication": "not_authorized_or_executed"
+}

@@ -1,6 +1,8 @@
 # Entrega 1 — Acceso de Google Workspace al repositorio CEDHU
 
-Estado al 23/10/2026 (cierre operativo 24/10 UTC): **conexión real y OAuth de ambos roles comprobados en copia aislada; publicación canónica NO autorizada ni ejecutada.** No se certifica todavía el entregable completo.
+Estado al 24/10/2026 (Colombia): **conexión real y OAuth de ambos roles comprobados previamente; auditoría y correcciones locales de sesión completadas sobre `8f88675`. Publicación canónica NO autorizada ni ejecutada.** No se certifica todavía el entregable completo.
+
+Informe vigente: [auditoría de sesiones y decisión de certificación](PROYECTOS-SESIONES-AUDITORIA.md). La nueva ventana aislada de 75 minutos fue autorizada, pero no se abrió: el control del navegador se detuvo al no poder identificar con confianza la URL activa de Windows. No se reactivaron hosts ni callbacks. El límite real de una hora sigue pendiente; las pruebas con reloj controlado no lo sustituyen.
 
 ## Resultado vigente
 
@@ -22,10 +24,10 @@ El primer build real falló en STS. Se contrastó `GCP_PROJECT_NUMBER` con el re
 | 8. Autenticación real de pruebas | APROBADO | OAuth desde Vercel, ID token validado y acceso DOCENTE real. El ensayo usó callback temporal exacto, ya retirado. |
 | 9. Rol y estado | APROBADO | Ausencia inicial rechazada. Alta expresamente autorizada DOCENTE/ACTIVO; revocación real rechazada en la petición siguiente. Registro temporal cerrado INACTIVO. |
 | 10. ADMIN y DOCENTE | APROBADO | Dos identidades institucionales distintas y autorizadas; ADMIN existente activo y DOCENTE temporal, comprobados por separado. |
-| 11. Seguridad de sesiones | NO COMPROBADO | Persistencia, vencimiento anunciado sin renovación, revocación y logout reales aprobados. Límite exacto de una hora probado localmente; no se esperó su vencimiento en una sesión real. Límites de cookie y logout descritos abajo. |
-| 12. Actions y Preview | APROBADO | Fuente 115f4b0: Actions 40054385765 success y Preview READY. Consultar también el check del commit documental final de esta PR. |
+| 11. Seguridad de sesiones | PARCIAL / NO APROBADO | Correcciones locales: cifrado autenticado, vencimiento también después de consultar permisos, logout de ambas cookies y controles de origen. 25 pruebas Workspace/ejecutor aprobadas. Falta vencimiento real y resolver/aceptar revocación de copias conservadas. |
+| 12. Actions y Preview | APROBADO EN BASE / PENDIENTE EN CORRECCIONES | `8f88675`: Actions 40057370811 success y check Vercel success, consultados nuevamente. Correcciones: 76 pruebas y build locales aprobados; sin push ni nuevo despliegue automático. CI de la nueva revisión pendiente. |
 | 13. Retirada del ensayo y diagnóstico | APROBADO | Callback temporal retirado, cinco hosts de prueba denegados por WAF, logout de ambas sesiones del portal y de CLI. Diagnóstico HTTP nunca activado, canónico 404/no-store, sin token ni expiry. |
-| 14. Condiciones para publicar | NO COMPROBADO | Falta decisión de publicación, comprobación final canónica y aceptación/resolución de los límites de sesión. No fusionar ni promover automáticamente. |
+| 14. Condiciones para publicar | NO APROBADO | Faltan prueba real de vencimiento, decisión administrativa de revocación, checks de la revisión corregida y autorización de publicación controlada con verificación canónica. No fusionar ni promover automáticamente. |
 
 ## Evidencia remota reproducible
 
@@ -58,14 +60,16 @@ Al finalizar, el nuevo registro de pruebas quedó DOCENTE/INACTIVO. No se suspen
 
 ## Seguridad de la implementación candidata
 
-- Authorization Code, PKCE S256, nonce y estado firmado de diez minutos; cookie de flujo __Host-, HttpOnly, Secure y SameSite=Lax.
+- Authorization Code, PKCE S256, nonce y flujo de diez minutos cifrado con AES-256-GCM; cookie __Host-, HttpOnly, Secure y SameSite=Lax. El canje lento no puede completar un flujo vencido.
 - Cliente backend con WIF, sujeto Production exacto, STS y suplantación de cuenta de servicio; scopes Google de solo lectura. Sin claves privadas permanentes.
 - Identidad efectiva contrastada con Drive about antes de leer permisos. Unidad, carpetas, pertenencia y esquema verificados. Lectura A2:E completa, respuesta máxima 256 KiB y rechazo de más de 1000 filas y duplicados.
 - Estado ACTIVO y rol ADMIN o DOCENTE obligatorios. google_id vinculante si está relleno. Cada petición privada revalida estado y rol; los fallos de Google deniegan el acceso.
-- Sesión de una hora, __Host-, HttpOnly, Secure, SameSite=Strict y respuestas no-store. Session omite correo, sub, tokens y filas. Aplicar requireSession a todos los futuros endpoints privados; no reutilizar el guard heredado de contraseña.
+- Sesión absoluta de una hora, cookie cifrada __Host-, HttpOnly, Secure, SameSite=Strict y respuestas no-store. Se vuelve a comprobar el vencimiento después de consultar permisos; las lecturas no emiten Set-Cookie. Session omite correo, sub, tokens y filas. Aplicar requireSession a todos los futuros endpoints privados; no reutilizar el guard heredado de contraseña.
 - Eventos del ensayo sin JWT, secretos, campos de correo ni códigos OAuth en la muestra revisada. Las capturas de roles contienen solo la interfaz pública y se guardan localmente bajo .vercel, nunca en Git. No se afirma una auditoría exhaustiva de todos los logs históricos.
 
-La cookie es firmada, no cifrada: contiene correo, sujeto Google y rol. HttpOnly impide leerla desde JavaScript, pero no se afirma que esos datos no viajen al navegador en la cookie. Logout borra la cookie del navegador; no existe revocación central de una copia robada mientras la cuenta siga activa. La baja de autorización, expiración y rotación de clave siguen aplicando. No se promete revocación global por sesión sin decidir y verificar esa arquitectura.
+La base `8f88675` usaba cookies firmadas con identidad legible. Las correcciones locales cifran sesión y flujo con AES-256-GCM y claves separadas por propósito derivadas con HKDF de la clave existente, sin dependencias ni servicios nuevos. Rechazan el formato anterior: al desplegar la corrección hará falta iniciar sesión nuevamente. El cifrado protege la identidad y el verificador PKCE, pero la cookie sigue siendo una credencial de portador.
+
+Logout elimina sesión y flujo del navegador incluso si falta configuración backend. No revoca centralmente una copia conservada. La baja y los cambios de rol deniegan en la siguiente petición; si se restablecen antes del vencimiento, una copia conservada puede volver a funcionar. La expiración absoluta y la rotación de clave siguen aplicando. La revocación individual y la suspensión en Google requieren los límites y la decisión administrativa descritos en el informe vigente. Ninguno de estos cambios locales se ha publicado.
 
 ## Verificación y publicación pendiente
 

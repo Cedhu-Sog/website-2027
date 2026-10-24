@@ -1,9 +1,10 @@
-import { createHash, createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
+import { createHash, randomBytes } from 'node:crypto';
 import { OAuth2Client } from 'google-auth-library';
 import { createGoogleClient, authenticateGoogle } from './google/auth.js';
 import { googleRepositoryConfig, requireGoogleProduction } from './google/config.js';
 import { createGoogleRepository } from './google/repository.js';
-import { PROJECTS_ORIGIN, privateHeaders, projectsJson } from './proyectos-session.js';
+import { PROJECTS_ORIGIN, allowedRequest, privateHeaders, projectsJson } from './proyectos-session.js';
+import { sealWorkspaceCookie, openWorkspaceCookie } from './proyectos-workspace-session.js';
 
 // Server-only. The password-based entry points are deliberately retired when
 // Workspace authentication is deployed. Nothing private enters Astro's dist/.
@@ -36,26 +37,6 @@ function cookie(name, value, age, sameSite) {
 const clearFlow = () => cookie(FLOW_NAME, '', 0, 'Lax');
 const clearSession = () => cookie(SESSION_NAME, '', 0, 'Strict');
 
-function signed(payload, key, purpose) {
-  const body = Buffer.from(JSON.stringify(payload)).toString('base64url');
-  const mac = createHmac('sha256', key).update(purpose).update('\0').update(body).digest('base64url');
-  return body + '.' + mac;
-}
-function unsign(value, key, purpose) {
-  if (typeof value !== 'string' || value.length > 1800 ||
-      !/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]{43}$/.test(value)) throw new Error('invalid_cookie');
-  const [body, mac] = value.split('.');
-  const expected = createHmac('sha256', key).update(purpose).update('\0').update(body).digest();
-  const actual = Buffer.from(mac, 'base64url');
-  if (actual.length !== expected.length || actual.toString('base64url') !== mac ||
-      !timingSafeEqual(actual, expected)) throw new Error('invalid_cookie');
-  const decoded = Buffer.from(body, 'base64url').toString('utf8');
-  if (Buffer.from(decoded).toString('base64url') !== body) {
-    // Base64 of UTF-8 bytes is checked to reject noncanonical encoding.
-    throw new Error('invalid_cookie');
-  }
-  return JSON.parse(decoded);
-}
 function cookieValue(request, name) {
   const entries = (request.headers.get('cookie') || '').split(';').map(v => v.trim())
     .filter(v => v.startsWith(name + '='));
@@ -78,7 +59,7 @@ function validEmail(email, domain) {
     email.endsWith('@' + domain);
 }
 function localSession(request, cfg, now) {
-  const data = unsign(cookieValue(request, SESSION_NAME), cfg.key, 'cedhu-google-session-v1');
+  const data = openWorkspaceCookie(cookieValue(request, SESSION_NAME), cfg.key, 'cedhu-google-session-v2');
   const time = Math.floor(now() / 1000);
   if (data.v !== 1 || !Number.isSafeInteger(data.iat) || !Number.isSafeInteger(data.exp) ||
       data.exp - data.iat !== SESSION_SECONDS || data.iat > time || data.exp <= time ||
@@ -149,7 +130,7 @@ export function createWorkspaceHandlers({ env = process.env, now = Date.now,
     const verifier = nonceBytes(32).toString('base64url');
     const challenge = createHash('sha256').update(verifier).digest('base64url');
     const issued = Math.floor(now() / 1000);
-    const flow = signed({ v: 1, state, nonce, verifier, iat: issued, exp: issued + FLOW_SECONDS }, cfg.key, 'cedhu-google-oauth-flow-v1');
+    const flow = sealWorkspaceCookie({ v: 1, state, nonce, verifier, iat: issued, exp: issued + FLOW_SECONDS }, cfg.key, 'cedhu-google-oauth-flow-v2');
     const url = oauthFactory(cfg).generateAuthUrl({
       access_type: 'online', prompt: 'select_account', response_type: 'code',
       scope: SCOPES, state, nonce, hd: cfg.domain, code_challenge: challenge,
@@ -170,7 +151,7 @@ export function createWorkspaceHandlers({ env = process.env, now = Date.now,
       const state = query.get('state');
       if (query.has('error') || !code || code.length > 2048 || !state || query.getAll('state').length !== 1 ||
           query.getAll('code').length !== 1 || !/^[A-Za-z0-9_-]{43}$/.test(state)) return denied();
-      const flow = unsign(cookieValue(request, FLOW_NAME), cfg.key, 'cedhu-google-oauth-flow-v1');
+      const flow = openWorkspaceCookie(cookieValue(request, FLOW_NAME), cfg.key, 'cedhu-google-oauth-flow-v2');
       const at = Math.floor(now() / 1000);
       if (flow.v !== 1 || !Number.isSafeInteger(flow.iat) || !Number.isSafeInteger(flow.exp) ||
           flow.exp - flow.iat !== FLOW_SECONDS || flow.iat > at || flow.exp <= at ||
@@ -187,8 +168,10 @@ export function createWorkspaceHandlers({ env = process.env, now = Date.now,
           !validEmail(claims.email, cfg.domain)) return denied();
       const role = await roleLookup({ env, sub: claims.sub, email: claims.email });
       if (!['ADMIN', 'DOCENTE'].includes(role)) return denied();
-      const session = signed({ v: 1, sub: claims.sub, email: claims.email, role, iat: at,
-        exp: at + SESSION_SECONDS }, cfg.key, 'cedhu-google-session-v1');
+      const issued = Math.floor(now() / 1000);
+      if (flow.exp <= issued) return denied();
+      const session = sealWorkspaceCookie({ v: 1, sub: claims.sub, email: claims.email, role, iat: issued,
+        exp: issued + SESSION_SECONDS }, cfg.key, 'cedhu-google-session-v2');
       return redirect(PROJECTS_ORIGIN + '/proyectos/', [
         clearFlow(), cookie(SESSION_NAME, session, SESSION_SECONDS, 'Strict'),
       ]);
@@ -200,17 +183,22 @@ export function createWorkspaceHandlers({ env = process.env, now = Date.now,
   async function requireSession(request) {
     const cfg = configured();
     if (!cfg) return { response: projectsJson({ message: 'Acceso institucional no disponible.' }, 503) };
-    if (!fixedOrigin(request)) return { response: projectsJson({ message: 'Solicitud no permitida.' }, 403) };
+    if (!fixedOrigin(request) || !allowedRequest(request, { origin: PROJECTS_ORIGIN })) {
+      return { response: projectsJson({ message: 'Solicitud no permitida.' }, 403) };
+    }
     let data;
     try { data = localSession(request, cfg, now); }
     catch { return { response: projectsJson({ message: 'Inicia sesión para continuar.' }, 401, { 'Set-Cookie': clearSession() }) }; }
     try {
       const activeRole = await roleLookup({ env, sub: data.sub, email: data.email });
+      // A slow permissions read must not deliver private content after expiry.
+      if (data.exp <= Math.floor(now() / 1000)) return { response: projectsJson({ message: 'Inicia sesión para continuar.' }, 401, { 'Set-Cookie': clearSession() }) };
       // Revocation or role changes take effect on the next private API request.
       if (activeRole !== data.role) return { response: projectsJson({ message: 'Acceso no autorizado.' }, 403, { 'Set-Cookie': clearSession() }) };
       return { identity: data };
     } catch {
       // No cached authorization in the event Google Workspace is unavailable.
+      if (data.exp <= Math.floor(now() / 1000)) return { response: projectsJson({ message: 'Inicia sesión para continuar.' }, 401, { 'Set-Cookie': clearSession() }) };
       return { response: projectsJson({ message: 'No fue posible comprobar la autorización.' }, 503) };
     }
   }
@@ -227,14 +215,16 @@ export function createWorkspaceHandlers({ env = process.env, now = Date.now,
   }
   function logout(request) {
     if (request.method !== 'POST') return projectsJson({ message: 'Método no permitido.' }, 405, { Allow: 'POST' });
-    const cfg = configured();
-    if (!cfg) return projectsJson({ message: 'Acceso institucional no disponible.' }, 503);
     if (!fixedOrigin(request) || request.headers.get('origin') !== PROJECTS_ORIGIN ||
         request.headers.get('x-cedhu-projects') !== '1' ||
         !['same-origin', 'none', null].includes(request.headers.get('sec-fetch-site'))) {
       return projectsJson({ message: 'Solicitud no permitida.' }, 403);
     }
-    return projectsJson({ authenticated: false }, 200, { 'Set-Cookie': clearSession() });
+    // Deleting browser cookies needs neither Google nor server credentials.
+    const headers = privateHeaders();
+    headers.append('Set-Cookie', clearSession());
+    headers.append('Set-Cookie', clearFlow());
+    return Response.json({ authenticated: false }, { headers });
   }
   return { start, callback, requireSession, session, logout };
 }
