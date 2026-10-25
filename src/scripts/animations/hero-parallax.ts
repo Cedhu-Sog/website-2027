@@ -83,10 +83,14 @@ class HeroParallax extends HTMLElement {
         '.hero__photo, .hero__moments, .hero__moments figcaption',
       )).map(element => element.getBoundingClientRect().bottom));
       const pad = 20;
-      const insetLeft = v.left + inset.offsetLeft;
+      const insetParent = inset.offsetParent?.getBoundingClientRect() ?? v;
+      const insetLeft = insetParent.left + inset.offsetLeft;
       const upper = { left: h.left + pad, right: c.right - pad, top: h.top + pad, bottom: c.top - pad };
       const lower = { left: h.left + pad, right: c.right - pad, top: c.bottom + pad, bottom: f.top - pad };
-      const photoTop = { left: v.left + pad, right: insetLeft - pad,
+      // Reserve the floating inset's pocket only while it shares the label's
+      // upper band, leaving the remaining space available to illustrations.
+      const insetInUpperBand = insetParent.top + inset.offsetTop < label.bottom;
+      const photoTop = { left: v.left + pad, right: (insetInUpperBand ? insetLeft : v.right) - pad,
         top: desktop.matches ? h.top + pad : v.top + pad, bottom: label.top - pad };
       // The wide collage has a taller free pocket beside (not above) its label.
       // Use it for the bulb so its vertical travel can remain expressive too.
