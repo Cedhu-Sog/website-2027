@@ -12,59 +12,64 @@ const news = content.newsSlug ? await getEntry('noticias', content.newsSlug) : u
 const newsHref = news && !news.data.draft ? `/noticias/${news.id}/` : undefined;
 interface Props { page: PageData; }
 ---
-<section class="hero container" aria-labelledby="hero-title">
+<section class="hero" aria-labelledby="hero-title">
   <HeroDecorations variant="background" />
   <HeroDecorations variant="photo" />
-  <div class="hero__copy">
-    <p class="eyebrow"><span class="hero__point" aria-hidden="true"></span> {page.heroEyebrow}</p>
-    <h1 id="hero-title">
-      {titleLines.map((line, i) => <Fragment>
-        {i > 0 && ' '}
-        <span class:list={['hero__title-line', {
-          'hero__title-line--secondary': i === 1,
-        }]}>
-          {line.split('#1').map((part, index) => <Fragment>
-            {index > 0 && <span class="hero__rank">
-              <button class="hero__rank-number" type="button" aria-label="#1: reproducir animación">#1</button>
-              <span class="hero__rank-crown" aria-hidden="true">
-                <svg viewBox="0 0 64 40" fill="none" focusable="false">
-                  <path d="M9 29 5 10 21 20 31 4 40 20 58 10 53 30Q32 26 9 29ZM12 35Q32 32 51 35" />
+  <div class="hero__inner container">
+    <div class="hero__copy">
+      <p class="eyebrow"><span class="hero__point" aria-hidden="true"></span> {page.heroEyebrow}</p>
+      <h1 id="hero-title">
+        {titleLines.map((line, i) => <Fragment>
+          {i > 0 && ' '}
+          <span class:list={['hero__title-line', {
+            'hero__title-line--secondary': i === 1,
+          }]}>
+            {line.split('#1').map((part, index) => <Fragment>
+              {index > 0 && <span class="hero__rank">
+                <button class="hero__rank-number" type="button" aria-label="#1: reproducir animación">#1</button>
+                <span class="hero__rank-crown" aria-hidden="true">
+                  <svg viewBox="0 0 64 40" fill="none" focusable="false">
+                    <path d="M9 29 5 10 21 20 31 4 40 20 58 10 53 30Q32 26 9 29ZM12 35Q32 32 51 35" />
+                  </svg>
+                </span>
+                <svg class="hero__rank-underline" viewBox="0 0 120 20" fill="none" focusable="false" aria-hidden="true">
+                  <path d="M5 11Q56 2 115 10M14 17Q66 10 105 15" />
                 </svg>
-              </span>
-              <svg class="hero__rank-underline" viewBox="0 0 120 20" fill="none" focusable="false" aria-hidden="true">
-                <path d="M5 11Q56 2 115 10M14 17Q66 10 105 15" />
-              </svg>
-              <svg class="hero__rank-rays" viewBox="0 0 180 120" fill="none" focusable="false" aria-hidden="true">
-                <g class="hero__rank-rays-left"><path d="m20 28 9 7M9 59l15 1M18 90l11-7" /></g>
-                <g class="hero__rank-rays-right"><path d="m151 34 10-8M157 59l14-2M151 83l10 9" /></g>
-              </svg>
-            </span>}
-            {part}
-          </Fragment>)}
-        </span>
-      </Fragment>)}
-    </h1>
-    <p class="hero__description">{page.heroDescription}</p>
-    <div class="actions">
-      <a class="button" href="/oferta-educativa/">{content.educationLabel} <Icon /></a>
-      <div class="hero__news-action">
-        {newsHref ? <a class="text-link" href={newsHref}>{content.newsLabel}</a> : <Fragment>
-          <button class="text-link hero__news-pending" type="button" disabled aria-describedby="hero-news-pending">{content.newsLabel}</button>
-          <small id="hero-news-pending">Noticia pendiente de publicación</small>
-        </Fragment>}
+                <svg class="hero__rank-rays" viewBox="0 0 180 120" fill="none" focusable="false" aria-hidden="true">
+                  <g class="hero__rank-rays-left"><path d="m20 28 9 7M9 59l15 1M18 90l11-7" /></g>
+                  <g class="hero__rank-rays-right"><path d="m151 34 10-8M157 59l14-2M151 83l10 9" /></g>
+                </svg>
+              </span>}
+              {part}
+            </Fragment>)}
+          </span>
+        </Fragment>)}
+      </h1>
+      <p class="hero__description">{page.heroDescription}</p>
+      <div class="actions">
+        <a class="button" href="/oferta-educativa/">{content.educationLabel} <Icon /></a>
+        <div class="hero__news-action">
+          {newsHref ? <a class="text-link" href={newsHref}>{content.newsLabel}</a> : <Fragment>
+            <button class="text-link hero__news-pending" type="button" disabled aria-describedby="hero-news-pending">{content.newsLabel}</button>
+            <small id="hero-news-pending">Noticia pendiente de publicación</small>
+          </Fragment>}
+        </div>
       </div>
     </div>
-  </div>
-  <div class="hero__visual">
-    <div class="hero__caption-top"><span>{content.collageLabel}</span></div>
-    <figure class="hero__photo"><Photo name={page.heroImage!} priority sizes="(min-width: 1440px) 560px, (min-width: 768px) 42vw, 90vw" /><figcaption><span>{content.photoCaption}<br /><strong>{content.photoCaptionEmphasis}</strong></span><HeroDecorations variant="ribbon" /></figcaption></figure>
-    <div class="hero__moments">
-      <figure class="hero__campus"><Photo name={content.campusImage} sizes="(min-width: 1440px) 280px, (min-width: 768px) 21vw, 44vw" widths={[240, 400, 640, 800]} /><figcaption>{content.campusCaption}</figcaption></figure>
-      <figure class="hero__play"><Photo name={content.playImage} sizes="(min-width: 1440px) 280px, (min-width: 768px) 21vw, 44vw" widths={[240, 400, 640, 800]} /><figcaption>{content.playCaption}</figcaption></figure>
+    <div class="hero__visual">
+      <div class="hero__caption-top"><span>{content.collageLabel}</span></div>
+      <figure class="hero__photo"><Photo name={page.heroImage!} priority sizes="(min-width: 992px) 32vw, (min-width: 768px) 420px, 62vw" /><figcaption><span>{content.photoCaption}<br /><strong>{content.photoCaptionEmphasis}</strong></span><HeroDecorations variant="ribbon" /></figcaption></figure>
+      <div class="hero__support">
+        <div class="hero__moments">
+          <figure class="hero__campus"><Photo name={content.campusImage} sizes="(min-width: 992px) 15vw, (min-width: 768px) 190px, 28vw" widths={[240, 400, 640, 800]} /><figcaption>{content.campusCaption}</figcaption></figure>
+          <figure class="hero__play"><Photo name={content.playImage} sizes="(min-width: 992px) 15vw, (min-width: 768px) 190px, 28vw" widths={[240, 400, 640, 800]} /><figcaption>{content.playCaption}</figcaption></figure>
+        </div>
+        <a class="hero__inset" data-hero-motion="polaroid" href="/oferta-educativa/inicial/"><Photo name={content.insetImage} sizes="(min-width: 768px) 144px, 27vw" widths={[160, 240, 400]} /><span>{content.insetLabel}</span></a>
+      </div>
     </div>
-    <a class="hero__inset" data-hero-motion="polaroid" href="/oferta-educativa/inicial/"><Photo name={content.insetImage} sizes="(min-width: 1200px) 160px, 120px" widths={[160, 240, 400]} /><span>{content.insetLabel}</span></a>
+    <div class="hero__foot"><p>{content.footerDescription}</p><a href="#por-que-cedhu">{content.discoverLabel}</a><span>{content.levelsLabel}</span></div>
   </div>
-  <div class="hero__foot"><p>{content.footerDescription}</p><a href="#por-que-cedhu">{content.discoverLabel}</a><span>{content.levelsLabel}</span></div>
+  <HeroDecorations variant="transition" />
 </section>
 
 <script>

@@ -6,6 +6,11 @@
   --color-hero-decor-yellow: #F2C318;
   --color-hero-decor-lime: #8CCB1F;
   --color-hero-decor-cyan: #35B8E8;
+  --color-hero-base: #086447;
+  --color-hero-mid: #147653;
+  --color-hero-light: #1d7b55;
+  --color-hero-wave: #dfece0;
+  --duration-hero-transition: 1.8s;
   --color-primary-dark: #103e2e;
   --color-accent: #f1cf45;
   --color-background: #f8f8f2;
@@ -51,6 +56,7 @@
   --radius-mobile-navigation: 1.25rem;
   --header-utility-height: 2.15rem;
   --header-main-height: 5.45rem;
+  --header-tablet-height: 5.25rem;
   --header-admissions-height: 2.9rem;
   --header-admissions-padding: .7rem;
   /* Shared by sticky offsets, dropdowns and the Hero viewport calculation. */

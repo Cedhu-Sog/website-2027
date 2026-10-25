@@ -1,9 +1,19 @@
 ---
 import '../../styles/components/hero-decorations.css';
-interface Props { variant: 'background' | 'underline' | 'photo' | 'ribbon'; }
+interface Props { variant: 'background' | 'transition' | 'underline' | 'photo' | 'ribbon'; }
 const { variant } = Astro.props;
 ---
-{variant === 'background' && <div class="hero-decor hero-decor--background" aria-hidden="true" />}
+{variant === 'background' && <div class="hero-decor hero-decor--background" aria-hidden="true">
+  <svg viewBox="0 0 1600 800" preserveAspectRatio="none" focusable="false">
+    <path class="hero-decor__field-light" d="M0 0H520C650 140 670 340 960 460S1380 100 1600 210V800H0Z" />
+    <path class="hero-decor__field-mid" d="M350 0H1280L1600 170V800H0V520C270 730 500 520 740 670S1210 680 1600 570V340C1070 650 820 400 650 160Z" />
+  </svg>
+</div>}
+{variant === 'transition' && <div class="hero-transition" aria-hidden="true">
+  <svg class="hero-transition__layer hero-transition__layer--green" viewBox="0 0 1600 180" preserveAspectRatio="none" focusable="false"><path d="M0 30C240 160 430 0 690 80S1060 140 1280 65S1490 30 1600 60V200H0Z" /></svg>
+  <svg class="hero-transition__layer hero-transition__layer--soft" viewBox="0 0 1600 180" preserveAspectRatio="none" focusable="false"><path d="M0 120C240 10 390 25 640 100S1060 180 1320 80S1510 55 1600 90V200H0Z" /></svg>
+  <svg class="hero-transition__layer hero-transition__layer--front" viewBox="0 0 1600 180" preserveAspectRatio="none" focusable="false"><path d="M0 140C220 55 380 50 620 115S1040 205 1300 125S1500 80 1600 110V200H0Z" /></svg>
+</div>}
 {variant === 'underline' && <svg class="hero-decor hero-decor--underline" viewBox="0 0 360 20" preserveAspectRatio="none" focusable="false" aria-hidden="true"><path d="M5 15Q170 -3 355 14Q178 7 5 19Z" /></svg>}
 {variant === 'photo' && <hero-parallax class="hero-decor hero-decor--photo" aria-hidden="true">
   <svg class="hero-decor__illustration hero-decor__bulb" data-hero-motion="bulb" viewBox="0 0 64 80" focusable="false">
