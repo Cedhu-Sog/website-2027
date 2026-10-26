@@ -2,6 +2,13 @@
 import '../../styles/components/hero-decorations.css';
 interface Props { variant: 'background' | 'transition' | 'underline' | 'photo' | 'ribbon'; }
 const { variant } = Astro.props;
+// Each relative curve returns to its starting height with the same tangent.
+// Repeating it in one path avoids a raster seam between adjacent SVG tiles.
+const transitionWaves = [
+  { layer: 'green', start: 60, curve: 'c240 100 430 -60 690 20s370 60 590 -15c210 -75 210 -50.833333 320 -5' },
+  { layer: 'soft', start: 120, curve: 'c240 -110 390 -95 640 -20s420 80 680 -20c130 -45 170 90.416667 280 40' },
+  { layer: 'front', start: 140, curve: 'c220 -85 380 -90 620 -25s420 90 680 10c150 -45 190 57.5 300 15' },
+];
 ---
 {variant === 'background' && <div class="hero-decor hero-decor--background" aria-hidden="true">
   <svg viewBox="0 0 1600 800" preserveAspectRatio="none" focusable="false">
@@ -10,9 +17,9 @@ const { variant } = Astro.props;
   </svg>
 </div>}
 {variant === 'transition' && <div class="hero-transition" aria-hidden="true">
-  <svg class="hero-transition__layer hero-transition__layer--green" viewBox="0 0 1600 180" preserveAspectRatio="none" focusable="false"><path d="M0 30C240 160 430 0 690 80S1060 140 1280 65S1490 30 1600 60V200H0Z" /></svg>
-  <svg class="hero-transition__layer hero-transition__layer--soft" viewBox="0 0 1600 180" preserveAspectRatio="none" focusable="false"><path d="M0 120C240 10 390 25 640 100S1060 180 1320 80S1510 55 1600 90V200H0Z" /></svg>
-  <svg class="hero-transition__layer hero-transition__layer--front" viewBox="0 0 1600 180" preserveAspectRatio="none" focusable="false"><path d="M0 140C220 55 380 50 620 115S1040 205 1300 125S1500 80 1600 110V200H0Z" /></svg>
+  {transitionWaves.map(({ layer, start, curve }) => <svg class={`hero-transition__layer hero-transition__layer--${layer}`} viewBox="0 0 3200 180" preserveAspectRatio="none" focusable="false">
+    <path d={`M0 ${start}${curve}${curve}V200H0Z`} />
+  </svg>)}
 </div>}
 {variant === 'underline' && <svg class="hero-decor hero-decor--underline" viewBox="0 0 360 20" preserveAspectRatio="none" focusable="false" aria-hidden="true"><path d="M5 15Q170 -3 355 14Q178 7 5 19Z" /></svg>}
 {variant === 'photo' && <hero-parallax class="hero-decor hero-decor--photo" aria-hidden="true">

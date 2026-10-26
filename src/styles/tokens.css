@@ -10,7 +10,7 @@
   --color-hero-mid: #147653;
   --color-hero-light: #1d7b55;
   --color-hero-wave: #dfece0;
-  --duration-hero-transition: 1.8s;
+  --duration-hero-transition: 12s;
   --color-primary-dark: #103e2e;
   --color-accent: #f1cf45;
   --color-background: #f8f8f2;
@@ -31,6 +31,8 @@
   --text-intro: clamp(1.05rem, 1.5vw, 1.25rem);
   --text-hero-title: clamp(3.2rem, 5.95vw, 5.35rem);
   --text-hero-academic-title: clamp(1.5rem, 6.2cqi, 2.5rem);
+  /* Preserve title scale as the laptop copy track yields space to the collage. */
+  --text-hero-academic-title-laptop: clamp(1.5rem, calc(6.2cqi + clamp(0rem, calc((100rem - 100vw) * .03), .3rem)), 2.5rem);
   --leading-hero-academic-title: 1.15;
   --leading-hero-title: 1.03;
   --text-display: clamp(2.75rem, 4.2vw, 4rem);

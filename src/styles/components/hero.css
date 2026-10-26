@@ -170,19 +170,44 @@
   .hero__copy { width: var(--hero-collage-width); justify-self: center; container-type: normal; }
   .hero__visual { justify-self: center; margin-inline-start: 0; }
 }
-/* Restore the laptop photo scale without touching approved large desktops.
-   The boost fades at short heights and at the 90rem desktop boundary. */
-@media (min-width: 75rem) and (width < 90rem) {
+/* Laptop composition follows the available width, even on short screens.
+   Between 90rem and 100rem, sizing returns to the large-desktop geometry. */
+@media (min-width: 62rem) and (width < 100rem) {
   .hero {
-    --hero-photo-boost: clamp(0rem, min(calc(100svh - 40rem), calc(90rem - 100vw)), 6rem);
-    --hero-photo-column-shift: min(2rem, var(--hero-photo-boost), calc(100vw - 75rem));
-    --hero-collage-width: min(100%, clamp(22rem, calc(var(--hero-available-height) * .78 + var(--hero-photo-boost)), 37.5rem));
+    --hero-collage-width: min(100%, max(calc(var(--hero-available-height) * .78), calc(39rem - max(0rem, calc(100vw - 90rem)) * .75)), 39rem);
   }
-  /* Reallocate up to 32px of the original 1.05:1 tracks to the photographs.
-     Both the width and track change fade before the approved desktop range. */
+  /* Equal outer gutters and a proportional share for the photo column.
+     Both adjustments taper to zero before the large-desktop boundary. */
   .hero__inner {
-    grid-template-columns: minmax(0, calc((100% - var(--space-lg)) * 1.05 / 2.05 - var(--hero-photo-column-shift))) minmax(0, 1fr);
+    width: min(calc(100% - var(--gutter) * 2 - clamp(0rem, calc(100rem - 100vw), var(--space-lg))), var(--container));
+    grid-template-columns: minmax(0, calc((100% - var(--space-lg)) * 1.05 / 2.05 - clamp(0px, calc((100rem - 100vw) * .2), 7%))) minmax(0, 1fr);
   }
+  .hero h1 { font-size: var(--text-hero-academic-title-laptop); }
+  .hero__visual { container: hero-collage / inline-size; margin-inline-start: calc(-1 * clamp(0rem, calc((100vw - 90rem) * .05), var(--space-xs))); }
+  /* The inset participates in sizing: wrapped captions and enlarged text
+     reserve their own height before the secondary photographs begin. */
+  .hero__support { display: grid; padding-top: 0; gap: var(--space-sm); }
+  .hero__inset { position: relative; grid-row: 1; justify-self: end; top: auto; right: auto; margin-top: -3rem; }
+  .hero__moments { grid-row: 2; }
+}
+/* Text enlargement can make the side track too narrow for readable captions.
+   Reflow inside the laptop collage without changing the mobile composition. */
+@container hero-collage (width < 20rem) {
+  .hero__photo { grid-column: 1 / -1; }
+  .hero__photo figcaption { position: static; margin-top: var(--space-xs); flex-wrap: wrap; gap: var(--space-xs); }
+  .hero__support { grid-column: 1 / -1; grid-row: 3; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hero__moments { grid-column: 1; grid-row: 1; }
+  .hero__inset { grid-column: 2; margin-top: 0; }
+}
+
+/* Reclaim only vertical clearance on short desktops. Keep all column widths,
+   image dimensions, typography and the separator's own height unchanged. */
+@media (min-width: 62rem) and (max-height: 52rem) {
+  .hero { padding-bottom: var(--hero-transition-height); }
+  .hero__inner { row-gap: calc(var(--space-xs) / 2); }
+  /* Keep the top pocket for the polaroid's existing float and pointer travel. */
+  .hero__visual { padding-bottom: 0; }
+  .hero__foot { padding-top: calc(var(--space-xs) / 2); }
 }
 
 /* The crown's ambient motion remains independent of the triggered cycle. */
